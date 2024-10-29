@@ -6,7 +6,8 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
-	PlayerMesh = CreateDefaultSubobject<USkeletalMeshComponent>("PlayerMesh");
+	
+	GetMesh()->SetSkeletalMeshAsset(LoadObject<USkeletalMesh>(nullptr,TEXT("/Game/Character/SK_Mannequin.SK_Mannequin")));
 	PrimaryActorTick.bCanEverTick = true;
 	
 }
