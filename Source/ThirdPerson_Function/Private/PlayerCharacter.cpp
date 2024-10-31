@@ -6,15 +6,18 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
-	PlayerSkeletalMeshComponent = FindComponentByClass<USkeletalMeshComponent>();
-	if (LoadObject<USkeletalMesh>(nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")))
+	PlayerSkeletalMeshComp = FindComponentByClass<USkeletalMeshComponent>();
+	if (LoadObject<USkeletalMesh>(nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'"))) // TODO:load좌표를 다른곳에서 관리
 	{
-		PlayerSkeletalMeshComponent->SetSkeletalMesh(LoadObject<USkeletalMesh>(nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")));
+		PlayerSkeletalMeshComp->SetSkeletalMesh(LoadObject<USkeletalMesh>(nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")));
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Find SkeletalMesh..."));
 	}
+	
+	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
+	PlayerCameraComp->SetupAttachment(RootComponent);
 	PrimaryActorTick.bCanEverTick = true;
 }
 
