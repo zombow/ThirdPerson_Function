@@ -17,7 +17,7 @@ APlayerCharacter::APlayerCharacter()
 	CameraBoom->SetRelativeLocation(FVector(0.0f,0.0f,60.0f));
 	CameraBoom->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f),false);
 	CameraBoom->bDoCollisionTest = true;
-	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->bUsePawnControlRotation = false;
 
 	// 카메라 설정
 	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
@@ -67,8 +67,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Enhanced Input 컴포넌트로 캐스팅
-	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	if(EnhancedInputComponent)
+	if(TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		// Look 액션 바인딩
 		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
@@ -79,8 +78,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	FVector2D LookAxisValue = Value.Get<FVector2D>();
-
-	// 마우스의 X와 Y 입력 값을 가져와 카메라 회전에 적용
-	AddControllerYawInput(LookAxisValue.X);
-	AddControllerPitchInput(LookAxisValue.Y);
+	float Looksensitivity = 1.0f; // TODO:민감도 설정 (옵션 설정으로 이동필요)
+	if (CameraBoom)
+	{
+		// Yaw 회전 (좌우)
+		FRotator NewRotation = CameraBoom->GetRelativeRotation();
+		NewRotation.Yaw += (LookAxisValue.X * Looksensitivity);  
+		// Pitch 회전 (상하)
+		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (LookAxisValue.Y * Looksensitivity), -88.0f, 88.0f); // Pitch 범위를 제한
+		
+		CameraBoom->SetRelativeRotation(NewRotation);
+	}
 }
