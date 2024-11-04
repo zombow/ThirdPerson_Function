@@ -19,6 +19,10 @@ public:
 	// Sets default values for this character's properties
 	APlayerCharacter();
 
+	// 델리게이트
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInput, FVector3d, LookInput);
+	FOnLookInput OnLookInput;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,6 +32,8 @@ protected:
 	TObjectPtr<UCameraComponent> PlayerCameraComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraBoom")
 	TObjectPtr<USpringArmComponent> CameraBoom;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UInputMappingContext> IMC_TPSCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")

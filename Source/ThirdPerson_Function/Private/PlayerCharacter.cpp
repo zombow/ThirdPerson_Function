@@ -45,7 +45,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용
+	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용)
 	if(TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(Controller))
 	{
 		if(TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -69,24 +69,15 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Enhanced Input 컴포넌트로 캐스팅
 	if(TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		// Look 액션 바인딩
 		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 	}
 }
 
-// Look 액션 함수 구현
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	FVector2D LookAxisValue = Value.Get<FVector2D>();
-	float Looksensitivity = 1.0f; // TODO:민감도 설정 (옵션 설정으로 이동필요)
+	// 카메라 브로드캐스트
 	if (CameraBoom)
 	{
-		// Yaw 회전 (좌우)
-		FRotator NewRotation = CameraBoom->GetRelativeRotation();
-		NewRotation.Yaw += (LookAxisValue.X * Looksensitivity);  
-		// Pitch 회전 (상하)
-		NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (LookAxisValue.Y * Looksensitivity), -88.0f, 88.0f); // Pitch 범위를 제한
-		
-		CameraBoom->SetRelativeRotation(NewRotation);
+		OnLookInput.Broadcast(Value.Get<FVector3d>());
 	}
 }
