@@ -33,13 +33,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraBoom")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
-
+	// Enhanced Bind
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputMappingContext> IMC_TPSCharacter;
+	TObjectPtr<UInputMappingContext> IMCTPSCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputAction> IA_Look;
+	TObjectPtr<UInputAction> IALook;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
+	TObjectPtr<UInputAction> IAMove;
 
-	void Look(const FInputActionValue& m_Value);
+	void Look(const FInputActionValue& Value);
+	void Move(const FInputActionValue& Value);
 
 public:
 	// Called every frame

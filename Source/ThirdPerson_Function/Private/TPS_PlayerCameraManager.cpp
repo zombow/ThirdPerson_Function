@@ -24,9 +24,9 @@ void ATPS_PlayerCameraManager::HandleLookInput(FVector3d Value)
 	float LookSensitivity = 1.0f; // TODO:민감도 설정 (옵션 설정으로 이동필요)
 	// Yaw 회전 (좌우)
 	FRotator NewRotation = CameraBoom->GetRelativeRotation();
-	NewRotation.Yaw += (LookAxisValue.X * LookSensitivity);  
 	// Pitch 회전 (상하)
-	NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (LookAxisValue.Y * LookSensitivity), -88.0f, 88.0f); // Pitch 범위를 제한
-	// 	
+	NewRotation.Yaw += (LookAxisValue.X * LookSensitivity);
+	// Pitch 범위를 제한
+	NewRotation.Pitch = FMath::Clamp(NewRotation.Pitch + (LookAxisValue.Y * LookSensitivity), -88.0f, 88.0f);
 	CameraBoom->SetRelativeRotation(NewRotation);
 }
