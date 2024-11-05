@@ -5,10 +5,26 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
+	bUseControllerRotationYaw = false;
+	// 플레이어 스켈레톤 설정
+	PlayerSkeletalMeshComp = FindComponentByClass<USkeletalMeshComponent>();
+	if (LoadObject<USkeletalMesh>(
+		nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")))
+	{
+		PlayerSkeletalMeshComp->SetSkeletalMesh(LoadObject<USkeletalMesh>(
+			nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Find SkeletalMesh..."));
+	}
+	// TODO:load좌표를 다른곳에서 관리
+
 	// 카메라붐 설정
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(RootComponent);
@@ -24,19 +40,14 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCameraComp->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	PlayerCameraComp->bUsePawnControlRotation = false;
 
-	// 플레이어 스켈레톤 설정
-	PlayerSkeletalMeshComp = FindComponentByClass<USkeletalMeshComponent>();
-	if (LoadObject<USkeletalMesh>(
-		nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")))
-	// TODO:load좌표를 다른곳에서 관리
-	{
-		PlayerSkeletalMeshComp->SetSkeletalMesh(LoadObject<USkeletalMesh>(
-			nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Find SkeletalMesh..."));
-	}
+	// 무브먼트 설정
+	CharacterMovementComp = FindComponentByClass<UCharacterMovementComponent>();
+	CharacterMovementComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
+	CharacterMovementComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
+	CharacterMovementComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
+	CharacterMovementComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
+	CharacterMovementComp->MaxWalkSpeed = 600.0f;
+	CharacterMovementComp->MaxWalkSpeedCrouched = 300.0f;
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -45,7 +56,6 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용)
 	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -61,6 +71,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT(" Current Speed: %hhd"), CharacterMovementComp->IsCrouching());
 }
 
 // Called to bind functionality to input
@@ -74,6 +85,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	{
 		EnhancedInputComponent->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
+		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Started, this, &APlayerCharacter::Crouch);
+		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::UnCrouch);
 	}
 	else
 	{
@@ -92,22 +106,36 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
-	FVector2d MoveDirection = Value.Get<FVector2d>();
+	FVector2d InputDirection = Value.Get<FVector2d>();
 
-	FVector ForwardVector = GetActorForwardVector();
-	FVector RightVector = GetActorRightVector();
+	FRotator CameraRotation = CameraBoom->GetComponentRotation();
+	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+	CameraForward.Z = 0;
 
-	AddMovementInput(ForwardVector, MoveDirection.X);
-	AddMovementInput(RightVector, MoveDirection.Y);
+	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+	CameraRight.Z = 0;
 
-	// 이동 방향이 있으면 캐릭터 회전
-	if (!MoveDirection.IsNearlyZero())
-	{
-		FVector Direction = FVector{MoveDirection.Y, -MoveDirection.X, 0};
-		// 이동 방향 벡터를 얻어 회전하도록 설정
-		FRotator TargetRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
-		FRotator NewRotation = FMath::RInterpTo(PlayerSkeletalMeshComp->GetRelativeRotation(), TargetRotation,
-		                                        GetWorld()->GetDeltaSeconds(), 10);
-		PlayerSkeletalMeshComp->SetRelativeRotation(NewRotation); // TODO: 카메라 방향을 기준으로 회전하게 변경필요
-	}
+
+	FVector MoveDirection = FVector((CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y));
+	MoveDirection.Normalize();
+	AddMovementInput(MoveDirection);
+}
+
+void APlayerCharacter::Jump(const FInputActionValue& Value)
+{
+	CharacterMovementComp->DoJump(true);
+}
+
+void APlayerCharacter::Crouch(const FInputActionValue& Value)
+{
+	CharacterMovementComp->Crouch();
+	UE_LOG(LogTemp, Warning, TEXT("CROUCH! / %hhd / Current Speed: %f"), CharacterMovementComp->IsCrouching(),
+	       CharacterMovementComp->MaxWalkSpeedCrouched);
+}
+
+void APlayerCharacter::UnCrouch(const FInputActionValue& Value)
+{
+	CharacterMovementComp->UnCrouch();
+	UE_LOG(LogTemp, Warning, TEXT("UnCROUCH! / %hhd / Current Speed: %f"), CharacterMovementComp->IsCrouching(),
+	       CharacterMovementComp->MaxWalkSpeed);
 }

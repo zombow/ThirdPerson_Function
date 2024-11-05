@@ -21,29 +21,38 @@ public:
 
 	// 델리게이트
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInput, FVector3d, LookInput);
+
 	FOnLookInput OnLookInput;
 
 protected:
-	// Called when the game starts or when spawned
+	// Componentes
 	virtual void BeginPlay() override;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMeshComp;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraComponent")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraCompo")
 	TObjectPtr<UCameraComponent> PlayerCameraComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraBoom")
 	TObjectPtr<USpringArmComponent> CameraBoom;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MoveComp")
+	TObjectPtr<UCharacterMovementComponent> CharacterMovementComp;
+	
 	// Enhanced Bind
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
+	UPROPERTY
+	(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UInputMappingContext> IMCTPSCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UInputAction> IALook;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UInputAction> IAMove;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
+	TObjectPtr<UInputAction> IAJump;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
+	TObjectPtr<UInputAction> IACrouch;
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
-
+	void Jump(const FInputActionValue& Value);
+	void Crouch(const FInputActionValue& Value);
+	void UnCrouch(const FInputActionValue& Value);
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
