@@ -71,7 +71,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	UE_LOG(LogTemp, Warning, TEXT(" Current Speed: %hhd"), CharacterMovementComp->IsCrouching());
 }
 
 // Called to bind functionality to input
@@ -86,8 +85,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(IALook, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(IAJump, ETriggerEvent::Triggered, this, &APlayerCharacter::Jump);
-		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Started, this, &APlayerCharacter::Crouch);
-		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::UnCrouch);
+		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Started, this, &APlayerCharacter::Crouching);
+		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Completed, this, &APlayerCharacter::UnCrouching);
 	}
 	else
 	{
@@ -126,16 +125,13 @@ void APlayerCharacter::Jump(const FInputActionValue& Value)
 	CharacterMovementComp->DoJump(true);
 }
 
-void APlayerCharacter::Crouch(const FInputActionValue& Value)
+void APlayerCharacter::Crouching(const FInputActionValue& Value)
 {
-	CharacterMovementComp->Crouch();
-	UE_LOG(LogTemp, Warning, TEXT("CROUCH! / %hhd / Current Speed: %f"), CharacterMovementComp->IsCrouching(),
-	       CharacterMovementComp->MaxWalkSpeedCrouched);
+	if (CharacterMovementComp->IsMovingOnGround())
+		ACharacter::Crouch();
 }
 
-void APlayerCharacter::UnCrouch(const FInputActionValue& Value)
+void APlayerCharacter::UnCrouching(const FInputActionValue& Value)
 {
-	CharacterMovementComp->UnCrouch();
-	UE_LOG(LogTemp, Warning, TEXT("UnCROUCH! / %hhd / Current Speed: %f"), CharacterMovementComp->IsCrouching(),
-	       CharacterMovementComp->MaxWalkSpeed);
+	ACharacter::UnCrouch();
 }

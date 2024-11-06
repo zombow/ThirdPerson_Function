@@ -51,8 +51,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
 	void Jump(const FInputActionValue& Value);
-	void Crouch(const FInputActionValue& Value);
-	void UnCrouch(const FInputActionValue& Value);
+	void Crouching(const FInputActionValue& Value);
+	void UnCrouching(const FInputActionValue& Value);
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
