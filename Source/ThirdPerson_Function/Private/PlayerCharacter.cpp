@@ -8,7 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPSCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	bUseControllerRotationYaw = false;
 	// 플레이어 스켈레톤 설정
@@ -41,13 +42,13 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCameraComp->bUsePawnControlRotation = false;
 
 	// 무브먼트 설정
-	CharacterMovementComp = FindComponentByClass<UCharacterMovementComponent>();
-	CharacterMovementComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
-	CharacterMovementComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
-	CharacterMovementComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
-	CharacterMovementComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
-	CharacterMovementComp->MaxWalkSpeed = 600.0f;
-	CharacterMovementComp->MaxWalkSpeedCrouched = 300.0f;
+	TPSCharacterMoveComp = FindComponentByClass<UTPSCharacterMovementComponent>();
+	TPSCharacterMoveComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
+	TPSCharacterMoveComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
+	TPSCharacterMoveComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
+	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
+	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
+	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
 
 	PrimaryActorTick.bCanEverTick = true;
 }
@@ -122,16 +123,18 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 
 void APlayerCharacter::Jump(const FInputActionValue& Value)
 {
-	CharacterMovementComp->DoJump(true);
+	TPSCharacterMoveComp->DoJump(true);
 }
 
 void APlayerCharacter::Crouching(const FInputActionValue& Value)
 {
-	if (CharacterMovementComp->IsMovingOnGround())
-		ACharacter::Crouch();
+	if (TPSCharacterMoveComp->IsMovingOnGround())
+		APlayerCharacter::Crouch();
+
+	TPSCharacterMoveComp->TESTFloat = 10;
 }
 
 void APlayerCharacter::UnCrouching(const FInputActionValue& Value)
 {
-	ACharacter::UnCrouch();
+	APlayerCharacter::UnCrouch();
 }

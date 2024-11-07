@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TPSCharacterMovementComponent.h"
 #include "ThirdPerson_Function/ThirdPerson_FunctionCharacter.h"
 #include "PlayerCharacter.generated.h"
 
@@ -17,7 +18,7 @@ class APlayerCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	// 델리게이트
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInput, FVector3d, LookInput);
@@ -34,7 +35,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraBoom")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MoveComp")
-	TObjectPtr<UCharacterMovementComponent> CharacterMovementComp;
+	TObjectPtr<UTPSCharacterMovementComponent> TPSCharacterMoveComp;
 	
 	// Enhanced Bind
 	UPROPERTY
