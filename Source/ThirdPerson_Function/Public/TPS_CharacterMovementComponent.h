@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "TPSCharacterMovementComponent.generated.h"
+#include "TPS_CharacterMovementComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THIRDPERSON_FUNCTION_API UTPSCharacterMovementComponent : public UCharacterMovementComponent
+class THIRDPERSON_FUNCTION_API UTPS_CharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
 

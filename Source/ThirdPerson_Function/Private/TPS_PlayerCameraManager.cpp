@@ -7,7 +7,7 @@ void ATPS_PlayerCameraManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerCharacter = Cast<APlayerCharacter>(GetOwningPlayerController()->GetPawn());
+	PlayerCharacter = Cast<ATPS_PlayerCharacter>(GetOwningPlayerController()->GetPawn());
 	Camera = PlayerCharacter->FindComponentByClass<UCameraComponent>();
 	CameraBoom = PlayerCharacter->FindComponentByClass<USpringArmComponent>();
 

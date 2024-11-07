@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Camera/PlayerCameraManager.h"
-#include "PlayerCharacter.h"
+#include "TPS_PlayerCharacter.h"
 #include "TPS_PlayerCameraManager.generated.h"
 
 /**
@@ -17,7 +17,7 @@ class THIRDPERSON_FUNCTION_API ATPS_PlayerCameraManager : public APlayerCameraMa
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Player")
-	TObjectPtr<APlayerCharacter> PlayerCharacter;
+	TObjectPtr<ATPS_PlayerCharacter> PlayerCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Camera")
 	TObjectPtr<UCameraComponent> Camera;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Camera")
