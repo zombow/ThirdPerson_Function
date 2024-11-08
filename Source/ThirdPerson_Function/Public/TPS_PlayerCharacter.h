@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InputActionValue.h"
+#include "TPS_InputConfig.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -38,6 +39,8 @@ protected:
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	
 	// Enhanced Bind
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
+	TObjectPtr<UTPS_InputConfig> InputConfig;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UInputMappingContext> IMCTPSCharacter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")

@@ -13,5 +13,5 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_AssetManager : public UAssetManager
 {
 	GENERATED_BODY()
-	
+
 };
