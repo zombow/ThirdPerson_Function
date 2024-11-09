@@ -41,16 +41,6 @@ protected:
 	// Enhanced Bind
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UTPS_InputConfig> InputConfig;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputMappingContext> IMCTPSCharacter;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputAction> IALook;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputAction> IAMove;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputAction> IAJump;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputAction> IACrouch;
 	
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);

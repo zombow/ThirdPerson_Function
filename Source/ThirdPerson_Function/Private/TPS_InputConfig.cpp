@@ -3,8 +3,13 @@
 
 #include "TPS_InputConfig.h"
 
-FGameplayTag UTPS_InputConfig::GetTagForAction(const TObjectPtr<UInputAction>& InputAction)
+TObjectPtr<UInputAction> UTPS_InputConfig::GetAction(FGameplayTag Tag)
 {
-	const FGameplayTag* FoundTag = InputActionTagMap.Find(InputAction);
-	return FoundTag ? *FoundTag : FGameplayTag();
+	auto temp = InputActionTagMap.FindChecked(Tag);
+	return temp;
+}
+
+TObjectPtr<UInputMappingContext> UTPS_InputConfig::GetImc()
+{
+	return InputMappingContext;
 }

@@ -5,6 +5,8 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameplayTagsSettings.h"
+#include "NativeGameplayTags.h"
 
 // Sets default values
 ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -62,9 +64,10 @@ void ATPS_PlayerCharacter::BeginPlay()
 		if (TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<
 			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
-			Subsystem->AddMappingContext(IMCTPSCharacter, 0);
+			Subsystem->AddMappingContext(InputConfig->GetImc(), 0);
 		}
 	}
+
 }
 
 // Called every frame
@@ -77,16 +80,16 @@ void ATPS_PlayerCharacter::Tick(float DeltaTime)
 void ATPS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 	// Enhanced Input 컴포넌트로 캐스팅
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<
 		UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(IALook, ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Look);
-		EnhancedInputComponent->BindAction(IAMove, ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Move);
-		EnhancedInputComponent->BindAction(IAJump, ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Jump);
-		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Started, this, &ATPS_PlayerCharacter::Crouching);
-		EnhancedInputComponent->BindAction(IACrouch, ETriggerEvent::Completed, this, &ATPS_PlayerCharacter::UnCrouching);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Look);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Jump);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Started, this, &ATPS_PlayerCharacter::Crouching);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Completed, this, &ATPS_PlayerCharacter::UnCrouching);
 	}
 	else
 	{
