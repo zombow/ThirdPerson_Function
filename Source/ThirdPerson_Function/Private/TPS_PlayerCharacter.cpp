@@ -132,8 +132,7 @@ void ATPS_PlayerCharacter::Crouching(const FInputActionValue& Value)
 {
 	if (TPSCharacterMoveComp->IsMovingOnGround())
 		ATPS_PlayerCharacter::Crouch();
-
-	TPSCharacterMoveComp->TESTFloat = 10;
+	
 }
 
 void ATPS_PlayerCharacter::UnCrouching(const FInputActionValue& Value)

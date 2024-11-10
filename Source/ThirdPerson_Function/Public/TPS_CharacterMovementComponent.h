@@ -13,8 +13,16 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_CharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "FlyingTime")
+	float FlyingTime = 0;
 
+	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
+	void SetFlyingTime();
+	void StarFlyingTimer();
+	void StopFlyingTimer();
+	FTimerHandle FlyingTimerHandle;
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Float")
-	float TESTFloat;
+	UFUNCTION(BlueprintCallable)
+	float GetFlyingTime() { return FlyingTime; }
 };
