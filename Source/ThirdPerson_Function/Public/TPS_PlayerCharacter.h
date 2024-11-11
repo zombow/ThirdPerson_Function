@@ -44,7 +44,7 @@ protected:
 	
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
-	void Jump(const FInputActionValue& Value);
+	void DoJump(const FInputActionValue& Value);
 	void Crouching(const FInputActionValue& Value);
 	void UnCrouching(const FInputActionValue& Value);
 public:

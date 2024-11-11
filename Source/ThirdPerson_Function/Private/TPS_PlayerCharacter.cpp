@@ -87,7 +87,7 @@ void ATPS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 	{
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Move);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Jump);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::DoJump);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Started, this, &ATPS_PlayerCharacter::Crouching);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Completed, this, &ATPS_PlayerCharacter::UnCrouching);
 	}
@@ -123,7 +123,7 @@ void ATPS_PlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection);
 }
 
-void ATPS_PlayerCharacter::Jump(const FInputActionValue& Value)
+void ATPS_PlayerCharacter::DoJump(const FInputActionValue& Value)
 {
 	TPSCharacterMoveComp->DoJump(true);
 }
