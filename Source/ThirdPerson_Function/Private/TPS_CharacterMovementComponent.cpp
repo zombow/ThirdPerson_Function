@@ -10,43 +10,41 @@ void UTPS_CharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
                                                             uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
+	CheckFallingForce(PreviousMovementMode);
+}
+
+void UTPS_CharacterMovementComponent::SetFallingForce()
+{
+	FallingForce = Velocity.Z;
+}
+
+void UTPS_CharacterMovementComponent::CheckFallingForce(EMovementMode M_PreviousMovementMode)
+{
 	if (MovementMode == MOVE_Falling)
 	{
-		StarFlyingTimer();
+		GetWorld()->GetTimerManager().SetTimer(FallingForceHandler, this,
+		                                       &UTPS_CharacterMovementComponent::SetFallingForce,
+		                                       GetWorld()->DeltaTimeSeconds, MovementMode == MOVE_Falling);
 	}
-	else if (PreviousMovementMode == MOVE_Falling)
+	else if (M_PreviousMovementMode == MOVE_Falling)
 	{
-		StopFlyingTimer();
+		GetWorld()->GetTimerManager().ClearTimer(FallingForceHandler);
+		CheckLandingRecovery();
 	}
-}
-
-void UTPS_CharacterMovementComponent::SetFlyingTime()
-{
-	FlyingTime += GetWorld()->DeltaTimeSeconds;
-}
-
-void UTPS_CharacterMovementComponent::StarFlyingTimer()
-{
-	FlyingTime = 0.0f;
-	GetWorld()->GetTimerManager().SetTimer(FlyingTimerHandle, this, &UTPS_CharacterMovementComponent::SetFlyingTime,
-	                                       GetWorld()->DeltaTimeSeconds, true);
-}
-
-void UTPS_CharacterMovementComponent::StopFlyingTimer()
-{
-	GetWorld()->GetTimerManager().ClearTimer(FlyingTimerHandle);
-	CheckLandingRecovery();
 }
 
 void UTPS_CharacterMovementComponent::CheckLandingRecovery()
 {
-	float RecoveryTime = (FMath::Clamp(FlyingTime, MinFlyTime, MaxFlyTime) - MinFlyTime) / (MaxFlyTime - MinFlyTime);
-	if (RecoveryTime >= LRThresholdTime)
+	if (FallingForce <= ThresholdForce)
 	{
-		// 착지반동 황성화
+		NavAgentProps.bCanJump = false;
+		// FallingForce를 노멀라이즈 (0~1) 이후 최대낙하시간을 곱해 최종낙하시간 생성 
+		RecoveryTime = ((FMath::Clamp(FallingForce, MaxFallForce, MinFallForce) - MinFallForce) / (MaxFallForce -
+			MinFallForce)) * MaxRecoveryTime;
 		bLandingRecovery = true;
-		// 착지순간 체공시간을 뺀 속도를 디노멀라이즈된 상수로변경
-		CurrentLandingWalkSpeed = (1 - RecoveryTime) * (CustomMaxWalkSpeed - MinLandingWalkSpeed) + MinLandingWalkSpeed;
+		// RecoveryTime에 비례하여 착지순간의 속도를 감소 (MaxRecoveryTime이 1이상일경우 나누어줌)
+		CurrentLandingWalkSpeed = ((MaxRecoveryTime - RecoveryTime) * (MaxLandingWalkSpeed - MinLandingWalkSpeed) /
+			MaxRecoveryTime) + MinLandingWalkSpeed;
 		MaxWalkSpeed = CurrentLandingWalkSpeed;
 
 		GetWorld()->GetTimerManager().SetTimer(LandingRecoveryTimerHandle, this,
@@ -57,26 +55,23 @@ void UTPS_CharacterMovementComponent::CheckLandingRecovery()
 	{
 		bLandingRecovery = false;
 	}
+	FallingForce = 0;
 }
 
 void UTPS_CharacterMovementComponent::EndLandingRecovery()
 {
-	// 체공시간을 노멀라이즈로 변환 (설정한 최대채공시간에 맞춰 노멀라이즈화)
-	float RecoveryTime = (FMath::Clamp(FlyingTime, MinFlyTime, MaxFlyTime) - MinFlyTime) / (MaxFlyTime - MinFlyTime);
-	// 반동시간을 최대1초로 기준하며, Lerp의 Alpha에 들어갈시간을 보강)
+	// 알파는 1임으로 1로기준하여 Lerp의 Alpha에 들어갈시간을 보강 (RecoveringTime만큼 실행되도록)
 	float AlpTime = 1 / (RecoveryTime / GetWorld()->DeltaTimeSeconds);
-	// 지속적으로 호출하여 static에 값보관
-	static float CheckTime = AlpTime;
-	CheckTime += AlpTime;
-	UE_LOG(LogTemp, Warning, TEXT("%f / is CheckTime" ), CheckTime);
-	// Lerp으로 최대이동속도를 자연스럽게 상승시킴
-	MaxWalkSpeed = FMath::Lerp(CurrentLandingWalkSpeed, CustomMaxWalkSpeed, CheckTime);
-	UE_LOG(LogTemp, Warning, TEXT("%f / isCurrent MaxSpeed" ), MaxWalkSpeed);
-	if (MaxWalkSpeed >= 599.0f)
+	CheckAlphaTime += AlpTime;
+	// Lerp으로 최대이동속도를 자연스럽게 상승시킴 (1차그래프)
+	MaxWalkSpeed = FMath::Lerp(CurrentLandingWalkSpeed, MaxLandingWalkSpeed, CheckAlphaTime);
+	if (MaxWalkSpeed >= MaxLandingWalkSpeed - 1)
 	{
+		NavAgentProps.bCanJump = true;
 		bLandingRecovery = false;
-		MaxWalkSpeed = 600;
-		CheckTime = 0;
+		FallingForce = 0;
+		MaxWalkSpeed = MaxLandingWalkSpeed;
+		CheckAlphaTime = 0;
 		GetWorld()->GetTimerManager().ClearTimer(LandingRecoveryTimerHandle);
 	}
 }
