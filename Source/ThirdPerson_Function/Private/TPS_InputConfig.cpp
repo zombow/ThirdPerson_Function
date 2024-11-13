@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TPS_InputConfig.h"
+#include "TPS_Player/TPS_InputConfig.h"
 
 TObjectPtr<UInputAction> UTPS_InputConfig::GetAction(FGameplayTag Tag)
 {

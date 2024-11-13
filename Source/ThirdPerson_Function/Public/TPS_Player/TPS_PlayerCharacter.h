@@ -8,7 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "TPS_CharacterMovementComponent.h"
+#include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "ThirdPerson_Function/ThirdPerson_FunctionCharacter.h"
 #include "TPS_PlayerCharacter.generated.h"
 
