@@ -14,7 +14,7 @@ class THIRDPERSON_FUNCTION_API ATPS_EnemyCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	ATPS_EnemyCharacter();
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
