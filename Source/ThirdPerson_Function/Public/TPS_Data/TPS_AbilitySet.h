@@ -14,4 +14,6 @@ class THIRDPERSON_FUNCTION_API UTPS_AbilitySet : public UGameplayAbilitySet
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Attributes")
+	FGameplayAttribute Health;
 };
