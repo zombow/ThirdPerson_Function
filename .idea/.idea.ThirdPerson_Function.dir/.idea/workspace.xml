@@ -7,7 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="" />
+    <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_AbilitySet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_AttributeSet.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/TPS_AttributeSet.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GameEffect.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/TPS_GameEffect.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_AssetManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_AssetManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_AbilitySet.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_AttributeSet.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_GameEffect.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_AssetManager.h" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -141,6 +151,8 @@
       <workItem from="1731579399508" duration="785000" />
       <workItem from="1731666201643" duration="3461000" />
       <workItem from="1731895940280" duration="626000" />
+      <workItem from="1732019715756" duration="391000" />
+      <workItem from="1732020146835" duration="309000" />
     </task>
     <servers />
   </component>
