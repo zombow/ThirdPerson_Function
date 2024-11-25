@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "ThirdPerson_Function/ThirdPerson_FunctionCharacter.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
@@ -37,7 +38,9 @@ protected:
 	TObjectPtr<USpringArmComponent> CameraBoom;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MoveComp")
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
+	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
+
 	// Enhanced Bind
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UTPS_InputConfig> InputConfig;

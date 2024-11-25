@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagsSettings.h"
 #include "NativeGameplayTags.h"
+#include "TPS_Player/TPS_PlayerState.h"
 
 // Sets default values
 ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -58,6 +59,12 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// ASC할당
+	if(TPSAbilitySystemComp = Cast<ATPS_PlayerState>(GetPlayerState())->GetTPS_AbilitySystemComponent())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%ls"), *TPSAbilitySystemComp.GetName());
+	}
 	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용)
 	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(Controller))
 	{
