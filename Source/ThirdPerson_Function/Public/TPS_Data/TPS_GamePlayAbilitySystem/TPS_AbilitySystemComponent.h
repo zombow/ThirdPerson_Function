@@ -13,5 +13,5 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_AbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+	virtual void BeginPlay() override;
 };

@@ -59,12 +59,10 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	// ASC할당
-	if(TPSAbilitySystemComp = Cast<ATPS_PlayerState>(GetPlayerState())->GetTPS_AbilitySystemComponent())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%ls"), *TPSAbilitySystemComp.GetName());
-	}
+	TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
+
 	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용)
 	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(Controller))
 	{

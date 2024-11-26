@@ -5,10 +5,11 @@
 
 ATPS_PlayerState::ATPS_PlayerState()
 {
-	TPS_AbilitySystemComp = CreateDefaultSubobject<UTPS_AbilitySystemComponent>(TEXT("TPS AbilityComp"));
+	TPS_AbilitySystemComp = CreateDefaultSubobject<UTPS_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	//TPS_AttributeSet = CreateDefaultSubobject<UTPS_AttributeSet>(TEXT("AttributeSet"));
 }
 
-TObjectPtr<UTPS_AbilitySystemComponent> ATPS_PlayerState::GetTPS_AbilitySystemComponent() const
+TObjectPtr<UTPS_AbilitySystemComponent> ATPS_PlayerState::GetAbilitySystemComponent() const
 {
 	return TPS_AbilitySystemComp;
 }
