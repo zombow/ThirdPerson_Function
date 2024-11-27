@@ -9,9 +9,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
-#include "ThirdPerson_Function/ThirdPerson_FunctionCharacter.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
-#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AttributeSet.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
@@ -40,16 +38,15 @@ protected:
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
-
-	// Enhanced Bind
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UTPS_InputConfig> InputConfig;
 	
-	void Look(const FInputActionValue& Value);
-	void Move(const FInputActionValue& Value);
-	void DoJump(const FInputActionValue& Value);
-	void Crouching(const FInputActionValue& Value);
-	void UnCrouching(const FInputActionValue& Value);
+	UFUNCTION()
+	void Move(FVector2D Value);
+	UFUNCTION()
+	void DoJump();
+	UFUNCTION()
+	void Crouching();
+	UFUNCTION()
+	void UnCrouching();
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

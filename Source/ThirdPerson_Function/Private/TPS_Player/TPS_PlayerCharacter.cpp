@@ -7,11 +7,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagsSettings.h"
 #include "NativeGameplayTags.h"
+#include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 
 // Sets default values
 ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPS_CharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPS_CharacterMovementComponent>(
+		ACharacter::CharacterMovementComponentName))
 {
 	bUseControllerRotationYaw = false;
 	// 플레이어 스켈레톤 설정
@@ -59,20 +61,17 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// ASC할당
 	TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
-
-	// Enhanced Input 시스템 설정 (PlayerController에서 Enhanced Input Subsystem 사용)
-	if (TObjectPtr<APlayerController> PlayerController = Cast<APlayerController>(Controller))
+	TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller);
+	if (TPSController)
 	{
-		if (TObjectPtr<UEnhancedInputLocalPlayerSubsystem> Subsystem = ULocalPlayer::GetSubsystem<
-			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(InputConfig->GetImc(), 0);
-		}
+		TPSController->OnMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Move);
+		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
+		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
+		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
 	}
-
 }
 
 // Called every frame
@@ -85,35 +84,14 @@ void ATPS_PlayerCharacter::Tick(float DeltaTime)
 void ATPS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-	// Enhanced Input 컴포넌트로 캐스팅
-	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<
-		UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Look);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::Move);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered, this, &ATPS_PlayerCharacter::DoJump);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Started, this, &ATPS_PlayerCharacter::Crouching);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Completed, this, &ATPS_PlayerCharacter::UnCrouching);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("---------- Can't Find EnhancedInputComponenet... ----------"))
-	}
+
+	// Player Controller 에서 바인딩중
 }
 
-void ATPS_PlayerCharacter::Look(const FInputActionValue& Value)
-{
-	// 카메라 브로드캐스트
-	if (CameraBoom)
-	{
-		OnLookInput.Broadcast(Value.Get<FVector3d>());
-	}
-}
 
-void ATPS_PlayerCharacter::Move(const FInputActionValue& Value)
+void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
-	FVector2d InputDirection = Value.Get<FVector2d>();
+	FVector2D InputDirection = Value;
 
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
@@ -128,19 +106,18 @@ void ATPS_PlayerCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(MoveDirection);
 }
 
-void ATPS_PlayerCharacter::DoJump(const FInputActionValue& Value)
+void ATPS_PlayerCharacter::DoJump()
 {
 	TPSCharacterMoveComp->DoJump(true);
 }
 
-void ATPS_PlayerCharacter::Crouching(const FInputActionValue& Value)
+void ATPS_PlayerCharacter::Crouching()
 {
 	if (TPSCharacterMoveComp->IsMovingOnGround())
 		ATPS_PlayerCharacter::Crouch();
-	
 }
 
-void ATPS_PlayerCharacter::UnCrouching(const FInputActionValue& Value)
+void ATPS_PlayerCharacter::UnCrouching()
 {
 	ATPS_PlayerCharacter::UnCrouch();
 }

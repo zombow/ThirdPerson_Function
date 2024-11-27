@@ -3,6 +3,8 @@
 
 #include "TPS_Player/TPS_PlayerCameraManager.h"
 
+#include "TPS_Player/TPS_PlayerController.h"
+
 void ATPS_PlayerCameraManager::BeginPlay()
 {
 	Super::BeginPlay();
@@ -13,14 +15,15 @@ void ATPS_PlayerCameraManager::BeginPlay()
 
 	if (PlayerCharacter)
 	{
+		
 		// 델리게이트 바인딩
-		PlayerCharacter->OnLookInput.AddDynamic(this, &ATPS_PlayerCameraManager::HandleLookInput);
+		Cast<ATPS_PlayerController>(GetOwningPlayerController())->OnMouseMoveInput.AddDynamic(this, &ATPS_PlayerCameraManager::HandleLookInput);
 	}
 }
 
-void ATPS_PlayerCameraManager::HandleLookInput(FVector3d Value)
+void ATPS_PlayerCameraManager::HandleLookInput(FVector2D Value)
 {
-	FVector3d LookAxisValue = Value;
+	FVector2D LookAxisValue = Value;
 	float LookSensitivity = 1.0f; // TODO:민감도 설정 (옵션 설정으로 이동필요)
 	FRotator NewRotation = CameraBoom->GetRelativeRotation();
 

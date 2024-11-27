@@ -27,5 +27,5 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void HandleLookInput(FVector3d Value);
+	void HandleLookInput(FVector2D Value);
 };
