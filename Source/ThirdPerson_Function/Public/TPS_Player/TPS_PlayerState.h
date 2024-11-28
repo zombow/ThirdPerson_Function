@@ -17,12 +17,9 @@ class THIRDPERSON_FUNCTION_API ATPS_PlayerState : public APlayerState
 	GENERATED_BODY()
 
 	ATPS_PlayerState();
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
-	TObjectPtr<UTPS_AbilitySystemComponent> TPS_AbilitySystemComp;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
-	TObjectPtr<UTPS_AttributeSet> TPS_AttributeSet;
+	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
 	
 	TObjectPtr<UTPS_AbilitySystemComponent> GetAbilitySystemComponent() const;
 };

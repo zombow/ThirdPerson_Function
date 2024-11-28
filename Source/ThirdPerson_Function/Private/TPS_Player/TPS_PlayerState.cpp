@@ -5,11 +5,14 @@
 
 ATPS_PlayerState::ATPS_PlayerState()
 {
-	TPS_AbilitySystemComp = CreateDefaultSubobject<UTPS_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	//TPS_AttributeSet = CreateDefaultSubobject<UTPS_AttributeSet>(TEXT("AttributeSet"));
+	NetUpdateFrequency = 100;
+	TPSAbilitySystemComp = CreateDefaultSubobject<UTPS_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	TPSAbilitySystemComp->SetIsReplicated(true);
+	TPSAbilitySystemComp->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	
 }
 
 TObjectPtr<UTPS_AbilitySystemComponent> ATPS_PlayerState::GetAbilitySystemComponent() const
 {
-	return TPS_AbilitySystemComp;
+	return TPSAbilitySystemComp;
 }

@@ -10,22 +10,21 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
+#include "AbilitySystemInterface.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
-class ATPS_PlayerCharacter : public ACharacter
+class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
-
-	// 델리게이트
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLookInput, FVector3d, LookInput);
-	FOnLookInput OnLookInput;
-
+	virtual void PossessedBy(AController* NewController) override;
 protected:
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	// Components
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
@@ -47,10 +46,6 @@ protected:
 	void Crouching();
 	UFUNCTION()
 	void UnCrouching();
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 };

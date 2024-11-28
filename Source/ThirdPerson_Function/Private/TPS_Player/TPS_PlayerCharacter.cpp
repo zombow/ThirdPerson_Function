@@ -53,41 +53,42 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
 	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
 	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
-
+	
 	PrimaryActorTick.bCanEverTick = true;
 }
+
 
 // Called when the game starts or when spawned
 void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ASC할당
-	TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
-	TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller);
-	if (TPSController)
+	
+	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		TPSController->OnMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Move);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("-----Can't Find PlayerController In [%s]-------"), *this->GetName());
+	}
 }
 
-// Called every frame
-void ATPS_PlayerCharacter::Tick(float DeltaTime)
+void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 {
-	Super::Tick(DeltaTime);
+	Super::PossessedBy(NewController);
+
+	// ASC할당
+	TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
+	TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
 }
 
-// Called to bind functionality to input
-void ATPS_PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	// Player Controller 에서 바인딩중
+	return TPSAbilitySystemComp;
 }
-
 
 void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
