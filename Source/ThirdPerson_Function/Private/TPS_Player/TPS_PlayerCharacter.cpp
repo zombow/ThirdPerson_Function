@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameplayTagsSettings.h"
 #include "NativeGameplayTags.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 
@@ -53,7 +54,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
 	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
 	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
-	
+
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -62,7 +63,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		TPSController->OnMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Move);
@@ -81,13 +82,27 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// ASC할당
-	TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
-	TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
+	if (!TPSAbilitySystemComp)
+	{
+		if (TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent())
+		{
+			TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
+
+			// Ability 바인딩
+			const FGameplayAbilitySpec AbilitySpec(UTPS_GameplayAbility_Jump::StaticClass(), 1);
+			TPSAbilitySystemComp->GiveAbility(AbilitySpec);
+		}
+	}
 }
 
 UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 {
 	return TPSAbilitySystemComp;
+}
+
+TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacterMovementComp() const
+{
+	return TPSCharacterMoveComp;
 }
 
 void ATPS_PlayerCharacter::Move(FVector2D Value)
@@ -109,7 +124,7 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 
 void ATPS_PlayerCharacter::DoJump()
 {
-	TPSCharacterMoveComp->DoJump(true);
+	TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Jump"))));
 }
 
 void ATPS_PlayerCharacter::Crouching()

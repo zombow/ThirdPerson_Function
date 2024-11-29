@@ -22,8 +22,8 @@ public:
 	// Sets default values for this character's properties
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void PossessedBy(AController* NewController) override;
-protected:
 
+protected:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	// Components
 	virtual void BeginPlay() override;
@@ -37,7 +37,9 @@ protected:
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
+	TObjectPtr<UGameplayAbilitySet> TPS_Abilities;
+
 	UFUNCTION()
 	void Move(FVector2D Value);
 	UFUNCTION()
@@ -46,6 +48,6 @@ protected:
 	void Crouching();
 	UFUNCTION()
 	void UnCrouching();
-
-	
+public:
+	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;
 };
