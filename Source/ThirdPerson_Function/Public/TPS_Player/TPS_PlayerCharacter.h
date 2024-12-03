@@ -24,7 +24,6 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 protected:
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	// Components
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
@@ -38,7 +37,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
-	TObjectPtr<UGameplayAbilitySet> TPS_Abilities;
+	TObjectPtr<UGameplayAbilitySet> TPSAbilities;
 
 	UFUNCTION()
 	void Move(FVector2D Value);
@@ -48,6 +47,8 @@ protected:
 	void Crouching();
 	UFUNCTION()
 	void UnCrouching();
+
 public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;
 };

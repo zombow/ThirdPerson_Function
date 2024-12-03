@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffect.h"
-#include "TPS_GameEffect.generated.h"
+#include "TPS_GEffect_JumpCost.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class THIRDPERSON_FUNCTION_API UTPS_GameEffect : public UGameplayEffect
+class THIRDPERSON_FUNCTION_API UTPS_GEffect_JumpCost : public UGameplayEffect
 {
 	GENERATED_BODY()
+	UTPS_GEffect_JumpCost();
 	
 };

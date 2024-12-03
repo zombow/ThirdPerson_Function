@@ -16,6 +16,4 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Jump : public UGameplayAbili
 	UTPS_GameplayAbility_Jump();
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	                           const FGameplayAbilityActivationInfo ActivationInfo) override;
 };

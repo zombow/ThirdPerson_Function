@@ -3,12 +3,15 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
 
-#include "GameFramework/MovementComponent.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GEffect_JumpCost.h"
 
 UTPS_GameplayAbility_Jump::UTPS_GameplayAbility_Jump()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")));
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")));
+	CostGameplayEffectClass = UTPS_GEffect_JumpCost::StaticClass();
 }
 
 void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -16,21 +19,21 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	if (auto player = Cast<ACharacter>(ActorInfo->AvatarActor))
 	{
-		EndAbility(Handle, ActorInfo, ActivationInfo,
-			true, true);
+		if (player->GetCharacterMovement()->DoJump(true) && !CommitAbility(Handle, ActorInfo, ActivationInfo))
+		{
+			// TODO: 착지 or 다음동작이 가능할때
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		}
+		else
+		{
+			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		}
 	}
-}
-
-void UTPS_GameplayAbility_Jump::CommitExecute(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                                              const FGameplayAbilityActivationInfo ActivationInfo)
-{
-	Super::CommitExecute(Handle, ActorInfo, ActivationInfo);
-
-	if(auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	else
 	{
-		player->GetTPSCharacterMovementComp()->DoJump(true);
+		// Character가아닌경우
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
-	EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 }

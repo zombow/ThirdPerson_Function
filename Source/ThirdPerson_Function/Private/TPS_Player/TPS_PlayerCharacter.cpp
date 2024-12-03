@@ -82,16 +82,15 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// ASC할당
-	if (!TPSAbilitySystemComp)
+	if (!TPSAbilitySystemComp && GetPlayerState<ATPS_PlayerState>())
 	{
-		if (TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent())
-		{
-			TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
+		TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
+		UE_LOG(LogTemp,Warning, TEXT("State Name : %s / This Actor name : %s"), *GetPlayerState()->GetName(), *GetName());
+		TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
 
-			// Ability 바인딩
-			const FGameplayAbilitySpec AbilitySpec(UTPS_GameplayAbility_Jump::StaticClass(), 1);
-			TPSAbilitySystemComp->GiveAbility(AbilitySpec);
-		}
+		// Ability 바인딩
+		const FGameplayAbilitySpec AbilitySpec(UTPS_GameplayAbility_Jump::StaticClass(), 1);
+		TPSAbilitySystemComp->GiveAbility(AbilitySpec);
 	}
 }
 
@@ -124,7 +123,10 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 
 void ATPS_PlayerCharacter::DoJump()
 {
-	TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Jump"))));
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Jump"));
+	}
 }
 
 void ATPS_PlayerCharacter::Crouching()
