@@ -3,11 +3,8 @@
 
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "GameplayTagsSettings.h"
 #include "NativeGameplayTags.h"
-#include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameEffect_JumpCost.h"
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 
@@ -66,14 +63,12 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
+		// Controller의 인풋바인딩
 		TPSController->OnMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Move);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("-----Can't Find PlayerController In [%s]-------"), *this->GetName());
+		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
 	}
 }
 
@@ -82,15 +77,20 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	// ASC할당
-	if (!TPSAbilitySystemComp && GetPlayerState<ATPS_PlayerState>())
+	if (!TPSAbilitySystemComp)
 	{
 		TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
-		UE_LOG(LogTemp,Warning, TEXT("State Name : %s / This Actor name : %s"), *GetPlayerState()->GetName(), *GetName());
 		TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
+		auto TPSAbilitySet = TPSAbilities->GetTPSAbilities();
 
 		// Ability 바인딩
-		const FGameplayAbilitySpec AbilitySpec(UTPS_GameplayAbility_Jump::StaticClass(), 1);
-		TPSAbilitySystemComp->GiveAbility(AbilitySpec);
+		const FGameplayAbilitySpec JumpAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump"))], 1);
+		TPSAbilitySystemComp->GiveAbility(JumpAbilitySpec);
+		const FGameplayAbilitySpec RollAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll"))], 1);
+		TPSAbilitySystemComp->GiveAbility(RollAbilitySpec);
+		const FGameplayAbilitySpec CrouchAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], 1);
+		TPSAbilitySystemComp->GiveAbility(CrouchAbilitySpec);
+
 	}
 }
 
@@ -123,7 +123,7 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 
 void ATPS_PlayerCharacter::DoJump()
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")))))
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Jump"));
 	}
@@ -131,11 +131,24 @@ void ATPS_PlayerCharacter::DoJump()
 
 void ATPS_PlayerCharacter::Crouching()
 {
-	if (TPSCharacterMoveComp->IsMovingOnGround())
-		ATPS_PlayerCharacter::Crouch();
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
+	}
 }
 
 void ATPS_PlayerCharacter::UnCrouching()
 {
-	ATPS_PlayerCharacter::UnCrouch();
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't UnCrouch"));
+	}
+}
+
+void ATPS_PlayerCharacter::DoRoll()
+{
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Roll"));
+	}
 }

@@ -37,4 +37,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, CurrentHealth);
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, MaxStamina);
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, CurrentStamina);
+
+	friend class UTPS_GEffect_JumpCost;
 };

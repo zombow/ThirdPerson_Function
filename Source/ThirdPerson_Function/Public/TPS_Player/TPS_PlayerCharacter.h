@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "InputActionValue.h"
 #include "TPS_InputConfig.h"
 #include "Camera/CameraComponent.h"
@@ -10,7 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
@@ -37,8 +38,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
-	TObjectPtr<UGameplayAbilitySet> TPSAbilities;
-
+	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
+	
 	UFUNCTION()
 	void Move(FVector2D Value);
 	UFUNCTION()
@@ -47,6 +48,8 @@ protected:
 	void Crouching();
 	UFUNCTION()
 	void UnCrouching();
+	UFUNCTION()
+	void DoRoll();
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
