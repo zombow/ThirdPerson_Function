@@ -15,4 +15,18 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Roll : public UGameplayAbili
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Roll();
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+
+	UFUNCTION()
+	void OnMontageCompleted();
+	UFUNCTION()
+	void OnMontageInterrupted();
+	UFUNCTION()
+	void OnMontageCancelled();
+
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
+	TObjectPtr<UAnimMontage> RollMontage;
+
+	
 };

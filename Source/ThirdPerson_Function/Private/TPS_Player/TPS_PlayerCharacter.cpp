@@ -4,7 +4,6 @@
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 #include "NativeGameplayTags.h"
-#include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameEffect_JumpCost.h"
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 
@@ -90,7 +89,6 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		TPSAbilitySystemComp->GiveAbility(RollAbilitySpec);
 		const FGameplayAbilitySpec CrouchAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], 1);
 		TPSAbilitySystemComp->GiveAbility(CrouchAbilitySpec);
-
 	}
 }
 
@@ -139,10 +137,9 @@ void ATPS_PlayerCharacter::Crouching()
 
 void ATPS_PlayerCharacter::UnCrouching()
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't UnCrouch"));
-	}
+	FGameplayTagContainer CrouchTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")));
+	TPSAbilitySystemComp->CancelAbilities(&CrouchTagContainer);
+	
 }
 
 void ATPS_PlayerCharacter::DoRoll()

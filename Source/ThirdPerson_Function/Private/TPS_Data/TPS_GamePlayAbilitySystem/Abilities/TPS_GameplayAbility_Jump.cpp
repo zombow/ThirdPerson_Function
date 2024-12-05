@@ -2,15 +2,15 @@
 
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_JumpCost.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameEffect_JumpCost.h"
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_Jump::UTPS_GameplayAbility_Jump()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")));
-	CostGameplayEffectClass = UTPS_GameEffect_JumpCost::StaticClass();
+	CostGameplayEffectClass = UTPS_GameplayEffect_JumpCost::StaticClass();
 	
 }
 

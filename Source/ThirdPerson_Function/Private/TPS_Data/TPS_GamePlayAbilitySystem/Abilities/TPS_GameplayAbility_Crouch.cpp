@@ -17,23 +17,19 @@ void UTPS_GameplayAbility_Crouch::ActivateAbility(const FGameplayAbilitySpecHand
 
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
-		if (player->GetCharacterMovement()->IsMovingOnGround() && !player->GetCharacterMovement()->IsCrouching())
+		if (player->GetCharacterMovement()->IsMovingOnGround())
 		{
 			player->Crouch();
-			UE_LOG(LogTemp,Warning,TEXT("Crouch"));
-			// TODO:  앉기가끝나고 다음동작이 가능할때
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-		}
-		else if(player->GetCharacterMovement()->IsCrouching())
-		{
-			UE_LOG(LogTemp,Warning,TEXT("UnCrouch"));
-			player->UnCrouch();
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 		}
 	}
-	else
+}
+
+void UTPS_GameplayAbility_Crouch::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+                                             const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
-		// Character가아닌경우
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+		player->UnCrouch();
 	}
 }
