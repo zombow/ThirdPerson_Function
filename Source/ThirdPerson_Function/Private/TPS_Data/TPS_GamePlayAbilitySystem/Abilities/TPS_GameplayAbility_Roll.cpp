@@ -21,24 +21,33 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 	{
 		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 		{
-			TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-				this,
-				NAME_None,
-				RollMontage,
-				1.0f,
-				NAME_None,
-				true
-			);
-			Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCompleted);
-			Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageInterrupted);
-			Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCancelled);
-			Task->ReadyForActivation();
+			auto inputvectornormal = player->GetLastMovementInputVector().GetSafeNormal();
+			auto rotation = inputvectornormal.Rotation();
+			player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
+			PlayMontage();
 		}
 	}
 	else
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 	}
+}
+
+void UTPS_GameplayAbility_Roll::PlayMontage()
+{
+	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,
+		NAME_None,
+		RollMontage,
+		1.0f,
+		NAME_None,
+		true
+	);
+
+	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageInterrupted);
+	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCancelled);
+	Task->ReadyForActivation();
 }
 
 void UTPS_GameplayAbility_Roll::OnMontageCompleted()
@@ -57,9 +66,9 @@ void UTPS_GameplayAbility_Roll::OnMontageCancelled()
 }
 
 void UTPS_GameplayAbility_Roll::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+                                           const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	UE_LOG(LogTemp,Warning, TEXT("END ROLLING"));
+	UE_LOG(LogTemp, Warning, TEXT("END ROLLING"));
 }

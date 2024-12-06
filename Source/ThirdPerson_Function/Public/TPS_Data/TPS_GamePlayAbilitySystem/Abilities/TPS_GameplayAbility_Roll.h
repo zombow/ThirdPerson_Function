@@ -15,7 +15,7 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Roll : public UGameplayAbili
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Roll();
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
+	void PlayMontage();
 	UFUNCTION()
 	void OnMontageCompleted();
 	UFUNCTION()
