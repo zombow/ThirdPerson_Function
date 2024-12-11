@@ -19,7 +19,7 @@ private:
 	float FallingForce = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "LandingRecovery")
 	bool bLandingRecovery;
-	
+
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 
 	// FallingForce Check;
@@ -39,7 +39,6 @@ private:
 	float RecoveryTime = 0.f;
 	float CurrentLandingWalkSpeed = 0.f;
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "LandingRecovery")
 	float MaxLandingWalkSpeed = MaxWalkSpeed;
@@ -51,6 +50,13 @@ public:
 	float ThresholdForce = 0.5f;
 	UFUNCTION(BlueprintCallable)
 	float GetFallingForce() { return FallingForce; }
+
 	UFUNCTION(BlueprintCallable)
 	bool IsLandingRecovery() { return bLandingRecovery; }
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMovementModeChange,
+	                                               EMovementMode, PreviousMovementMode,
+	                                               EMovementMode, CurrentMovementMode,
+	                                               uint8, PreviousCustomMode);
+	FMovementModeChange MovementModeChange;
 };

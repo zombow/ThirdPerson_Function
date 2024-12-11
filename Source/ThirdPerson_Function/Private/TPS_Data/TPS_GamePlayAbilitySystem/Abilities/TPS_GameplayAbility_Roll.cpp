@@ -69,6 +69,4 @@ void UTPS_GameplayAbility_Roll::EndAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	UE_LOG(LogTemp, Warning, TEXT("END ROLLING"));
 }

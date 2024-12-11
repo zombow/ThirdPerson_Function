@@ -7,6 +7,22 @@
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 
+void ATPS_PlayerCharacter::AddLooseGameplayTag(FGameplayTag TagName)
+{
+	if (TPSAbilitySystemComp)
+	{
+		TPSAbilitySystemComp->AddLooseGameplayTag(TagName);
+	}
+}
+
+void ATPS_PlayerCharacter::RemoveLooseGameplayTag(FGameplayTag TagName)
+{
+	if (TPSAbilitySystemComp)
+	{
+		TPSAbilitySystemComp->RemoveLooseGameplayTag(TagName);
+	}
+}
+
 // Sets default values
 ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UTPS_CharacterMovementComponent>(
@@ -47,10 +63,10 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
 	TPSCharacterMoveComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
 	TPSCharacterMoveComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
+	TPSCharacterMoveComp->bCanWalkOffLedgesWhenCrouching = true;
 	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
 	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
 	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
-
 	PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -68,6 +84,9 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
+		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
+
+		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
 }
 
@@ -89,6 +108,8 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		TPSAbilitySystemComp->GiveAbility(RollAbilitySpec);
 		const FGameplayAbilitySpec CrouchAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], 1);
 		TPSAbilitySystemComp->GiveAbility(CrouchAbilitySpec);
+		const FGameplayAbilitySpec AttackAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack"))], 1);
+		TPSAbilitySystemComp->GiveAbility(AttackAbilitySpec);
 	}
 }
 
@@ -100,6 +121,19 @@ UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacterMovementComp() const
 {
 	return TPSCharacterMoveComp;
+}
+
+void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode)
+{
+	if (CurrentMovementMode == MOVE_Falling)
+	{
+		TPSAbilitySystemComp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
+	}
+	else if ((PreviousMovementMode == MOVE_Falling) && (CurrentMovementMode != MOVE_Falling))
+	{
+		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
+		EndJump();
+	}
 }
 
 void ATPS_PlayerCharacter::Move(FVector2D Value)
@@ -127,6 +161,12 @@ void ATPS_PlayerCharacter::DoJump()
 	}
 }
 
+void ATPS_PlayerCharacter::EndJump()
+{
+	FGameplayTagContainer JumpTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")));
+	TPSAbilitySystemComp->CancelAbilities(&JumpTagContainer);
+}
+
 void ATPS_PlayerCharacter::Crouching()
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
@@ -139,7 +179,6 @@ void ATPS_PlayerCharacter::UnCrouching()
 {
 	FGameplayTagContainer CrouchTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")));
 	TPSAbilitySystemComp->CancelAbilities(&CrouchTagContainer);
-	
 }
 
 void ATPS_PlayerCharacter::DoRoll()
@@ -147,5 +186,13 @@ void ATPS_PlayerCharacter::DoRoll()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Roll"));
+	}
+}
+
+void ATPS_PlayerCharacter::Attack()
+{
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Attack"));
 	}
 }

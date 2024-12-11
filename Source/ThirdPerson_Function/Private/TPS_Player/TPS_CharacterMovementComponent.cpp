@@ -11,6 +11,7 @@ void UTPS_CharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 {
 	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
 	CheckFallingForce(PreviousMovementMode);
+	MovementModeChange.Broadcast(PreviousMovementMode, MovementMode, PreviousCustomMode);
 }
 
 void UTPS_CharacterMovementComponent::SetFallingForce()

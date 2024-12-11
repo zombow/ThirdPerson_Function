@@ -45,4 +45,8 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRollInput);
 	FOnRollInput OnRollInput;
 	void HandleRollInput(const FInputActionValue& Value);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttackInput);
+	FAttackInput OnAttackInput;
+	void HandleFAttackInput(const FInputActionValue& Value);
 };

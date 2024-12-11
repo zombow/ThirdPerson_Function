@@ -35,6 +35,8 @@ void ATPS_PlayerController::SetupInputComponent()
 		                                   this, &ATPS_PlayerController::HandleUnCrouching);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Roll"))), ETriggerEvent::Completed,
 		                                   this, &ATPS_PlayerController::HandleRollInput);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Attack"))), ETriggerEvent::Completed,
+		                                   this, &ATPS_PlayerController::HandleFAttackInput);
 	}
 }
 
@@ -66,4 +68,9 @@ void ATPS_PlayerController::HandleUnCrouching(const FInputActionValue& Value)
 void ATPS_PlayerController::HandleRollInput(const FInputActionValue& Value)
 {
 	OnRollInput.Broadcast();
+}
+
+void ATPS_PlayerController::HandleFAttackInput(const FInputActionValue& Value)
+{
+	OnAttackInput.Broadcast();
 }

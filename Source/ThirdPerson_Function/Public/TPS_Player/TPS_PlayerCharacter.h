@@ -20,11 +20,14 @@ class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
-	virtual void PossessedBy(AController* NewController) override;
+	void AddLooseGameplayTag(FGameplayTag TagName);
+	void RemoveLooseGameplayTag(FGameplayTag TagName);
 
 protected:
+	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
+	// Sets default values for this character's properties
+	virtual void PossessedBy(AController* NewController) override;
+
 	// Components
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
@@ -39,17 +42,22 @@ protected:
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
-	
+
+	UFUNCTION()
+	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
 	void Move(FVector2D Value);
 	UFUNCTION()
 	void DoJump();
+	void EndJump();
 	UFUNCTION()
 	void Crouching();
 	UFUNCTION()
 	void UnCrouching();
 	UFUNCTION()
 	void DoRoll();
+	UFUNCTION()
+	void Attack();
 
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
