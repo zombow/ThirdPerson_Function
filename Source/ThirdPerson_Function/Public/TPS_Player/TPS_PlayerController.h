@@ -48,5 +48,9 @@ public:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAttackInput);
 	FAttackInput OnAttackInput;
-	void HandleFAttackInput(const FInputActionValue& Value);
+	void HandleAttackInput(const FInputActionValue& Value);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawWeapon);
+	FDrawWeapon OnDrawWeapon;
+	void HandleDrawWeaponInput(const FInputActionValue& Value);
 };

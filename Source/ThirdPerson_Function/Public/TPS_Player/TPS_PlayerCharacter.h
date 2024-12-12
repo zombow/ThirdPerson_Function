@@ -58,8 +58,11 @@ protected:
 	void DoRoll();
 	UFUNCTION()
 	void Attack();
+	UFUNCTION()
+	void DrawWeapon();
 
 public:
+	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;
 };

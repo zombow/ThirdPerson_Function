@@ -85,6 +85,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
 		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
+		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
@@ -110,6 +111,8 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		TPSAbilitySystemComp->GiveAbility(CrouchAbilitySpec);
 		const FGameplayAbilitySpec AttackAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack"))], 1);
 		TPSAbilitySystemComp->GiveAbility(AttackAbilitySpec);
+		const FGameplayAbilitySpec DrawWeaponAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon"))], 1);
+		TPSAbilitySystemComp->GiveAbility(DrawWeaponAbilitySpec);
 	}
 }
 
@@ -194,5 +197,20 @@ void ATPS_PlayerCharacter::Attack()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Attack"));
+	}
+}
+
+void ATPS_PlayerCharacter::DrawWeapon()
+{
+	if (TPSAbilitySystemComp->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
+	{
+		FGameplayTagContainer DrawWeaponTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
+		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+		TPSAbilitySystemComp->CancelAbilities(&DrawWeaponTagContainer);
+		
+	}
+	else if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't DrawWeapon"));
 	}
 }

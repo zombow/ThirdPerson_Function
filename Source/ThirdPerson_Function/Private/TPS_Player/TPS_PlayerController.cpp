@@ -36,7 +36,10 @@ void ATPS_PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Roll"))), ETriggerEvent::Completed,
 		                                   this, &ATPS_PlayerController::HandleRollInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Attack"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleFAttackInput);
+		                                   this, &ATPS_PlayerController::HandleAttackInput);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.DrawWeapon"))),
+		                                   ETriggerEvent::Started,
+		                                   this, &ATPS_PlayerController::HandleDrawWeaponInput);
 	}
 }
 
@@ -70,7 +73,12 @@ void ATPS_PlayerController::HandleRollInput(const FInputActionValue& Value)
 	OnRollInput.Broadcast();
 }
 
-void ATPS_PlayerController::HandleFAttackInput(const FInputActionValue& Value)
+void ATPS_PlayerController::HandleAttackInput(const FInputActionValue& Value)
 {
 	OnAttackInput.Broadcast();
+}
+
+void ATPS_PlayerController::HandleDrawWeaponInput(const FInputActionValue& Value)
+{
+	OnDrawWeapon.Broadcast();
 }

@@ -22,6 +22,7 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 			player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn"));
+			player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 		}
 	}
@@ -38,7 +39,7 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
-		player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn"));
+		player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 		UE_LOG(LogTemp, Warning, TEXT("End Attack"));
 	}
 }
