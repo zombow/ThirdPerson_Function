@@ -8,32 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Config/DefaultGameplayTags.ini" beforeDir="false" afterPath="$PROJECT_DIR$/Config/DefaultGameplayTags.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Jump.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Jump.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Run_Fwd.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Run_Fwd.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Walk_Fwd.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Walk_Fwd.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Walk_InPlace.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Characters/Mannequins/Animations/Manny/MM_Walk_InPlace.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Idle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Idle.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Left.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Left.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Right.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Right.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Walk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Walk.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouched_To_Stand.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouched_To_Stand.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Draw_GreatSword1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Draw_GreatSword1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Draw_GreatSword2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Draw_GreatSword2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/GreatSword_Idle.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/GreatSword_Idle.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sheath_GreatSword1.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sheath_GreatSword1.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sheath_GreatSword2.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sheath_GreatSword2.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sprinting_To_Roll.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sprinting_To_Roll.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSWalk_Run.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSWalk_Run.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/TPS_AbilitySet.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/TPS_AbilitySet.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/TPS_InputConfig.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/TPS_InputConfig.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Input/IMC_TPSCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Input/IMC_TPSCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerController.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerController.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +68,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Uproject.ThirdPerson_Function.executor": "Debug",
+    "Uproject.ThirdPerson_Function.executor": "Run",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
@@ -215,6 +198,7 @@
       <workItem from="1733829328252" duration="1934000" />
       <workItem from="1733889731283" duration="16735000" />
       <workItem from="1733962764050" duration="11614000" />
+      <workItem from="1734062546219" duration="12062000" />
     </task>
     <servers />
   </component>

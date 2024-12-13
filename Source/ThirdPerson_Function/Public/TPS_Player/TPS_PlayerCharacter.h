@@ -18,11 +18,7 @@ UCLASS()
 class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-
-public:
-	void AddLooseGameplayTag(FGameplayTag TagName);
-	void RemoveLooseGameplayTag(FGameplayTag TagName);
-
+	
 protected:
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	// Sets default values for this character's properties
@@ -64,5 +60,11 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	
+	void AddLooseGameplayTag(FGameplayTag TagName);
+	void RemoveLooseGameplayTag(FGameplayTag TagName);
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
+	FVector2D InputDirection;
 };

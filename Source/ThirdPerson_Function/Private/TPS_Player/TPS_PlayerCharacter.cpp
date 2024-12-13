@@ -141,19 +141,26 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 
 void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
-	FVector2D InputDirection = Value;
-
+	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
+	InputDirection = Value;
+	
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
-
 	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
 	CameraRight.Z = 0;
 
+	FVector DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
+	DesiredDirection.Normalize();
 
-	FVector MoveDirection = FVector((CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y));
-	MoveDirection.Normalize();
-	AddMovementInput(MoveDirection);
+	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
+	if (!DesiredDirection.IsNearlyZero())
+	{
+		FRotator DesiredRotation = DesiredDirection.Rotation();
+		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->GetDeltaSeconds(), 20.f));
+	}
+	
+	auto RootMotion = GetMesh()->ConsumeRootMotion().GetRootMotionTransform();
 }
 
 void ATPS_PlayerCharacter::DoJump()
