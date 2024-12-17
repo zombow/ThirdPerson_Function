@@ -13,9 +13,25 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_DrawWeapon : public UGameplayAbility
 {
 	GENERATED_BODY()
+
 	UTPS_GameplayAbility_DrawWeapon();
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+	void PlayMontage();
+	UFUNCTION()
+	void OnMontageCompleted();
+	UFUNCTION()
+	void OnMontageInterrupted();
+	UFUNCTION()
+	void OnMontageCancelled();
+
+public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawIn);
+	FDrawIn DrawIn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
+	TObjectPtr<UAnimMontage> DrawMontage;
 };

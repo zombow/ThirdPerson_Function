@@ -23,9 +23,9 @@ protected:
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	// Sets default values for this character's properties
 	virtual void PossessedBy(AController* NewController) override;
-
 	// Components
 	virtual void BeginPlay() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMeshComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraCompo")
@@ -39,6 +39,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
 
+	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
+	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
+	
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
@@ -56,6 +59,8 @@ protected:
 	void Attack();
 	UFUNCTION()
 	void DrawWeapon();
+	UFUNCTION()
+	void SheathWeapon();
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -64,7 +69,4 @@ public:
 	void AddLooseGameplayTag(FGameplayTag TagName);
 	void RemoveLooseGameplayTag(FGameplayTag TagName);
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
-	FVector2D InputDirection;
 };

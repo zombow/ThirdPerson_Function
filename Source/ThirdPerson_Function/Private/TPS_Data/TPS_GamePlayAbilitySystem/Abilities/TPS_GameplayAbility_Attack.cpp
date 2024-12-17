@@ -1,5 +1,7 @@
 #include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.h"
+
+#include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_AttackCost.h"
 
 UTPS_GameplayAbility_Attack::UTPS_GameplayAbility_Attack()
@@ -15,17 +17,27 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
-		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
+		player->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon")));
+		UGameplayAbility* Target = player->GetAbilitySystemComponent()->FindAbilitySpecFromClass(UTPS_GameplayAbility_DrawWeapon::StaticClass()
+		)->Ability;
+		if (UTPS_GameplayAbility_DrawWeapon* DrawAbility = Cast<UTPS_GameplayAbility_DrawWeapon>(Target))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-			player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn"));
-			player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+			DrawAbility->DrawIn.AddDynamic(this, &UTPS_GameplayAbility_Attack::Attack);
 		}
 	}
 	else
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+	}
+}
+
+void UTPS_GameplayAbility_Attack::Attack()
+{
+	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+		Cast<ATPS_PlayerCharacter>(CurrentActorInfo->AvatarActor)->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 }
 
@@ -40,6 +52,7 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 		UE_LOG(LogTemp, Warning, TEXT("End Attack"));
 	}
 }
+
 
 void UTPS_GameplayAbility_Attack::PlayMontage()
 {

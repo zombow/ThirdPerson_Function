@@ -86,6 +86,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
 		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
+		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::SheathWeapon);
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
@@ -103,16 +104,16 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		auto TPSAbilitySet = TPSAbilities->GetTPSAbilities();
 
 		// Ability 바인딩
-		const FGameplayAbilitySpec JumpAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump"))], 1);
-		TPSAbilitySystemComp->GiveAbility(JumpAbilitySpec);
-		const FGameplayAbilitySpec RollAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll"))], 1);
-		TPSAbilitySystemComp->GiveAbility(RollAbilitySpec);
-		const FGameplayAbilitySpec CrouchAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], 1);
-		TPSAbilitySystemComp->GiveAbility(CrouchAbilitySpec);
-		const FGameplayAbilitySpec AttackAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack"))], 1);
-		TPSAbilitySystemComp->GiveAbility(AttackAbilitySpec);
-		const FGameplayAbilitySpec DrawWeaponAbilitySpec(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon"))], 1);
-		TPSAbilitySystemComp->GiveAbility(DrawWeaponAbilitySpec);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")), 1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")), 1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")),
+		            1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")),
+		            1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon"))],
+		            FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon"))],
+					FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
 	}
 }
 
@@ -124,6 +125,13 @@ UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacterMovementComp() const
 {
 	return TPSCharacterMoveComp;
+}
+
+void ATPS_PlayerCharacter::AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level)
+{
+	FGameplayAbilitySpec Temp(AbilityClass, Level);
+	AbilitySpecs.Add(AbilityTag, Temp);
+	TPSAbilitySystemComp->GiveAbility(AbilitySpecs[AbilityTag]);
 }
 
 void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode)
@@ -142,8 +150,8 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
 	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
-	InputDirection = Value;
-	
+	FVector2D InputDirection = Value;
+
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
@@ -154,13 +162,13 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	DesiredDirection.Normalize();
 
 	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
-	if (!DesiredDirection.IsNearlyZero())
-	{
-		FRotator DesiredRotation = DesiredDirection.Rotation();
-		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->GetDeltaSeconds(), 20.f));
-	}
-	
-	auto RootMotion = GetMesh()->ConsumeRootMotion().GetRootMotionTransform();
+	// if (!DesiredDirection.IsNearlyZero())
+	// {
+	// 	FRotator DesiredRotation = DesiredDirection.Rotation();
+	// 	SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->GetDeltaSeconds(), 20.f));
+	// }
+
+	AddMovementInput(DesiredDirection);
 }
 
 void ATPS_PlayerCharacter::DoJump()
@@ -209,15 +217,16 @@ void ATPS_PlayerCharacter::Attack()
 
 void ATPS_PlayerCharacter::DrawWeapon()
 {
-	if (TPSAbilitySystemComp->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
-	{
-		FGameplayTagContainer DrawWeaponTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
-		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-		TPSAbilitySystemComp->CancelAbilities(&DrawWeaponTagContainer);
-		
-	}
-	else if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")))))
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't DrawWeapon"));
+	}
+}
+
+void ATPS_PlayerCharacter::SheathWeapon()
+{
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
 	}
 }

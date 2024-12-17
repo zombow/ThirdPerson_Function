@@ -18,6 +18,7 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
 	void PlayMontage();
 	UFUNCTION()
 	void OnMontageCompleted();
@@ -25,6 +26,8 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	void OnMontageInterrupted();
 	UFUNCTION()
 	void OnMontageCancelled();
+	UFUNCTION()
+	void Attack();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
