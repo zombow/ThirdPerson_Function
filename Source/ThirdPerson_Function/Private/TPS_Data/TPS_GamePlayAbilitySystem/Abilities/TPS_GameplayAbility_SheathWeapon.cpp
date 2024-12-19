@@ -3,6 +3,7 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_SheathWeapon.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "TPS_Animation/TPS_AnimInstance.h"
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_SheathWeapon::UTPS_GameplayAbility_SheathWeapon()
@@ -27,6 +28,7 @@ void UTPS_GameplayAbility_SheathWeapon::EndAbility(const FGameplayAbilitySpecHan
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
+		Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = false;
 		player->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
 	}
 	SheathIn.Broadcast();
@@ -34,6 +36,8 @@ void UTPS_GameplayAbility_SheathWeapon::EndAbility(const FGameplayAbilitySpecHan
 
 void UTPS_GameplayAbility_SheathWeapon::PlayMontage()
 {
+	Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = true;
+
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,

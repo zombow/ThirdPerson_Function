@@ -3,6 +3,7 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "TPS_Animation/TPS_AnimInstance.h"
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_DrawWeapon::UTPS_GameplayAbility_DrawWeapon()
@@ -32,12 +33,15 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
 		player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+		Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = false;
 	}
 	DrawIn.Broadcast();
 }
 
 void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 {
+	Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = true;
+
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
