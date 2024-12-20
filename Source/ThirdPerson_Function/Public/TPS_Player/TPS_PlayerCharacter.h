@@ -65,7 +65,8 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	
+
+	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
 	void AddLooseGameplayTag(FGameplayTag TagName);
 	void RemoveLooseGameplayTag(FGameplayTag TagName);
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;

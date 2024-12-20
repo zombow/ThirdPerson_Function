@@ -113,13 +113,22 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon"))],
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon"))],
-					FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
+		            FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
 	}
 }
 
 UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 {
 	return TPSAbilitySystemComp;
+}
+
+FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
+{
+	if (AbilitySpecs.Find(AbilityTag))
+	{
+		return &AbilitySpecs[AbilityTag];
+	}
+	return nullptr;
 }
 
 TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacterMovementComp() const

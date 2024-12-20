@@ -1,6 +1,5 @@
-#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.h"
-
+#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_AttackCost.h"
 
@@ -17,12 +16,20 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
-		player->GetAbilitySystemComponent()->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon")));
-		UGameplayAbility* Target = player->GetAbilitySystemComponent()->FindAbilitySpecFromClass(UTPS_GameplayAbility_DrawWeapon::StaticClass()
-		)->Ability;
-		if (UTPS_GameplayAbility_DrawWeapon* DrawAbility = Cast<UTPS_GameplayAbility_DrawWeapon>(Target))
+		if (!player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
 		{
-			DrawAbility->DrawIn.AddDynamic(this, &UTPS_GameplayAbility_Attack::Attack);
+			auto Target = player->GetAbilitySpec(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
+			if (Cast<UTPS_GameplayAbility_DrawWeapon>(Target->Ability))
+				{
+				player->GetAbilitySystemComponent()->AddGameplayEventTagContainerDelegate(
+					FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Drawn"))), 
+					FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UTPS_GameplayAbility_Attack::DrawEndHandle));
+					player->GetAbilitySystemComponent()->TryActivateAbility(Target->Handle);
+				}
+		}
+		else
+		{
+			Attack();
 		}
 	}
 	else
@@ -71,4 +78,9 @@ void UTPS_GameplayAbility_Attack::OnMontageInterrupted()
 void UTPS_GameplayAbility_Attack::OnMontageCancelled()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+}
+
+void UTPS_GameplayAbility_Attack::DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload)
+{
+	Attack();
 }

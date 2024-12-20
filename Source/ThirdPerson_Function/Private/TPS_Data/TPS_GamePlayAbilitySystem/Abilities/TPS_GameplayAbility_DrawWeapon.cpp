@@ -34,8 +34,12 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	{
 		player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
 		Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = false;
+
+		FGameplayEventData EventData;
+		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
+		EventData.Instigator = player;
+		player->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
 	}
-	DrawIn.Broadcast();
 }
 
 void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
@@ -47,12 +51,13 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 		NAME_None,
 		DrawMontage,
 		1.0f,
-		NAME_None,
+		"Draw1",
 		true
 	);
 	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCompleted);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
+
 	Task->ReadyForActivation();
 }
 
