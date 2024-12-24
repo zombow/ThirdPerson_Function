@@ -5,5 +5,4 @@
 
 void UTPS_AnimInstance::AnimNotify_Draw()
 {
-	DrawCheck.Broadcast();
 }

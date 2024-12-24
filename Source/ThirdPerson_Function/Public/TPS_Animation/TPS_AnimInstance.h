@@ -17,10 +17,8 @@ class THIRDPERSON_FUNCTION_API UTPS_AnimInstance : public UAnimInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bisPlayingMontage;
-
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawCheck);
-	FDrawCheck DrawCheck;
 	
 	UFUNCTION()
 	void AnimNotify_Draw();
+
 };

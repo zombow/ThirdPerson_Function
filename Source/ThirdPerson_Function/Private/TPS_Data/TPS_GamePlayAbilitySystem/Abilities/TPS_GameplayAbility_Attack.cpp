@@ -19,13 +19,14 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 		if (!player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
 		{
 			auto Target = player->GetAbilitySpec(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
-			if (Cast<UTPS_GameplayAbility_DrawWeapon>(Target->Ability))
-				{
+			if (auto TargetAbility = Cast<UTPS_GameplayAbility_DrawWeapon>(Target->Ability))
+			{
+				Cast<ATPS_PlayerCharacter>(CurrentActorInfo->AvatarActor)->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 				player->GetAbilitySystemComponent()->AddGameplayEventTagContainerDelegate(
-					FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Drawn"))), 
+					FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Drawn"))),
 					FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UTPS_GameplayAbility_Attack::DrawEndHandle));
-					player->GetAbilitySystemComponent()->TryActivateAbility(Target->Handle);
-				}
+				player->GetAbilitySystemComponent()->TryActivateAbility(Target->Handle);
+			}
 		}
 		else
 		{
@@ -43,6 +44,7 @@ void UTPS_GameplayAbility_Attack::Attack()
 	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+		Cast<ATPS_PlayerCharacter>(CurrentActorInfo->AvatarActor)->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Cast<ATPS_PlayerCharacter>(CurrentActorInfo->AvatarActor)->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
@@ -55,6 +57,7 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 
 	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
 	{
+		player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 		UE_LOG(LogTemp, Warning, TEXT("End Attack"));
 	}

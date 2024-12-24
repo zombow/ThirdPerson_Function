@@ -28,12 +28,9 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_DrawWeapon : public UGamepla
 	UFUNCTION()
 	void OnMontageCancelled();
 	UFUNCTION()
-	void JumpToSection();
-	UFUNCTION()
 	void KeepPlayMontage();
 	
 public:
-	bool bKeepDraw;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
 	TObjectPtr<UAnimMontage> DrawMontage;
