@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "TPS_Animation/TPS_AnimInstance.h"
+#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_SheathWeapon.generated.h"
 
 /**
@@ -13,23 +15,30 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_SheathWeapon : public UGameplayAbility
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	TObjectPtr<ATPS_PlayerCharacter> Player;
+	UPROPERTY()
+	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
+
 	UTPS_GameplayAbility_SheathWeapon();
 
-	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	void PlayMontage();
 	UFUNCTION()
-	void OnMontageCompleted();
+	void OnMontageBlendOut();
 	UFUNCTION()
 	void OnMontageInterrupted();
 	UFUNCTION()
 	void OnMontageCancelled();
+	UFUNCTION()
+	void KeepPlayMontage();
 
 public:
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSheathIn);
-	FSheathIn SheathIn;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
 	TObjectPtr<UAnimMontage> SheathMontage;
 };

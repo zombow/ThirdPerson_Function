@@ -3,6 +3,3 @@
 
 #include "TPS_Animation/TPS_AnimInstance.h"
 
-void UTPS_AnimInstance::AnimNotify_Draw()
-{
-}

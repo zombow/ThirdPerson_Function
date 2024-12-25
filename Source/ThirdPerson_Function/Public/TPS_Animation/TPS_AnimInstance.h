@@ -18,7 +18,4 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bisPlayingMontage;
 	
-	UFUNCTION()
-	void AnimNotify_Draw();
-
 };

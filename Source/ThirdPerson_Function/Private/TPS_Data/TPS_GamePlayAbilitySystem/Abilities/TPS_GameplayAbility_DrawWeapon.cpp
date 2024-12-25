@@ -3,20 +3,24 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
-#include "TPS_Animation/TPS_AnimInstance.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_DrawWeapon::UTPS_GameplayAbility_DrawWeapon()
 {
 	AbilityTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
 }
 
+
 void UTPS_GameplayAbility_DrawWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
                                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                                       const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
+	if (Player)
+	{
+		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
+	}
+	if (Player)
 	{
 		PlayMontage();
 	}
@@ -30,21 +34,23 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
                                                  const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	if (Player)
 	{
-		player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-		Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = false;
+		PlayerAnimInstance->bisPlayingMontage = false;
+		Player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
 		FGameplayEventData EventData;
 		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
-		EventData.Instigator = player;
-		player->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
+		EventData.Instigator = Player;
+		Player->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
 	}
 }
 
 void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 {
-	Cast<UTPS_AnimInstance>(Cast<ACharacter>(CurrentActorInfo->AvatarActor)->GetMesh()->GetAnimInstance())->bisPlayingMontage = true;
-
+	if (Player)
+	{
+		PlayerAnimInstance->bisPlayingMontage = true;
+	}
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
@@ -54,9 +60,8 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 		true
 	);
 
-	if (Cast<ATPS_PlayerCharacter>(CurrentActorInfo->AvatarActor)->GetAbilitySystemComponent()->HasMatchingGameplayTag
-	(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
-		Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCompleted);
+	if (Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
+		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
 	else
 		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
@@ -75,13 +80,13 @@ void UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage()
 		true
 	);
 
-	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCompleted);
+	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
 	Task->ReadyForActivation();
 }
 
-void UTPS_GameplayAbility_DrawWeapon::OnMontageCompleted()
+void UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
