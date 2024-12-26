@@ -38,7 +38,8 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
 		Player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-		FGameplayEventData EventData;
+		
+		FGameplayEventData EventData; // Draw종료 Event생성
 		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
 		EventData.Instigator = Player;
 		Player->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
