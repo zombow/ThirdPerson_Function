@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_Jump.generated.h"
 
 /**
@@ -14,6 +15,9 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Jump : public UGameplayAbili
 {
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Jump();
+	UPROPERTY()
+	TObjectPtr<ATPS_PlayerCharacter> Player;
+	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

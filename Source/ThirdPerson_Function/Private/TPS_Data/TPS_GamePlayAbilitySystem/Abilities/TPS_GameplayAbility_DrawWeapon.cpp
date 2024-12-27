@@ -19,9 +19,6 @@ void UTPS_GameplayAbility_DrawWeapon::ActivateAbility(const FGameplayAbilitySpec
 	if (Player)
 	{
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
-	}
-	if (Player)
-	{
 		PlayMontage();
 	}
 	else

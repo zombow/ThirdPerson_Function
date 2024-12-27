@@ -17,5 +17,11 @@ class THIRDPERSON_FUNCTION_API UTPS_AnimInstance : public UAnimInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true))
 	bool bisPlayingMontage;
+
+	UFUNCTION()
+	void AnimNotify_NextAttack();
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNextAttack);
+	FNextAttack NextAttack;
 	
 };

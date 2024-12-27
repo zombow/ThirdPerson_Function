@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BlueprintEditor.h"
 #include "Abilities/GameplayAbility.h"
+#include "TPS_Animation/TPS_AnimInstance.h"
+#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_Attack.generated.h"
 
 /**
@@ -15,6 +18,10 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Attack();
 	
+	UPROPERTY()
+	TObjectPtr<ATPS_PlayerCharacter> Player;
+	UPROPERTY()
+	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -29,8 +36,12 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	void OnMontageCancelled();
 	UFUNCTION()
 	void Attack();
+
+	void Test(const FGameplayTag EventTag, const FGameplayEventData* Payload = nullptr);
 	void DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload = nullptr);
 
+	FDelegateHandle DrawEventHandle;
+	FDelegateHandle AttackEventHandle;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
 	TObjectPtr<UAnimMontage> AttackMontage;

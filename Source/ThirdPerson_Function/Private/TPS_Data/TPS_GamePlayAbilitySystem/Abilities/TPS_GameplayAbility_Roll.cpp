@@ -3,7 +3,6 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_RollCost.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UTPS_GameplayAbility_Roll::UTPS_GameplayAbility_Roll()
@@ -17,13 +16,14 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
+	if (Player)
 	{
 		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 		{
-			auto inputvectornormal = player->GetLastMovementInputVector().GetSafeNormal();
-			auto rotation = inputvectornormal.Rotation();
-			player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
+			auto InputVectorNormal = Player->GetLastMovementInputVector().GetSafeNormal();
+			auto rotation = InputVectorNormal.Rotation();
+			Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
 			PlayMontage();
 		}
 	}

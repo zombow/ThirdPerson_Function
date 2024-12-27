@@ -3,7 +3,6 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Crouch.h"
 
-#include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_Crouch::UTPS_GameplayAbility_Crouch()
 {
@@ -14,12 +13,12 @@ void UTPS_GameplayAbility_Crouch::ActivateAbility(const FGameplayAbilitySpecHand
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
+	if (Player)
 	{
-		if (player->GetCharacterMovement()->IsMovingOnGround())
+		if (Player->GetCharacterMovement()->IsMovingOnGround())
 		{
-			player->Crouch();
+			Player->Crouch();
 		}
 	}
 }
@@ -28,8 +27,8 @@ void UTPS_GameplayAbility_Crouch::EndAbility(const FGameplayAbilitySpecHandle Ha
                                              const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	if (Player)
 	{
-		player->UnCrouch();
+		Player->UnCrouch();
 	}
 }

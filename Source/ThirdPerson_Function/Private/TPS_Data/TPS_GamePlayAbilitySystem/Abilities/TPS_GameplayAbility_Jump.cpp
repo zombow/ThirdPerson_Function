@@ -3,11 +3,8 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
 
-#include "SWarningOrErrorBox.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_JumpCost.h"
-#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 
 UTPS_GameplayAbility_Jump::UTPS_GameplayAbility_Jump()
 {
@@ -21,20 +18,13 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
+	if (Player)
 	{
-		if (player->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo))
-		{
-			player->AddLooseGameplayTag(FGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.InAir")));
-		}
-		else
-		{
-			EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
-		}
+		Player->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo);
 	}
 	else
 	{
-		// Character가아닌경우
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 }
@@ -43,9 +33,9 @@ void UTPS_GameplayAbility_Jump::EndAbility(const FGameplayAbilitySpecHandle Hand
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (auto player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor))
+	if (Player)
 	{
-		player->RemoveLooseGameplayTag(FGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.InAir")));
+		
 	}
 
 }
