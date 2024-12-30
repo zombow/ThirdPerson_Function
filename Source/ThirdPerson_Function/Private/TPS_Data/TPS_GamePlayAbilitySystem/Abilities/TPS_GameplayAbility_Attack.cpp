@@ -10,6 +10,8 @@ UTPS_GameplayAbility_Attack::UTPS_GameplayAbility_Attack()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Attack")));
 	CostGameplayEffectClass = UTPS_GameplayEffect_AttackCost::StaticClass();
+	bNextAttack = false;
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
 void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -17,13 +19,15 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
-	if (Player)
+	if (Player && !bNextAttack)
 	{
+		bNextAttack = true;
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
 
 		AttackEventHandle = Player->GetAbilitySystemComponent()->AddGameplayEventTagContainerDelegate(
 			FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Attack"))),
-			FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UTPS_GameplayAbility_Attack::Test));
+			FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UTPS_GameplayAbility_Attack::Attack));
+
 		if (!Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
 		{
 			FGameplayAbilitySpec* Target = Player->GetAbilitySpec(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
@@ -38,42 +42,13 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 		}
 		else
 		{
-			Attack();
+			Attack(FGameplayTag::RequestGameplayTag("State.Character.Attack.Combo1"));
 		}
 	}
 	else
 	{
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 	}
-}
-
-void UTPS_GameplayAbility_Attack::Attack()
-{
-	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
-		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
-
-		PlayMontage();
-	}
-}
-
-void UTPS_GameplayAbility_Attack::Test(const FGameplayTag EventTag, const FGameplayEventData* Payload)
-{
-	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,
-		NAME_None,
-		AttackMontage,
-		1.0f,
-		"Attack2",
-		true
-	);
-	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_Attack::OnMontageCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_Attack::OnMontageInterrupted);
-	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_Attack::OnMontageCancelled);
-	Task->ReadyForActivation();
-	UE_LOG(LogTemp, Warning, TEXT("Test Succesed"));
 }
 
 void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -89,15 +64,27 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 	}
 }
 
+void UTPS_GameplayAbility_Attack::Attack(const FGameplayTag EventTag, const FGameplayEventData* Payload)
+{
+	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo) && bNextAttack)
+	{
+		bNextAttack = false;
+		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
+		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 
-void UTPS_GameplayAbility_Attack::PlayMontage()
+		PlayMontage(EventTag);
+	}
+}
+
+void UTPS_GameplayAbility_Attack::PlayMontage(const FGameplayTag SectionName)
 {
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
 		AttackMontage,
 		1.0f,
-		"Attack1",
+		*SectionName.ToString(),
 		true
 	);
 	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_Attack::OnMontageCompleted);

@@ -10,7 +10,8 @@ void UTPS_AnimInstance::AnimNotify_NextAttack()
 {
 	auto Player = Cast<ATPS_PlayerCharacter>(GetOwningActor());
 	FGameplayEventData EventData; // Attack종료 Event생성
-	EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack"));
+	FString Tag = (FString::Printf(TEXT("%s"), *Montage_GetCurrentSection().ToString()));
+	EventData.EventTag = FGameplayTag::RequestGameplayTag(*Tag);
 	EventData.Instigator = Player;
 	Player->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
 }
