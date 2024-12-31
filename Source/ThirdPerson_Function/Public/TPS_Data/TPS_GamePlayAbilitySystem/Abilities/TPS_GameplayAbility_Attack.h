@@ -29,21 +29,25 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 
 	void PlayMontage(FGameplayTag SectionName = FGameplayTag());
 	UFUNCTION()
-	void OnMontageCompleted();
+	void OnMontageBlendOut();
 	UFUNCTION()
 	void OnMontageInterrupted();
 	UFUNCTION()
 	void OnMontageCancelled();
 
-	void Attack(const FGameplayTag EventTag = FGameplayTag(), const FGameplayEventData* Payload = nullptr);
+	void Attack();
+
+	void BeginNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
+	void EndNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
 
 
 	void DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload = nullptr);
 
 	FDelegateHandle DrawEventHandle;
 	FDelegateHandle AttackEventHandle;
-
-	bool bNextAttack;
+	FDelegateHandle EndAttackEventHandle;
+	FGameplayTag NextSectionTag;
+	bool bNextAttack = false;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")

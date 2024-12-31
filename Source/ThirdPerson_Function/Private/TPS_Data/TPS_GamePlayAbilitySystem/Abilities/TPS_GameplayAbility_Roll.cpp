@@ -41,16 +41,16 @@ void UTPS_GameplayAbility_Roll::PlayMontage()
 		RollMontage,
 		1.0f,
 		NAME_None,
-		true
+		false
 	);
 
-	Task->OnCompleted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCompleted);
+	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageBlendOut);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCancelled);
 	Task->ReadyForActivation();
 }
 
-void UTPS_GameplayAbility_Roll::OnMontageCompleted()
+void UTPS_GameplayAbility_Roll::OnMontageBlendOut()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }

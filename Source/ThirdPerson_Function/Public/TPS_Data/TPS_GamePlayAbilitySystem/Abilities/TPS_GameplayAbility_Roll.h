@@ -26,7 +26,7 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Roll : public UGameplayAbili
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	void PlayMontage();
 	UFUNCTION()
-	void OnMontageCompleted();
+	void OnMontageBlendOut();
 	UFUNCTION()
 	void OnMontageInterrupted();
 	UFUNCTION()
