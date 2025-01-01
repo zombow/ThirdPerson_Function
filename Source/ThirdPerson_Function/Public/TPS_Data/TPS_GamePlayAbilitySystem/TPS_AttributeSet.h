@@ -38,5 +38,5 @@ public:
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, MaxStamina);
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, CurrentStamina);
 
-	friend class UTPS_GEffect_JumpCost;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 };

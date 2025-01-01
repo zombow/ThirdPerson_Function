@@ -75,6 +75,7 @@ void UTPS_GameplayAbility_Attack::Attack()
 	if (bNextAttack && CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ComboAttack!"));
+		// 마지막 입력방향으로 공격방향 회전
 		PlayMontage(NextSectionTag);
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
@@ -82,6 +83,7 @@ void UTPS_GameplayAbility_Attack::Attack()
 	else if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
+		// 마지막 입력방향으로 공격방향 회전
 		PlayMontage(FGameplayTag::RequestGameplayTag("State.Character.Attack.Combo1"));
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));

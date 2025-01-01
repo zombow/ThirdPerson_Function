@@ -90,6 +90,11 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
+	// 시작시 활성화되는 어빌리티
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't regen"));
+	}
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
@@ -114,7 +119,11 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon"))],
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))],
+		           FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
 	}
+
+
 }
 
 UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
@@ -200,6 +209,7 @@ void ATPS_PlayerCharacter::Crouching()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
 	}
+	
 }
 
 void ATPS_PlayerCharacter::UnCrouching()
@@ -230,6 +240,7 @@ void ATPS_PlayerCharacter::DrawWeapon()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't DrawWeapon"));
 	}
+
 }
 
 void ATPS_PlayerCharacter::SheathWeapon()
