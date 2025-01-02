@@ -14,7 +14,5 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayEffect_StaminaRegen : public UGamepl
 {
 	GENERATED_BODY()
 	UTPS_GameplayEffect_StaminaRegen();
-
-public:
-	void SetModifier(float DeltaSeconds, float ScaleFloat);
+	
 };

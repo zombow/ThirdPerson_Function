@@ -24,7 +24,6 @@ void UTPS_GameplayAbility_StaminaRegen::ActivateAbility(const FGameplayAbilitySp
 		if (StaminaEffectSpecHandle.IsValid())
 		{
 			StaminaRegenHandle = ApplyGameplayEffectSpecToOwner(Handle, ActorInfo, ActivationInfo, StaminaEffectSpecHandle);
-			
 		}
 	}
 }

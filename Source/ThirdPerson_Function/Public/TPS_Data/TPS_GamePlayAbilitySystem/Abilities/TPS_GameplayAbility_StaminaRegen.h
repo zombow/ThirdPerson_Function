@@ -22,5 +22,4 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_StaminaRegen : public UGamep
 	FActiveGameplayEffectHandle StaminaRegenHandle;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-
 };

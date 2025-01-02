@@ -91,10 +91,8 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
 	// 시작시 활성화되는 어빌리티
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't regen"));
-	}
+	TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))));
+
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)

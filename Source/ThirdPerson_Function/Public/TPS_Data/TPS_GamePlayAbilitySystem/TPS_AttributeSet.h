@@ -38,5 +38,5 @@ public:
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, MaxStamina);
 	ATTRIBUTE_ACCESSORS(UTPS_AttributeSet, CurrentStamina);
 
-	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
 };
