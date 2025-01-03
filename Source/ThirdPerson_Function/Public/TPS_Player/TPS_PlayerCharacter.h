@@ -25,7 +25,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	// Components
 	virtual void BeginPlay() override;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMeshComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraCompo")
@@ -61,11 +61,13 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-
+	FVector TPSLastInput;
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	FVector GetTPSLastInput();
+	void StaminaRegen(bool bActive);
 	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
 	void AddLooseGameplayTag(FGameplayTag TagName);
 	void RemoveLooseGameplayTag(FGameplayTag TagName);

@@ -21,7 +21,8 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 	{
 		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 		{
-			auto InputVectorNormal = Player->GetLastMovementInputVector().GetSafeNormal();
+			Player->StaminaRegen(false);
+			auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
 			auto rotation = InputVectorNormal.Rotation();
 			Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
 			PlayMontage();
@@ -69,4 +70,8 @@ void UTPS_GameplayAbility_Roll::EndAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	if (Player)
+	{
+		Player->StaminaRegen(true);
+	}
 }

@@ -34,8 +34,7 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	if (Player)
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
-		Player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-		
+
 		FGameplayEventData EventData; // Draw종료 Event생성
 		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
 		EventData.Instigator = Player;
@@ -58,10 +57,7 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 		true
 	);
 
-	if (Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
-		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
-	else
-		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage);
+	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
 	Task->ReadyForActivation();
@@ -69,19 +65,25 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 
 void UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage()
 {
-	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this,
-		NAME_None,
-		DrawMontage,
-		1.0f,
-		"Draw2",
-		true
-	);
+	Player->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+	if (Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
+		OnMontageBlendOut();
+	else
+	{
+		TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+			this,
+			NAME_None,
+			DrawMontage,
+			1.0f,
+			"Draw2",
+			true
+		);
 
-	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
-	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
-	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
-	Task->ReadyForActivation();
+		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
+		Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
+		Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
+		Task->ReadyForActivation();
+	}
 }
 
 void UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut()

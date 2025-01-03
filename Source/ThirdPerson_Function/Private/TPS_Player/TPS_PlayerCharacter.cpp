@@ -90,9 +90,9 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
-	// 시작시 활성화되는 어빌리티
-	TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))));
 
+	// 시작시 적용되는 Ability
+	StaminaRegen(true);
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
@@ -118,15 +118,18 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon"))],
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))],
-		           FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
+		            FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
 	}
-
-
 }
 
 UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 {
 	return TPSAbilitySystemComp;
+}
+
+FVector ATPS_PlayerCharacter::GetTPSLastInput()
+{
+	return TPSLastInput;
 }
 
 FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
@@ -167,7 +170,8 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
 	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
-
+	TPSLastInput = GetLastMovementInputVector();
+	
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
@@ -207,7 +211,6 @@ void ATPS_PlayerCharacter::Crouching()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
 	}
-	
 }
 
 void ATPS_PlayerCharacter::UnCrouching()
@@ -238,7 +241,6 @@ void ATPS_PlayerCharacter::DrawWeapon()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't DrawWeapon"));
 	}
-
 }
 
 void ATPS_PlayerCharacter::SheathWeapon()
@@ -246,5 +248,17 @@ void ATPS_PlayerCharacter::SheathWeapon()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
+	}
+}
+
+void ATPS_PlayerCharacter::StaminaRegen(bool bActive)
+{
+	if (bActive)
+	{
+		TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))));
+	}
+	else
+	{
+		TPSAbilitySystemComp->CancelAbility(AbilitySpecs.Find(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))->Ability);
 	}
 }

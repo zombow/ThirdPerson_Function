@@ -20,6 +20,7 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
 	if (Player)
 	{
+		Player->StaminaRegen(false);
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
 		// 콤보공격을 활성화시킬 Event
 		AttackEventHandle = Player->GetAbilitySystemComponent()->AddGameplayEventTagContainerDelegate(
@@ -62,6 +63,7 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 
 	if (Player)
 	{
+		Player->StaminaRegen(true);
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
 
@@ -75,7 +77,11 @@ void UTPS_GameplayAbility_Attack::Attack()
 	if (bNextAttack && CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ComboAttack!"));
-		// 마지막 입력방향으로 공격방향 회전
+		// 순간회전 -> 0.1초라도 회전시간추가
+		auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
+		auto rotation = InputVectorNormal.Rotation();
+		Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
+		
 		PlayMontage(NextSectionTag);
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
@@ -83,7 +89,11 @@ void UTPS_GameplayAbility_Attack::Attack()
 	else if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
-		// 마지막 입력방향으로 공격방향 회전
+		// 순간회전 -> 0.1초라도 회전시간추가
+		auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
+		auto rotation = InputVectorNormal.Rotation();
+		Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
+		
 		PlayMontage(FGameplayTag::RequestGameplayTag("State.Character.Attack.Combo1"));
 		Player->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
 		Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));

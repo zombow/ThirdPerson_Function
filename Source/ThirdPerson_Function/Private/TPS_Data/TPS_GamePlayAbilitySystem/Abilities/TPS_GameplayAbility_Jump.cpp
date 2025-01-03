@@ -33,9 +33,4 @@ void UTPS_GameplayAbility_Jump::EndAbility(const FGameplayAbilitySpecHandle Hand
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (Player)
-	{
-		
-	}
-
 }

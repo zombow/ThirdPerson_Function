@@ -53,7 +53,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsLandingRecovery() { return bLandingRecovery; }
-
+	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMovementModeChange,
 	                                               EMovementMode, PreviousMovementMode,
 	                                               EMovementMode, CurrentMovementMode,
