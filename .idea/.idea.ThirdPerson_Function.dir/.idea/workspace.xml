@@ -8,21 +8,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponAttack_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponAttack_Montage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponDrawIn_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponDrawIn_Montage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponSheathedIn_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponSheathedIn_Montage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/BP_Ability/BP_Ability_Attack.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/BP_Ability/BP_Ability_Attack.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/BP_Ability/BP_Ability_StaminaRegen.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Data/BP_Ability/BP_Ability_StaminaRegen.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Attack.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_StaminaRegen.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_StaminaRegen.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_CharacterMovementComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_CharacterMovementComponent.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_StaminaRegen.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_StaminaRegen.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_CharacterMovementComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_CharacterMovementComponent.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,7 +64,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Uproject.ThirdPerson_Function.executor": "Debug",
+    "Uproject.ThirdPerson_Function.executor": "Run",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
@@ -222,6 +210,7 @@
       <workItem from="1735614225820" duration="20925000" />
       <workItem from="1735699274753" duration="12251000" />
       <workItem from="1735874559222" duration="12816000" />
+      <workItem from="1736147202989" duration="5908000" />
     </task>
     <servers />
   </component>

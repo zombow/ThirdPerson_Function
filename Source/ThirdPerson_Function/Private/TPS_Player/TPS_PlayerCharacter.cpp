@@ -132,6 +132,11 @@ FVector ATPS_PlayerCharacter::GetTPSLastInput()
 	return TPSLastInput;
 }
 
+FRotator ATPS_PlayerCharacter::GetDesiredDirection()
+{
+	return DesiredDirection.Rotation();
+}
+
 FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
 {
 	if (AbilitySpecs.Find(AbilityTag))
@@ -171,23 +176,25 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
 	TPSLastInput = GetLastMovementInputVector();
-	
+
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
 	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
 	CameraRight.Z = 0;
 
-	FVector DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
+	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
 	DesiredDirection.Normalize();
 
-	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
+	//캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
 	// if (!DesiredDirection.IsNearlyZero())
 	// {
 	// 	FRotator DesiredRotation = DesiredDirection.Rotation();
-	// 	SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->GetDeltaSeconds(), 20.f));
+	// 	SetActorRotation(DesiredRotation);
 	// }
-
+	UE_LOG(LogTemp, Warning, TEXT("%f / %f/ %f"), DesiredDirection.Rotation().Yaw, DesiredDirection.Rotation().Pitch,
+	       DesiredDirection.Rotation().Roll);
+	UE_LOG(LogTemp, Warning, TEXT(" GetActorRotation : %f / %f/ %f"), GetActorRotation().Yaw, GetActorRotation().Pitch, GetActorRotation().Roll);
 	AddMovementInput(DesiredDirection);
 }
 

@@ -62,11 +62,15 @@ protected:
 	UFUNCTION()
 	void SheathWeapon();
 	FVector TPSLastInput;
+	FVector DesiredDirection;
 public:
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
+	UFUNCTION(BlueprintCallable)
 	FVector GetTPSLastInput();
+	UFUNCTION(BlueprintCallable)
+	FRotator GetDesiredDirection();
+	
 	void StaminaRegen(bool bActive);
 	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
 	void AddLooseGameplayTag(FGameplayTag TagName);
