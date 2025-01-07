@@ -4,8 +4,11 @@
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 #include "NativeGameplayTags.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/BlueprintTypeConversions.h"
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void ATPS_PlayerCharacter::AddLooseGameplayTag(FGameplayTag TagName)
 {
@@ -47,9 +50,15 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->TargetArmLength = 400.f;
-	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 60.0f));
+	CameraBoom->TargetArmLength = 300.f;
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
 	CameraBoom->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f), false);
+	CameraBoom->SocketOffset = FVector(0, 70, 0);
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->bEnableCameraRotationLag = true;
+	CameraBoom->CameraLagSpeed = 50;
+	CameraBoom->CameraRotationLagSpeed = 50;
+	CameraBoom->CameraLagMaxDistance = 10;
 	CameraBoom->bDoCollisionTest = true;
 	CameraBoom->bUsePawnControlRotation = false;
 
@@ -176,25 +185,23 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
 	TPSLastInput = GetLastMovementInputVector();
-
+	
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
 	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
 	CameraRight.Z = 0;
-
+	
 	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
 	DesiredDirection.Normalize();
-
+	
 	//캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
 	// if (!DesiredDirection.IsNearlyZero())
 	// {
 	// 	FRotator DesiredRotation = DesiredDirection.Rotation();
 	// 	SetActorRotation(DesiredRotation);
 	// }
-	UE_LOG(LogTemp, Warning, TEXT("%f / %f/ %f"), DesiredDirection.Rotation().Yaw, DesiredDirection.Rotation().Pitch,
-	       DesiredDirection.Rotation().Roll);
-	UE_LOG(LogTemp, Warning, TEXT(" GetActorRotation : %f / %f/ %f"), GetActorRotation().Yaw, GetActorRotation().Pitch, GetActorRotation().Roll);
+	
 	AddMovementInput(DesiredDirection);
 }
 
