@@ -22,6 +22,9 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 	if (Player)
 	{
 		Player->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo);
+		Player->GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromMontagesOnly;
+		Player->bPressedJumpKey = true;
+
 	}
 	else
 	{
@@ -33,4 +36,6 @@ void UTPS_GameplayAbility_Jump::EndAbility(const FGameplayAbilitySpecHandle Hand
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	Player->bPressedJumpKey = false;
+	Player->GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromEverything;
 }

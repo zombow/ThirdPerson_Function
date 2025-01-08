@@ -44,7 +44,6 @@ void UTPS_GameplayAbility_Roll::PlayMontage()
 		NAME_None,
 		false
 	);
-
 	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageBlendOut);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_Roll::OnMontageCancelled);

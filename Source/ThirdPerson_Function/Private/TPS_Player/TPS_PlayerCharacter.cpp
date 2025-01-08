@@ -141,9 +141,9 @@ FVector ATPS_PlayerCharacter::GetTPSLastInput()
 	return TPSLastInput;
 }
 
-FRotator ATPS_PlayerCharacter::GetDesiredDirection()
+FVector ATPS_PlayerCharacter::GetDesiredDirection()
 {
-	return DesiredDirection.Rotation();
+	return DesiredDirection;
 }
 
 FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
@@ -172,20 +172,22 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 	if (CurrentMovementMode == MOVE_Falling)
 	{
 		TPSAbilitySystemComp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
+		GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromMontagesOnly;
 	}
 	else if ((PreviousMovementMode == MOVE_Falling) && (CurrentMovementMode != MOVE_Falling))
 	{
 		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
+		GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromEverything;
 		EndJump();
 	}
 }
 
 void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
-	// Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
+	// // Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
 	TPSLastInput = GetLastMovementInputVector();
-	
+
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
 	CameraForward.Z = 0;
@@ -195,18 +197,22 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
 	DesiredDirection.Normalize();
 	
-	//캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
-	// if (!DesiredDirection.IsNearlyZero())
-	// {
-	// 	FRotator DesiredRotation = DesiredDirection.Rotation();
-	// 	SetActorRotation(DesiredRotation);
-	// }
+	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
+	if (!DesiredDirection.IsNearlyZero())
+	{
+		FRotator DesiredRotation = DesiredDirection.Rotation();
+		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->DeltaTimeSeconds, 0));
+	}
 	
-	AddMovementInput(DesiredDirection);
+
+	AddMovementInput(FVector::Zero(), DesiredDirection.X);
+	AddMovementInput(FVector::Zero(), DesiredDirection.Y);
+	AddMovementInput(DesiredDirection, DesiredDirection.Length());
 }
 
 void ATPS_PlayerCharacter::DoJump()
 {
+
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Jump"));
@@ -217,6 +223,7 @@ void ATPS_PlayerCharacter::EndJump()
 {
 	FGameplayTagContainer JumpTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")));
 	TPSAbilitySystemComp->CancelAbilities(&JumpTagContainer);
+
 }
 
 void ATPS_PlayerCharacter::Crouching()

@@ -29,7 +29,8 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveInput, FVector2D, MoveInput);
 	FOnMoveInput OnMoveInput;
 	void HandleMoveInput(const FInputActionValue& Value);
-
+	void HandleMoveEnd(const FInputActionValue& Value);
+	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInput);
 	FOnJumpInput OnJumpInput;
 	void HandleJumpInput(const FInputActionValue& Value);

@@ -39,6 +39,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
 
+
+	FVector TPSLastInput;
+	FVector DesiredDirection;
+	
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
 	
@@ -61,15 +65,16 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-	FVector TPSLastInput;
-	FVector DesiredDirection;
+
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
+	bool bPressedJumpKey;
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)
 	FVector GetTPSLastInput();
 	UFUNCTION(BlueprintCallable)
-	FRotator GetDesiredDirection();
+	FVector GetDesiredDirection();
 	
 	void StaminaRegen(bool bActive);
 	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
