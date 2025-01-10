@@ -57,7 +57,7 @@ void ATPS_PlayerController::HandleMoveInput(const FInputActionValue& Value)
 
 void ATPS_PlayerController::HandleMoveEnd(const FInputActionValue& Value)
 {
-	OnMoveInput.Broadcast(Value.Get<FVector2D>());
+	//OnMoveInput.Broadcast(Value.Get<FVector2D>());
 }
 
 void ATPS_PlayerController::HandleJumpInput(const FInputActionValue& Value)

@@ -204,10 +204,7 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->DeltaTimeSeconds, 0));
 	}
 	
-
-	AddMovementInput(FVector::Zero(), DesiredDirection.X);
-	AddMovementInput(FVector::Zero(), DesiredDirection.Y);
-	AddMovementInput(DesiredDirection, DesiredDirection.Length());
+	AddMovementInput(DesiredDirection);
 }
 
 void ATPS_PlayerCharacter::DoJump()
