@@ -27,8 +27,8 @@ void ATPS_PlayerController::SetupInputComponent()
 		                                   this, &ATPS_PlayerController::HandleMouseMoveInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleMoveInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleMoveEnd);
+		// EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
+		//                                    this, &ATPS_PlayerController::HandleMoveEnd);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleJumpInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Started,

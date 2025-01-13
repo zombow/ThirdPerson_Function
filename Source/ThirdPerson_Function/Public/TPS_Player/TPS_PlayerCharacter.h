@@ -16,7 +16,7 @@ UCLASS()
 class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
-	
+
 protected:
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	// Sets default values for this character's properties
@@ -40,6 +40,8 @@ protected:
 
 	FVector TPSLastInput;
 	FVector DesiredDirection;
+
+
 	
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
@@ -63,7 +65,10 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-
+	
+	void RotationFunction();
+	FTimerHandle RotationTimerHandle;
+	bool onetime = true;
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;

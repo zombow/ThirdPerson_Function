@@ -160,6 +160,7 @@ TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacte
 	return TPSCharacterMoveComp;
 }
 
+
 void ATPS_PlayerCharacter::AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level)
 {
 	FGameplayAbilitySpec Temp(AbilityClass, Level);
@@ -193,23 +194,23 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	CameraForward.Z = 0;
 	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
 	CameraRight.Z = 0;
-	
+
 	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
 	DesiredDirection.Normalize();
-	
+
 	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
-	if (!DesiredDirection.IsNearlyZero())
+	FRotator DesiredRotation = DesiredDirection.Rotation();
+	if ((!GetActorRotation().Equals(DesiredRotation, 3)) && onetime)
 	{
-		FRotator DesiredRotation = DesiredDirection.Rotation();
-		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->DeltaTimeSeconds, 0));
+		GetWorld()->GetTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::RotationFunction, GetWorld()->GetDeltaSeconds(),
+		                                       true);
+		onetime = false;
 	}
-	
 	AddMovementInput(DesiredDirection);
 }
 
 void ATPS_PlayerCharacter::DoJump()
 {
-
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Jump"));
@@ -220,7 +221,6 @@ void ATPS_PlayerCharacter::EndJump()
 {
 	FGameplayTagContainer JumpTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")));
 	TPSAbilitySystemComp->CancelAbilities(&JumpTagContainer);
-
 }
 
 void ATPS_PlayerCharacter::Crouching()
@@ -266,6 +266,20 @@ void ATPS_PlayerCharacter::SheathWeapon()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
+	}
+}
+
+void ATPS_PlayerCharacter::RotationFunction()
+{
+	FRotator DesiredRotation = DesiredDirection.Rotation();
+	if (!GetActorRotation().Equals(DesiredRotation, 3))
+	{
+		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->DeltaTimeSeconds, 5));
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(RotationTimerHandle);
+		onetime = true;
 	}
 }
 
