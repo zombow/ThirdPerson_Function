@@ -25,7 +25,6 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 			auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
 			auto rotation = InputVectorNormal.Rotation();
 			Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
-			Player->GetTPSCharacterMovementComp()->bAllowPhysicsRotationDuringAnimRootMotion = false;
 			PlayMontage();
 		}
 	}
@@ -73,6 +72,5 @@ void UTPS_GameplayAbility_Roll::EndAbility(const FGameplayAbilitySpecHandle Hand
 	if (Player)
 	{
 		Player->StaminaRegen(true);
-		Player->GetTPSCharacterMovementComp()->bAllowPhysicsRotationDuringAnimRootMotion = true;
 	}
 }

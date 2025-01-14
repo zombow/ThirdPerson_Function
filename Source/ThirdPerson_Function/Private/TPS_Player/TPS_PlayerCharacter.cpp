@@ -200,11 +200,23 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 
 	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
 	FRotator DesiredRotation = DesiredDirection.Rotation();
-	if ((!GetActorRotation().Equals(DesiredRotation, 3)) && onetime)
+	if ((TPSCharacterMoveComp->Velocity.Length() < 3) && (!GetActorRotation().Equals(DesiredRotation, 3)) && onetime)
 	{
 		GetWorld()->GetTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::RotationFunction, GetWorld()->GetDeltaSeconds(),
 		                                       true);
+		CurrentRotation = GetActorRotation();
 		onetime = false;
+		if (FMath::UnwindDegrees(DesiredRotation.Yaw - CurrentRotation.Yaw) > 0)
+		{
+			TurnRight = true;
+			TurnLeft = false;
+		}
+		else
+		{
+			TurnRight = false;
+			TurnLeft = true;;
+		}
+	
 	}
 	AddMovementInput(DesiredDirection);
 }
@@ -274,12 +286,14 @@ void ATPS_PlayerCharacter::RotationFunction()
 	FRotator DesiredRotation = DesiredDirection.Rotation();
 	if (!GetActorRotation().Equals(DesiredRotation, 3))
 	{
-		SetActorRotation(FMath::RInterpTo(GetActorRotation(), DesiredRotation, GetWorld()->DeltaTimeSeconds, 5));
+		TempTime += GetWorld()->DeltaTimeSeconds;
+		SetActorRotation(FMath::RInterpTo(CurrentRotation, DesiredRotation, TempTime, 1));
 	}
 	else
 	{
 		GetWorld()->GetTimerManager().ClearTimer(RotationTimerHandle);
 		onetime = true;
+		TempTime = 0;
 	}
 }
 

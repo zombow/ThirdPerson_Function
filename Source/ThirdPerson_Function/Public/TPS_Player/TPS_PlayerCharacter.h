@@ -42,10 +42,9 @@ protected:
 	FVector DesiredDirection;
 
 
-	
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
-	
+
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
@@ -65,20 +64,27 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-	
+
 	void RotationFunction();
 	FTimerHandle RotationTimerHandle;
 	bool onetime = true;
+	FRotator CurrentRotation;
+	float TempTime;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	bool TurnRight;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	bool TurnLeft;
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)
 	FVector GetTPSLastInput();
 	UFUNCTION(BlueprintCallable)
 	FVector GetDesiredDirection();
-	
+
 	void StaminaRegen(bool bActive);
 	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
 	void AddLooseGameplayTag(FGameplayTag TagName);
