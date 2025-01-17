@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "Camera/CameraComponent.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
@@ -38,6 +39,7 @@ protected:
 	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
 
 
+	// direction
 	FVector TPSLastInput;
 	FVector DesiredDirection;
 
