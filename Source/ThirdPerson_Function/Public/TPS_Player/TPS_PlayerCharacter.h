@@ -66,20 +66,40 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-
-	void RotationFunction();
+	
+	
 	FTimerHandle RotationTimerHandle;
-	bool onetime = true;
-	FRotator CurrentRotation;
-	float TempTime;
+	FTimeline RightRotationTimeLine;
+	FTimeline LeftRotationTimeLine;
+	float DeltaZ;
+	void RotationFinished();
+	UFUNCTION()
+	void UpdateTimeLine();
+	UFUNCTION()
+	void LeftRotationFunction(float value);
+	UFUNCTION()
+	void RightRotationFunction(float value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	TObjectPtr<UCurveFloat> RightRotationTimeLineCurveFloat;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	TObjectPtr<UCurveFloat> LeftRotationTimeLineCurveFloat;
+	FRotator CurrentActorRotation;
+	bool OneTime;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	TObjectPtr<UAnimMontage> RightTurnAnim;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
+	TObjectPtr<UAnimMontage> LeftTurnAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	bool TurnRight;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	bool TurnLeft;
+
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)

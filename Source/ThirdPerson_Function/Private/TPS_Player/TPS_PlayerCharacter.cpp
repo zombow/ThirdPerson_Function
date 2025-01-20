@@ -102,6 +102,22 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
+
+	// rotation TimeLine
+	FOnTimelineFloat LeftRotationTimeLineCallback;
+	LeftRotationTimeLineCallback.BindUFunction(this, FName("LeftRotationFunction"));
+	FOnTimelineFloat RightRotationTimeLineCallback;
+	RightRotationTimeLineCallback.BindUFunction(this, FName("RightRotationFunction"));
+	FOnTimelineEvent RotationTimeLineFinishedCallback;
+	RotationTimeLineFinishedCallback.BindUFunction(this, FName("RotationFinished"));
+
+	RightRotationTimeLine.AddInterpFloat(RightRotationTimeLineCurveFloat, RightRotationTimeLineCallback);
+	LeftRotationTimeLine.AddInterpFloat(LeftRotationTimeLineCurveFloat, LeftRotationTimeLineCallback);
+	RightRotationTimeLine.SetTimelineFinishedFunc(RotationTimeLineFinishedCallback);
+	LeftRotationTimeLine.SetTimelineFinishedFunc(RotationTimeLineFinishedCallback);
+
+	RightRotationTimeLine.SetLooping(false);
+	LeftRotationTimeLine.SetLooping(false);
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
@@ -199,26 +215,64 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	DesiredDirection.Normalize();
 
 	// 캐릭터의 방향을 입력에 따라 조정 (필요에 따라 추가 회전 적용)
-	FRotator DesiredRotation = DesiredDirection.Rotation();
-	if ((TPSCharacterMoveComp->Velocity.Length() < 3) && (!GetActorRotation().Equals(DesiredRotation, 3)) && onetime)
+	DeltaZ = UKismetMathLibrary::NormalizedDeltaRotator(GetBaseAimRotation(), GetActorRotation()).Yaw;
+	if (DeltaZ > 0 && !OneTime)
 	{
-		GetWorld()->GetTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::RotationFunction, GetWorld()->GetDeltaSeconds(),
-		                                       true);
-		CurrentRotation = GetActorRotation();
-		onetime = false;
-		if (FMath::UnwindDegrees(DesiredRotation.Yaw - CurrentRotation.Yaw) > 0)
-		{
-			TurnRight = true;
-			TurnLeft = false;
-		}
-		else
-		{
-			TurnRight = false;
-			TurnLeft = true;;
-		}
-	
+		CurrentActorRotation = GetActorRotation();
+		OneTime = true;
+		GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+		RightRotationTimeLine.PlayFromStart();
+		PlayAnimMontage(RightTurnAnim);
 	}
+	else if (DeltaZ < 0 && !OneTime)
+	{
+		CurrentActorRotation = GetActorRotation();
+		OneTime = true;
+		GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+		LeftRotationTimeLine.PlayFromStart();
+		PlayAnimMontage(LeftTurnAnim);
+
+	}
+
+
 	AddMovementInput(DesiredDirection);
+}
+
+void ATPS_PlayerCharacter::UpdateTimeLine()
+{
+	RightRotationTimeLine.TickTimeline(GetWorld()->DeltaTimeSeconds);
+	LeftRotationTimeLine.TickTimeline(GetWorld()->DeltaTimeSeconds);
+}
+
+void ATPS_PlayerCharacter::LeftRotationFunction(float value)
+{
+	if (DeltaZ >= value)
+	{
+		StopAnimMontage();
+		OneTime = false;
+	}
+	else
+	{
+		SetActorRotation(FRotator(CurrentActorRotation.Pitch, CurrentActorRotation.Yaw + value, CurrentActorRotation.Roll));
+	}
+}
+
+void ATPS_PlayerCharacter::RightRotationFunction(float value)
+{
+	if (DeltaZ <= value)
+	{
+		StopAnimMontage();
+		OneTime = false;
+	}
+	else
+	{
+		SetActorRotation(FRotator(CurrentActorRotation.Pitch, CurrentActorRotation.Yaw + value, CurrentActorRotation.Roll));
+	}
+}
+
+void ATPS_PlayerCharacter::RotationFinished()
+{
+	GetWorldTimerManager().ClearTimer(RotationTimerHandle);
 }
 
 void ATPS_PlayerCharacter::DoJump()
@@ -278,22 +332,6 @@ void ATPS_PlayerCharacter::SheathWeapon()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
-	}
-}
-
-void ATPS_PlayerCharacter::RotationFunction()
-{
-	FRotator DesiredRotation = DesiredDirection.Rotation();
-	if (!GetActorRotation().Equals(DesiredRotation, 3))
-	{
-		TempTime += GetWorld()->DeltaTimeSeconds;
-		SetActorRotation(FMath::RInterpTo(CurrentRotation, DesiredRotation, TempTime, 1));
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(RotationTimerHandle);
-		onetime = true;
-		TempTime = 0;
 	}
 }
 
