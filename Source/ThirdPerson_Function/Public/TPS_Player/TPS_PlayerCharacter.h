@@ -86,7 +86,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UCurveFloat> LeftRotationTimeLineCurveFloat;
 	FRotator CurrentActorRotation;
-	bool OneTime;
+	bool bTurning;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
