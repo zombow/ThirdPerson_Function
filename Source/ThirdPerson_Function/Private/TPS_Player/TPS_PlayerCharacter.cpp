@@ -217,16 +217,11 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	// Character Rotation
 	if (!bTurning)
 	{
+		AddMovementInput(DesiredDirection);
 		DeltaZ = UKismetMathLibrary::NormalizedDeltaRotator(DesiredDirection.Rotation(), GetActorRotation()).Yaw;
-		// TODO: 이동 / 대기 구분필요!
-		if (abs(DeltaZ) <= 90)
-		{
-			AddMovementInput(DesiredDirection);
-		}
-		else if (TPSCharacterMoveComp->GetLastUpdateVelocity() == FVector().Zero())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Velocity is Zero"));
 
+		if ((TPSCharacterMoveComp->GetLastUpdateVelocity().Length() <= 3.f) && (abs(DeltaZ) >= 10.f))
+		{
 			if (DeltaZ > 0)
 			{
 				// Right Turn
@@ -269,6 +264,7 @@ void ATPS_PlayerCharacter::LeftRotationFunction(float value)
 		StopAnimMontage();
 		LeftRotationTimeLine.Stop();
 		bTurning = false;
+
 	}
 	else
 	{
@@ -283,6 +279,7 @@ void ATPS_PlayerCharacter::RightRotationFunction(float value)
 		StopAnimMontage();
 		RightRotationTimeLine.Stop();
 		bTurning = false;
+
 	}
 	else
 	{
