@@ -219,64 +219,8 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	{
 		AddMovementInput(DesiredDirection);
 		DeltaZ = UKismetMathLibrary::NormalizedDeltaRotator(DesiredDirection.Rotation(), GetActorRotation()).Yaw;
-		// move
-		if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() >= 3.f && abs(DeltaZ) >= 110)
-		{
-			if (DeltaZ > 0)
-			{
-				// Right Turn
-				GetWorldTimerManager().ClearTimer(RotationTimerHandle);
-				RightRotationTimeLine.Stop();
-				StopAnimMontage();
-				CurrentActorRotation = GetActorRotation();
-				bTurning = true;
-				GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-				RightRotationTimeLine.PlayFromStart();
-				PlayAnimMontage(RightTurnAnim);
-				GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
-			}
-			else if (DeltaZ < 0)
-			{
-				// Left Turn
-				GetWorldTimerManager().ClearTimer(RotationTimerHandle);
-				LeftRotationTimeLine.Stop();
-				StopAnimMontage();
-				CurrentActorRotation = GetActorRotation();
-				bTurning = true;
-				GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-				LeftRotationTimeLine.PlayFromStart();
-				GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
-			}
-		}
-		// idle
-		else if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() <= 3.f && abs(DeltaZ) >= 10.f)
-		{
-			if (DeltaZ > 0)
-			{
-				// Right Turn
-				GetWorldTimerManager().ClearTimer(RotationTimerHandle);
-				RightRotationTimeLine.Stop();
-				StopAnimMontage();
-				CurrentActorRotation = GetActorRotation();
-				bTurning = true;
-				GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-				RightRotationTimeLine.PlayFromStart();
-				PlayAnimMontage(RightTurnAnim);
-				GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
-			}
-			else if (DeltaZ < 0)
-			{
-				// Left Turn
-				GetWorldTimerManager().ClearTimer(RotationTimerHandle);
-				LeftRotationTimeLine.Stop();
-				StopAnimMontage();
-				CurrentActorRotation = GetActorRotation();
-				bTurning = true;
-				GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-				LeftRotationTimeLine.PlayFromStart();
-				GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
-			}
-		}
+		UE_LOG(LogTemp,Warning, TEXT(" %f"), DeltaZ)
+		DoRotation();
 	}
 }
 
@@ -311,6 +255,55 @@ void ATPS_PlayerCharacter::RightRotationFunction(float value)
 	else
 	{
 		SetActorRotation(FRotator(CurrentActorRotation.Pitch, CurrentActorRotation.Yaw + value, CurrentActorRotation.Roll));
+	}
+}
+
+void ATPS_PlayerCharacter::DoRotation()
+{
+	GetWorldTimerManager().ClearTimer(RotationTimerHandle);
+	StopAnimMontage();
+	CurrentActorRotation = GetActorRotation();
+	RightRotationTimeLine.Stop();
+	LeftRotationTimeLine.Stop();
+	// move
+	if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() >= 3.f && abs(DeltaZ) >= 110)
+	{
+		if (DeltaZ > 0)
+		{
+			// Right Turn
+			bTurning = true;
+			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+			RightRotationTimeLine.PlayFromStart();
+			GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
+		}
+		else if (DeltaZ < 0)
+		{
+			// Left Turn
+			bTurning = true;
+			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+			LeftRotationTimeLine.PlayFromStart();
+			GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
+		}
+	}
+	// idle
+	else if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() <= 3.f && abs(DeltaZ) >= 10.f)
+	{
+		if (DeltaZ > 0)
+		{
+			// Right Turn
+			bTurning = true;
+			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+			RightRotationTimeLine.PlayFromStart();
+			GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
+		}
+		else if (DeltaZ < 0)
+		{
+			// Left Turn
+			bTurning = true;
+			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
+			LeftRotationTimeLine.PlayFromStart();
+			GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
+		}
 	}
 }
 

@@ -72,6 +72,7 @@ protected:
 	FTimeline RightRotationTimeLine;
 	FTimeline LeftRotationTimeLine;
 	float DeltaZ;
+	void DoRotation();
 	void RotationFinished();
 	UFUNCTION()
 	void UpdateTimeLine();
