@@ -66,20 +66,6 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
-	
-	
-	FTimerHandle RotationTimerHandle;
-	FTimeline RightRotationTimeLine;
-	FTimeline LeftRotationTimeLine;
-	float DeltaZ;
-	void DoRotation();
-	void RotationFinished();
-	UFUNCTION()
-	void UpdateTimeLine();
-	UFUNCTION()
-	void LeftRotationFunction(float value);
-	UFUNCTION()
-	void RightRotationFunction(float value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UCurveFloat> RightRotationTimeLineCurveFloat;

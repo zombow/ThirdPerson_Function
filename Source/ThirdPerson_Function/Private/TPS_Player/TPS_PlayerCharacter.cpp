@@ -102,22 +102,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
-
-	// rotation TimeLine
-	FOnTimelineFloat LeftRotationTimeLineCallback;
-	LeftRotationTimeLineCallback.BindUFunction(this, FName("LeftRotationFunction"));
-	FOnTimelineFloat RightRotationTimeLineCallback;
-	RightRotationTimeLineCallback.BindUFunction(this, FName("RightRotationFunction"));
-	FOnTimelineEvent RotationTimeLineFinishedCallback;
-	RotationTimeLineFinishedCallback.BindUFunction(this, FName("RotationFinished"));
-
-	RightRotationTimeLine.AddInterpFloat(RightRotationTimeLineCurveFloat, RightRotationTimeLineCallback);
-	LeftRotationTimeLine.AddInterpFloat(LeftRotationTimeLineCurveFloat, LeftRotationTimeLineCallback);
-	RightRotationTimeLine.SetTimelineFinishedFunc(RotationTimeLineFinishedCallback);
-	LeftRotationTimeLine.SetTimelineFinishedFunc(RotationTimeLineFinishedCallback);
-
-	RightRotationTimeLine.SetLooping(false);
-	LeftRotationTimeLine.SetLooping(false);
+	
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
@@ -215,101 +200,7 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	DesiredDirection.Normalize();
 
 	// Character Rotation
-	if (!bTurning)
-	{
-		AddMovementInput(DesiredDirection);
-		DeltaZ = UKismetMathLibrary::NormalizedDeltaRotator(DesiredDirection.Rotation(), GetActorRotation()).Yaw;
-		UE_LOG(LogTemp,Warning, TEXT(" %f"), DeltaZ)
-		DoRotation();
-	}
-}
-
-void ATPS_PlayerCharacter::UpdateTimeLine()
-{
-	RightRotationTimeLine.TickTimeline(GetWorld()->DeltaTimeSeconds);
-	LeftRotationTimeLine.TickTimeline(GetWorld()->DeltaTimeSeconds);
-}
-
-void ATPS_PlayerCharacter::LeftRotationFunction(float value)
-{
-	if (DeltaZ >= value)
-	{
-		StopAnimMontage();
-		LeftRotationTimeLine.Stop();
-		bTurning = false;
-	}
-	else
-	{
-		SetActorRotation(FRotator(CurrentActorRotation.Pitch, CurrentActorRotation.Yaw + value, CurrentActorRotation.Roll));
-	}
-}
-
-void ATPS_PlayerCharacter::RightRotationFunction(float value)
-{
-	if (DeltaZ <= value)
-	{
-		StopAnimMontage();
-		RightRotationTimeLine.Stop();
-		bTurning = false;
-	}
-	else
-	{
-		SetActorRotation(FRotator(CurrentActorRotation.Pitch, CurrentActorRotation.Yaw + value, CurrentActorRotation.Roll));
-	}
-}
-
-void ATPS_PlayerCharacter::DoRotation()
-{
-	GetWorldTimerManager().ClearTimer(RotationTimerHandle);
-	StopAnimMontage();
-	CurrentActorRotation = GetActorRotation();
-	RightRotationTimeLine.Stop();
-	LeftRotationTimeLine.Stop();
-	// move
-	if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() >= 3.f && abs(DeltaZ) >= 110)
-	{
-		if (DeltaZ > 0)
-		{
-			// Right Turn
-			bTurning = true;
-			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-			RightRotationTimeLine.PlayFromStart();
-			GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
-		}
-		else if (DeltaZ < 0)
-		{
-			// Left Turn
-			bTurning = true;
-			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-			LeftRotationTimeLine.PlayFromStart();
-			GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
-		}
-	}
-	// idle
-	else if (TPSCharacterMoveComp->GetLastUpdateVelocity().Length() <= 3.f && abs(DeltaZ) >= 10.f)
-	{
-		if (DeltaZ > 0)
-		{
-			// Right Turn
-			bTurning = true;
-			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-			RightRotationTimeLine.PlayFromStart();
-			GetMesh()->GetAnimInstance()->Montage_Play(RightTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.2f);
-		}
-		else if (DeltaZ < 0)
-		{
-			// Left Turn
-			bTurning = true;
-			GetWorldTimerManager().SetTimer(RotationTimerHandle, this, &ATPS_PlayerCharacter::UpdateTimeLine, GetWorld()->DeltaTimeSeconds, true);
-			LeftRotationTimeLine.PlayFromStart();
-			GetMesh()->GetAnimInstance()->Montage_Play(LeftTurnAnim, 1.3f, EMontagePlayReturnType::MontageLength, 0.0f);
-		}
-	}
-}
-
-void ATPS_PlayerCharacter::RotationFinished()
-{
-	GetWorldTimerManager().ClearTimer(RotationTimerHandle);
+	AddMovementInput(DesiredDirection);
 }
 
 void ATPS_PlayerCharacter::DoJump()
