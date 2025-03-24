@@ -66,10 +66,6 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCameraComp->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	PlayerCameraComp->bUsePawnControlRotation = false;
-
-	//컨트롤 리그
-	TPSPlayerControlRig = CreateDefaultSubobject<UControlRigComponent>("PlayerControlRig");
-	TPSPlayerControlRig->SetupAttachment(RootComponent);
 	
 	// 무브먼트 설정
 	TPSCharacterMoveComp = FindComponentByClass<UTPS_CharacterMovementComponent>();
