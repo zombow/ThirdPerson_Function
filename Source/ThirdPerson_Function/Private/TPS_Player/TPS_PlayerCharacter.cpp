@@ -66,7 +66,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCameraComp->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	PlayerCameraComp->bUsePawnControlRotation = false;
-	
+
 	// 무브먼트 설정
 	TPSCharacterMoveComp = FindComponentByClass<UTPS_CharacterMovementComponent>();
 	TPSCharacterMoveComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
@@ -77,6 +77,10 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
 	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
 	PrimaryActorTick.bCanEverTick = true;
+
+	// 무기수납 위치 설정
+	WeaponSpot = CreateDefaultSubobject<USceneComponent>("Weapon Spot");
+	WeaponSpot->SetupAttachment(PlayerSkeletalMeshComp, FName("spine_05"));
 }
 
 
@@ -96,13 +100,12 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::SheathWeapon);
-
+		TPSController->OnInteraction.AddDynamic(this, &ATPS_PlayerCharacter::Interaction);
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
 
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
-	
 }
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
@@ -129,6 +132,8 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
 		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))],
 		            FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
+		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction"))],
+		            FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")), 1);
 	}
 }
 
@@ -260,6 +265,14 @@ void ATPS_PlayerCharacter::SheathWeapon()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
+	}
+}
+
+void ATPS_PlayerCharacter::Interaction()
+{
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")))))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Interaction"));
 	}
 }
 

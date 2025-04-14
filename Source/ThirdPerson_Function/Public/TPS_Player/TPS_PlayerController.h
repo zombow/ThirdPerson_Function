@@ -54,4 +54,12 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDrawWeapon);
 	FDrawWeapon OnDrawWeapon;
 	void HandleDrawWeaponInput(const FInputActionValue& Value);
+	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteraction);
+	FInteraction OnInteraction;
+	void HandleInteractionInput(const FInputActionValue& Value);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FInteractionHold);
+	FInteractionHold OnInteractionHold;
+	void HandleInteractionHold(const FInputActionValue& Value);
 };

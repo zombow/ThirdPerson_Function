@@ -22,15 +22,17 @@ protected:
 	ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	// Sets default values for this character's properties
 	virtual void PossessedBy(AController* NewController) override;
-	// Components
 	virtual void BeginPlay() override;
 	
+	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMeshComp;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraCompo")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraComp")
 	TObjectPtr<UCameraComponent> PlayerCameraComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "CameraBoom")
 	TObjectPtr<USpringArmComponent> CameraBoom;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SceneComp")
+	TObjectPtr<USceneComponent> WeaponSpot;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MoveComp")
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
@@ -66,6 +68,8 @@ protected:
 	void DrawWeapon();
 	UFUNCTION()
 	void SheathWeapon();
+	UFUNCTION()
+	void Interaction();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UCurveFloat> RightRotationTimeLineCurveFloat;
