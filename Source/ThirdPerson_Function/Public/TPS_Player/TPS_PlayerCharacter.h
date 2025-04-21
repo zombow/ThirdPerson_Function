@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "TPS_InteractionComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -23,7 +25,7 @@ protected:
 	// Sets default values for this character's properties
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
-	
+
 	// Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "SkeletalMeshComp")
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMeshComp;
@@ -39,7 +41,10 @@ protected:
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")
+	TObjectPtr<UTPS_InteractionComponent> TPSInteractionComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")
+	TObjectPtr<UBoxComponent> TargetInteractionBox;
 
 	// direction
 	FVector TPSLastInput;
@@ -73,13 +78,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UCurveFloat> RightRotationTimeLineCurveFloat;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UCurveFloat> LeftRotationTimeLineCurveFloat;
 	FRotator CurrentActorRotation;
 	bool bTurning;
 
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UAnimMontage> RightTurnAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")

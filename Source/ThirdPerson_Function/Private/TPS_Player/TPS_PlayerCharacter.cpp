@@ -81,6 +81,17 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	// 무기수납 위치 설정
 	WeaponSpot = CreateDefaultSubobject<USceneComponent>("Weapon Spot");
 	WeaponSpot->SetupAttachment(PlayerSkeletalMeshComp, FName("spine_05"));
+
+	// 인터렉션 컴포넌트
+	TPSInteractionComponent = CreateDefaultSubobject<UTPS_InteractionComponent>("InteractionComp");
+
+	// 인터렉션 컴포넌트에 사용할 BoxComponent
+	TargetInteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TargetInteractionBox"));
+	TargetInteractionBox->SetupAttachment(RootComponent);
+	TargetInteractionBox->SetGenerateOverlapEvents(true);
+	TargetInteractionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
+
+	TPSInteractionComponent->InteractionBox = TargetInteractionBox;
 }
 
 
