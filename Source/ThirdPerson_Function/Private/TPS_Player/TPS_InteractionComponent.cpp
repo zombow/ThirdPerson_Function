@@ -21,6 +21,10 @@ void UTPS_InteractionComponent::BeginPlay()
 		InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &UTPS_InteractionComponent::OnOverlapBegin);
 		InteractionBox->OnComponentEndOverlap.AddDynamic(this, &UTPS_InteractionComponent::OnOverlapEnd);
 	}
+	else
+	{
+		UE_LOG(LogTemp,Warning,TEXT("InteractionBox is NOT FOUND"))
+	}
 }
 
 
