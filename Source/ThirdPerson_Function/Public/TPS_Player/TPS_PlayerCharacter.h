@@ -13,6 +13,7 @@
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.h"
+#include "TPS_Props/TPS_InteractableActor.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
@@ -85,7 +86,10 @@ protected:
 	bool bTurning;
 
 public:
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
+	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
+	TObjectPtr<ATPS_InteractableActor> FocusdInteractableActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	TObjectPtr<UAnimMontage> RightTurnAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
@@ -96,7 +100,7 @@ public:
 	bool TurnRight;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
 	bool TurnLeft;
-
+	
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)

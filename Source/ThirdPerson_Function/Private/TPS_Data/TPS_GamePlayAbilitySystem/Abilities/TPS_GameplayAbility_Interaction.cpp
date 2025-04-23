@@ -15,10 +15,8 @@ void UTPS_GameplayAbility_Interaction::ActivateAbility(const FGameplayAbilitySpe
 	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
 	if (Player)
 	{
-		TriggerEventData->Target;
 		// 플레이어가 인터렉션을 시도할경우 무엇을 할것인가?
-	
-		UE_LOG(LogTemp,Warning,TEXT("ON INTERACTION!!!"));
+		//Player->InteractableActorArray;
 	}
 	else
 	{

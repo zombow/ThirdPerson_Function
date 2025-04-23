@@ -8,7 +8,10 @@
 #include "TPS_InteractionComponent.generated.h"
 
 
+class ATPS_PlayerCharacter;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+
 class THIRDPERSON_FUNCTION_API UTPS_InteractionComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -16,8 +19,10 @@ class THIRDPERSON_FUNCTION_API UTPS_InteractionComponent : public UActorComponen
 public:
 	// Sets default values for this component's properties
 	UTPS_InteractionComponent();
-	UPROPERTY(EditDefaultsOnly , BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "BoxComponent")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "BoxComponent")
 	TObjectPtr<UBoxComponent> InteractionBox;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "TPSPlayer")
+	TObjectPtr<ATPS_PlayerCharacter> Player;
 
 protected:
 	UFUNCTION()
@@ -29,8 +34,4 @@ protected:
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 };
