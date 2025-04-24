@@ -8,21 +8,23 @@
 // Sets default values
 ATPS_InteractableActor::ATPS_InteractableActor()
 {
-
 	PrimaryActorTick.bCanEverTick = false;
-
 }
 
 
 void ATPS_InteractableActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
-void ATPS_InteractableActor::InteractionStart(ATPS_PlayerCharacter& PlayerCharacter)
+void ATPS_InteractableActor::InteractionStart(ATPS_PlayerCharacter* PlayerCharacter)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PlayerCharacter : %p"), *PlayerCharacter.GetName() )
+	this->OnInteract(PlayerCharacter);
+}
+
+void ATPS_InteractableActor::OnInteract_Implementation(ATPS_PlayerCharacter* PlayerCharacter)
+{
+
 }
 
 

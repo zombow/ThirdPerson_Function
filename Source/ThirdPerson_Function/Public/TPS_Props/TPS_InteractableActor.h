@@ -22,5 +22,10 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void InteractionStart(ATPS_PlayerCharacter& PlayerCharacter);
+	void InteractionStart( ATPS_PlayerCharacter* PlayerCharacter);
+protected:
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Interaction")
+	void OnInteract(ATPS_PlayerCharacter* PlayerCharacter);
+	virtual void OnInteract_Implementation(ATPS_PlayerCharacter* PlayerCharacter);
 };

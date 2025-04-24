@@ -16,7 +16,7 @@ void UTPS_GameplayAbility_Interaction::ActivateAbility(const FGameplayAbilitySpe
 	if (Player)
 	{
 		// 플레이어가 인터렉션을 시도할경우 무엇을 할것인가?
-		//Player->InteractableActorArray;
+		Player->FocusdInteractableActor->InteractionStart(Player);
 	}
 	else
 	{

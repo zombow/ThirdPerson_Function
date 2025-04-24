@@ -54,8 +54,6 @@ void UTPS_InteractionComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedCo
 			}
 		}
 		Player->FocusdInteractableActor = FocusedObject;
-
-		UE_LOG(LogTemp,Warning, TEXT("%s"), *FocusedObject.GetName())
 	}
 }
 
