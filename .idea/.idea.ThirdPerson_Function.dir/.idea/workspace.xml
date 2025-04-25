@@ -10,14 +10,16 @@
     <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/LeftTurn.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/LeftTurn.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RunningTurn180_UE.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_GreatSword.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_GreatSword.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RunningTurn180.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RunningTurn180.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/WeponAnimation/GreatSword_RunBreak.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/WeponAnimation/GreatSword_RunBreak.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/BP_AllowRotationNofityState.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/BP_ComboAttackNofityState.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/Standing_To_Roll_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/Standing_To_Roll_Montage.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponAttack_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/WeaponAttack_Montage.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_TPS_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_TPS_PlayerCharacter.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_InteractionComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_InteractionComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_InteractionComponent.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_InteractionComponent.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Animation/TPS_AllowRotationAnimNotifyState.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Animation/TPS_AllowRotationAnimNotifyState.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,11 +30,11 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://1" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/include/atomic" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://C:/UE_5.4/Engine/Plugins/Animation/RigLogic/Source/RigLogicLibTest/Private/rltests/conditionaltable/TestConditionalTable.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/UE_5.4/Engine/Plugins/Runtime/GameplayAbilities/Source/GameplayAbilities/Private/Abilities/GameplayAbility.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://C:/UE_5.4/Engine/Source/Runtime/CoreUObject/Public/UObject/ObjectHandle.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Intermediate/Build/Win64/UnrealEditor/Inc/ThirdPerson_Function/UHT/TPS_SetRootModeAnimNotifyState.gen.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_AssetManager.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/TPS_AttributeSet.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Data/TPS_AssetManager.h" root0="FORCE_HIGHLIGHTING" />
@@ -237,7 +239,7 @@
       <workItem from="1745417037759" duration="4132000" />
       <workItem from="1745421344261" duration="29000" />
       <workItem from="1745503787688" duration="6531000" />
-      <workItem from="1745551798036" duration="8450000" />
+      <workItem from="1745551798036" duration="12637000" />
     </task>
     <servers />
   </component>
