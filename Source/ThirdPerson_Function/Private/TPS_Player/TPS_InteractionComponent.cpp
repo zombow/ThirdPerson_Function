@@ -35,34 +35,39 @@ void UTPS_InteractionComponent::BeginPlay()
 void UTPS_InteractionComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                                int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Begin Overlap"));
 	if (TObjectPtr<ATPS_InteractableActor> InteractableActor = Cast<ATPS_InteractableActor>(OtherActor))
 	{
 		Player->InteractableActorArray.Add(InteractableActor);
-		TObjectPtr<ATPS_InteractableActor> FocusedObject = nullptr;
-		float DistanceFromNearestActor = TNumericLimits<float>::Max();
-		for (TObjectPtr<ATPS_InteractableActor> ActorToCheck : Player->InteractableActorArray)
-		{
-			if (ActorToCheck)
-			{
-				const float DistanceFromActorToCheck = (Player->GetActorLocation() - ActorToCheck->GetActorLocation()).SizeSquared();
-				if (DistanceFromActorToCheck < DistanceFromNearestActor)
-				{
-					FocusedObject = ActorToCheck;
-					DistanceFromNearestActor = DistanceFromActorToCheck;
-				}
-			}
-		}
-		Player->FocusdInteractableActor = FocusedObject;
+		Player->FocusdInteractableActor = FindNearActor(Player->GetActorLocation(), Player->InteractableActorArray);
 	}
 }
 
 void UTPS_InteractionComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                                              int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("End Overlap"));
 	if (TObjectPtr<ATPS_InteractableActor> InteractableActor = Cast<ATPS_InteractableActor>(OtherActor))
 	{
 		Player->InteractableActorArray.Remove(InteractableActor);
+		Player->FocusdInteractableActor = FindNearActor(Player->GetActorLocation(), Player->InteractableActorArray);
 	}
 }
+
+ATPS_InteractableActor* UTPS_InteractionComponent::FindNearActor(const FVector& Origin, const TSet<TObjectPtr<ATPS_InteractableActor>>& ActorSet)
+{
+	ATPS_InteractableActor* NearActor = nullptr;
+	float DistanceFromNearestActor = TNumericLimits<float>::Max();
+	for (TObjectPtr<ATPS_InteractableActor> ActorToCheck : ActorSet)
+	{
+		if (ActorToCheck)
+		{
+			const float DistanceFromActorToCheck = (Origin - ActorToCheck->GetActorLocation()).SizeSquared();
+			if (DistanceFromActorToCheck < DistanceFromNearestActor)
+			{
+				NearActor = ActorToCheck;
+				DistanceFromNearestActor = DistanceFromActorToCheck;
+			}
+		}
+	}
+	return NearActor;
+}
+

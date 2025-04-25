@@ -76,12 +76,7 @@ protected:
 	void SheathWeapon();
 	UFUNCTION()
 	void Interaction();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	TObjectPtr<UCurveFloat> RightRotationTimeLineCurveFloat;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	TObjectPtr<UCurveFloat> LeftRotationTimeLineCurveFloat;
+	
 	FRotator CurrentActorRotation;
 	bool bTurning;
 
@@ -90,16 +85,9 @@ public:
 	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TObjectPtr<ATPS_InteractableActor> FocusdInteractableActor;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	TObjectPtr<UAnimMontage> RightTurnAnim;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	TObjectPtr<UAnimMontage> LeftTurnAnim;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	bool TurnRight;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Turn")
-	bool TurnLeft;
+
 	
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;

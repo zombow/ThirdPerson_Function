@@ -8,6 +8,7 @@
 #include "TPS_InteractionComponent.generated.h"
 
 
+class ATPS_InteractableActor;
 class ATPS_PlayerCharacter;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -28,10 +29,10 @@ protected:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	                    bool bFromSweep, const FHitResult& SweepResult);
-
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	ATPS_InteractableActor* FindNearActor(const FVector& Origin, const TSet<TObjectPtr<ATPS_InteractableActor>>& ActorSet);
 	// Called when the game starts
 	virtual void BeginPlay() override;
 };
