@@ -93,8 +93,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)
 	FVector GetTPSLastInput();
-	UFUNCTION(BlueprintCallable)
-	FVector GetDesiredDirection();
 
 	void StaminaRegen(bool bActive);
 	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);

@@ -74,8 +74,8 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
 	TPSCharacterMoveComp->bCanWalkOffLedgesWhenCrouching = true;
 	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
-	TPSCharacterMoveComp->MaxWalkSpeed = 600.0f;
-	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 300.0f;
+	TPSCharacterMoveComp->MaxWalkSpeed = 300.0f;
+	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 150.0f;
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 무기수납 위치 설정
@@ -158,11 +158,6 @@ FVector ATPS_PlayerCharacter::GetTPSLastInput()
 	return TPSLastInput;
 }
 
-FVector ATPS_PlayerCharacter::GetDesiredDirection()
-{
-	return DesiredDirection;
-}
-
 FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
 {
 	if (AbilitySpecs.Find(AbilityTag))
@@ -204,7 +199,7 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 {
 	// // Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
-	TPSLastInput = GetLastMovementInputVector();
+
 
 	FRotator CameraRotation = CameraBoom->GetComponentRotation();
 	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
@@ -215,7 +210,11 @@ void ATPS_PlayerCharacter::Move(FVector2D Value)
 	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
 	DesiredDirection.Normalize();
 
-	// Character Rotation
+	if (Value != FVector2D::ZeroVector)
+	{
+		TPSLastInput = DesiredDirection;
+	}
+
 	AddMovementInput(DesiredDirection);
 }
 
