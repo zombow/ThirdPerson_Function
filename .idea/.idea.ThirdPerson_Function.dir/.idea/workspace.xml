@@ -10,33 +10,12 @@
     <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/AnimState/BP_RootModeNotifyState.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/AnimState/BP_RootModeNotifyState.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Idle.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Right.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouch_Walk.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Crouched_To_Stand.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/LeftTurn.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/LeftTurn180_UE.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RightTurn.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RightTurn_UE.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RunToStop.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/RunningTurn180.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sprinting_To_Roll.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sprinting_To_Roll_Short.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Sprinting_To_Roll_Short.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Standing_To_Crouch.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Standing_To_Roll.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Standing_To_Roll.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/WalkToStop.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/Walk_Left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSCrouchWalk.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSCrouchWalk.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/IdleTurn_Left.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/IdleTurn_Right.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/LeftTurn90.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/LeftTurn90.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_Landing.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_Landing.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSWalk_Run.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/BS_TPSWalk_Run.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/Standing_To_Roll_Montage.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Montage/Standing_To_Roll_Montage.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_TPS_PlayerCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/BluePrints/Character/BP_TPS_PlayerCharacter.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Private/TPS_Player/TPS_PlayerCharacter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/ThirdPerson_Function/Public/TPS_Player/TPS_PlayerCharacter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ThirdPerson_Function.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/ThirdPerson_Function.uproject" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
