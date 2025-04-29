@@ -90,7 +90,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TargetInteractionBox->SetupAttachment(RootComponent);
 	TargetInteractionBox->SetGenerateOverlapEvents(true);
 	TargetInteractionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-
+	
 	TPSInteractionComponent->InteractionBox = TargetInteractionBox;
 }
 
