@@ -35,6 +35,9 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRotationInput, FVector2D, MoveInput);
 	FOnRotationInput OnRotationInput;
 	void HandleRotationInput(const FInputActionValue& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRotationRelease, FVector2D, MoveInput);
+	FOnRotationRelease OnRotationRelease;
+	void HandleRotationRelease(const FInputActionValue& Value);
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInput);
 	FOnJumpInput OnJumpInput;

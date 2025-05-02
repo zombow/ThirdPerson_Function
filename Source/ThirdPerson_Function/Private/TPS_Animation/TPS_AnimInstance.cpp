@@ -12,9 +12,30 @@ void UTPS_AnimInstance::NativeBeginPlay()
 	TPSPlayerController = Cast<ATPS_PlayerController>(TryGetPawnOwner()->GetController());
 	if (TPSPlayerController)
 	{
+		TPSPlayerController->OnRotationInput.AddDynamic(this, &UTPS_AnimInstance::RotationInput);
+		TPSPlayerController->OnRotationRelease.AddDynamic(this, &UTPS_AnimInstance::RotationRelease);
 		TPSPlayerController->OnMoveOngoing.AddDynamic(this, &UTPS_AnimInstance::MoveOn);
 		TPSPlayerController->OnMoveEnd.AddDynamic(this, &UTPS_AnimInstance::MoveEnded);
 	}
+}
+
+void UTPS_AnimInstance::RotationInput(FVector2D Value)
+{
+	this->Rotation(Value);
+}
+
+
+void UTPS_AnimInstance::Rotation_Implementation(FVector2D Value)
+{
+}
+
+void UTPS_AnimInstance::RotationRelease(FVector2D Value)
+{
+	this->RotationEnd(Value);
+}
+
+void UTPS_AnimInstance::RotationEnd_Implementation(FVector2D Value)
+{
 }
 
 void UTPS_AnimInstance::MoveOn(FInputActionInstance Value)

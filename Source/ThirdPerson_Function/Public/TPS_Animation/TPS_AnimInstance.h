@@ -24,7 +24,19 @@ public:
 	bool bisPlayingMontage; // 상하체 블랜딩을 원할경우 활성화
 
 	virtual void NativeBeginPlay() override;
+	
+	UFUNCTION()
+	void RotationInput(FVector2D Value);
+	UFUNCTION(BlueprintNativeEvent)
+	void Rotation(FVector2D  Value);
+	virtual void Rotation_Implementation(FVector2D Value);
 
+	UFUNCTION()
+	void RotationRelease(FVector2D Value);
+	UFUNCTION(BlueprintNativeEvent)
+	void RotationEnd(FVector2D  Value);
+	virtual void RotationEnd_Implementation(FVector2D Value);
+	
 	UFUNCTION()
 	void MoveOn(FInputActionInstance Value);
 	UFUNCTION(BlueprintNativeEvent)
