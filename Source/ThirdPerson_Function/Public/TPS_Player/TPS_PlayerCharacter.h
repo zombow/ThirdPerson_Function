@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "InputAction.h"
 #include "TPS_InteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
@@ -51,14 +52,15 @@ protected:
 	FVector TPSLastInput;
 	FVector DesiredDirection;
 
-
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
 
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
-	void Move(FVector2D Value);
+	void Rotation(FVector2D Value);
+	UFUNCTION()
+	void MoveOnGoing(FInputActionInstance Value);
 	UFUNCTION()
 	void DoJump();
 	void EndJump();
@@ -76,10 +78,10 @@ protected:
 	void SheathWeapon();
 	UFUNCTION()
 	void Interaction();
-	
 	FRotator CurrentActorRotation;
 	bool bTurning;
 
+	void RotationAndMove(FVector2D InputValue2D);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;
@@ -88,7 +90,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;
 
-	
+
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UFUNCTION(BlueprintCallable)

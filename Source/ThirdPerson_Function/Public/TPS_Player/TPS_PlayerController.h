@@ -17,7 +17,6 @@ class THIRDPERSON_FUNCTION_API ATPS_PlayerController : public APlayerController
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UTPS_InputConfig> InputConfig;
@@ -26,10 +25,16 @@ public:
 	FOnMouseMoveInput OnMouseMoveInput;
 	void HandleMouseMoveInput(const FInputActionValue& Value);
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveInput, FVector2D, MoveInput);
-	FOnMoveInput OnMoveInput;
-	void HandleMoveInput(const FInputActionValue& Value);
-	void HandleMoveEnd(const FInputActionValue& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveOngoing, FInputActionInstance, Instance);
+	FOnMoveOngoing OnMoveOngoing;;
+	void HandleMoveOngoing(const FInputActionInstance& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveEnd, FInputActionInstance, Instance);
+	FOnMoveEnd OnMoveEnd;;
+	void HandleMoveEnd(const FInputActionInstance& Value);
+	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRotationInput, FVector2D, MoveInput);
+	FOnRotationInput OnRotationInput;
+	void HandleRotationInput(const FInputActionValue& Value);
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInput);
 	FOnJumpInput OnJumpInput;

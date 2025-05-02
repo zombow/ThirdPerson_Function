@@ -90,7 +90,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TargetInteractionBox->SetupAttachment(RootComponent);
 	TargetInteractionBox->SetGenerateOverlapEvents(true);
 	TargetInteractionBox->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	
+
 	TPSInteractionComponent->InteractionBox = TargetInteractionBox;
 }
 
@@ -103,7 +103,8 @@ void ATPS_PlayerCharacter::BeginPlay()
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		// Controller의 인풋바인딩
-		TPSController->OnMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Move);
+		TPSController->OnRotationInput.AddDynamic(this, &ATPS_PlayerCharacter::Rotation);
+		TPSController->OnMoveOngoing.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
@@ -112,6 +113,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::SheathWeapon);
 		TPSController->OnInteraction.AddDynamic(this, &ATPS_PlayerCharacter::Interaction);
+
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
 
@@ -195,26 +197,16 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 	}
 }
 
-void ATPS_PlayerCharacter::Move(FVector2D Value)
+void ATPS_PlayerCharacter::Rotation(FVector2D Value)
 {
-	// // Root Motion 상태에서는 이동 방향만 기록하거나 애니메이션과 동기화
 	FVector2D InputDirection = Value;
+	RotationAndMove(InputDirection);
+}
 
-
-	FRotator CameraRotation = CameraBoom->GetComponentRotation();
-	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
-	CameraForward.Z = 0;
-	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
-	CameraRight.Z = 0;
-
-	DesiredDirection = (CameraForward * InputDirection.X) + (CameraRight * InputDirection.Y);
-	DesiredDirection.Normalize();
-
-	if (Value != FVector2D::ZeroVector)
-	{
-		TPSLastInput = DesiredDirection;
-	}
-
+void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
+{
+	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
+	RotationAndMove(InputDirection);
 	AddMovementInput(DesiredDirection);
 }
 
@@ -283,6 +275,23 @@ void ATPS_PlayerCharacter::Interaction()
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Interaction"));
+	}
+}
+
+void ATPS_PlayerCharacter::RotationAndMove(FVector2D InputValue2D)
+{
+	FRotator CameraRotation = CameraBoom->GetComponentRotation();
+	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+	CameraForward.Z = 0;
+	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+	CameraRight.Z = 0;
+
+	DesiredDirection = (CameraForward * InputValue2D.X) + (CameraRight * InputValue2D.Y);
+	DesiredDirection.Normalize();
+
+	if (InputValue2D != FVector2D::ZeroVector)
+	{
+		TPSLastInput = DesiredDirection;
 	}
 }
 

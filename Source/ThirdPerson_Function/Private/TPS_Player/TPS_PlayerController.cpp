@@ -25,13 +25,15 @@ void ATPS_PlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleMouseMoveInput);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Rotation"))), ETriggerEvent::Triggered,
+		                                   this, &ATPS_PlayerController::HandleRotationInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleMoveInput);
-		// EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
-		//                                    this, &ATPS_PlayerController::HandleMoveEnd);
+		                                   this, &ATPS_PlayerController::HandleMoveOngoing);
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
+		                                   this, &ATPS_PlayerController::HandleMoveEnd);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleJumpInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Started,
+		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleOnCrouching);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Completed,
 		                                   this, &ATPS_PlayerController::HandleUnCrouching);
@@ -53,14 +55,19 @@ void ATPS_PlayerController::HandleMouseMoveInput(const FInputActionValue& Value)
 	OnMouseMoveInput.Broadcast(Value.Get<FVector2D>());
 }
 
-void ATPS_PlayerController::HandleMoveInput(const FInputActionValue& Value)
+void ATPS_PlayerController::HandleRotationInput(const FInputActionValue& Value)
 {
-	OnMoveInput.Broadcast(Value.Get<FVector2D>());
+	OnRotationInput.Broadcast(Value.Get<FVector2D>());
 }
 
-void ATPS_PlayerController::HandleMoveEnd(const FInputActionValue& Value)
+void ATPS_PlayerController::HandleMoveOngoing(const FInputActionInstance& Value)
 {
-	//OnMoveInput.Broadcast(Value.Get<FVector2D>());
+	OnMoveOngoing.Broadcast(Value);
+}
+
+void ATPS_PlayerController::HandleMoveEnd(const FInputActionInstance& Value)
+{
+	OnMoveEnd.Broadcast(Value);
 }
 
 void ATPS_PlayerController::HandleJumpInput(const FInputActionValue& Value)

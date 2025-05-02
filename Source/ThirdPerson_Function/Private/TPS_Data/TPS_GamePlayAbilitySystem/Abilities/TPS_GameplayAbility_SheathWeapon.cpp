@@ -33,6 +33,7 @@ void UTPS_GameplayAbility_SheathWeapon::EndAbility(const FGameplayAbilitySpecHan
 	if (Player)
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
+		
 	}
 }
 

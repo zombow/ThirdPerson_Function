@@ -19,6 +19,7 @@ void ATPS_InteractableActor::BeginPlay()
 
 void ATPS_InteractableActor::InteractionStart(ATPS_PlayerCharacter* PlayerCharacter)
 {
+	// cpp에서할 선행동작
 	this->OnInteract(PlayerCharacter);
 }
 
