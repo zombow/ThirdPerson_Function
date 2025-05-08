@@ -8,13 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5dddc715-e574-4e08-a426-e6b7cd987ba9" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ThirdPerson_Function.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/ABP_TPSPlayer.uasset" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/Walk_Stop_L.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/Walk_Stop_L.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/Walk_Stop_R.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Animations/BaseAnimation/Walk_Stop_R.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/PSD_TPS_Motion.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/PSD_TPS_Motion.uasset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Run_To_Stop.uasset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ThirdPerson_Function.uproject" beforeDir="false" afterPath="$PROJECT_DIR$/ThirdPerson_Function.uproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/PSD_TPS_Motion.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/PSN_TPS_Motion.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/PSS_TPS_Motion.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Animation/Walk_Stop_Test_BS_root_root_Unreal_Take_Base_Layer.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/CHT_DataBases.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/CHT_PoseSerach_Dense.uasset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" beforeDir="false" afterPath="$PROJECT_DIR$/Content/TPS_ProjectFile/Maps/TPS_Map.umap" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/TPS_ProjectFile/S_ChooserTableInput.uasset" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -252,6 +255,7 @@
       <workItem from="1746593850040" duration="6920000" />
       <workItem from="1746632434755" duration="828000" />
       <workItem from="1746687000060" duration="3343000" />
+      <workItem from="1746712138591" duration="5873000" />
     </task>
     <servers />
   </component>
