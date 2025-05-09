@@ -106,8 +106,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnRotationInput.AddDynamic(this, &ATPS_PlayerCharacter::Rotation);
 		TPSController->OnMoveOngoing.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
-		TPSController->OnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
-		TPSController->UnCrouching.AddDynamic(this, &ATPS_PlayerCharacter::UnCrouching);
+		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
 		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
@@ -187,12 +186,10 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 	if (CurrentMovementMode == MOVE_Falling)
 	{
 		TPSAbilitySystemComp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
-		GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromMontagesOnly;
 	}
 	else if ((PreviousMovementMode == MOVE_Falling) && (CurrentMovementMode != MOVE_Falling))
 	{
 		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
-		GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::RootMotionFromEverything;
 		EndJump();
 	}
 }
@@ -224,18 +221,20 @@ void ATPS_PlayerCharacter::EndJump()
 	TPSAbilitySystemComp->CancelAbilities(&JumpTagContainer);
 }
 
-void ATPS_PlayerCharacter::Crouching()
+void ATPS_PlayerCharacter::Crouching(bool bCrouch)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
+	if (bCrouch)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
+		if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
+		}
 	}
-}
-
-void ATPS_PlayerCharacter::UnCrouching()
-{
-	FGameplayTagContainer CrouchTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")));
-	TPSAbilitySystemComp->CancelAbilities(&CrouchTagContainer);
+	else
+	{
+		FGameplayTagContainer CrouchTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")));
+		TPSAbilitySystemComp->CancelAbilities(&CrouchTagContainer);
+	}
 }
 
 void ATPS_PlayerCharacter::DoRoll()

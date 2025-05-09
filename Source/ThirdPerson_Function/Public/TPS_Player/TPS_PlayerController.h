@@ -43,13 +43,9 @@ public:
 	FOnJumpInput OnJumpInput;
 	void HandleJumpInput(const FInputActionValue& Value);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCrouching);
-	FOnCrouching OnCrouching;
-	void HandleOnCrouching(const FInputActionValue& Value);
-	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUnCrouching);
-	FUnCrouching UnCrouching;
-	void HandleUnCrouching(const FInputActionValue& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCrouchingInput , bool, bCrouch);
+	FCrouchingInput OnCrouchingInput;
+	void HandleOnCrouchingInput(const FInputActionValue& Value);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRollInput);
 	FOnRollInput OnRollInput;

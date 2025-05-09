@@ -36,9 +36,7 @@ void ATPS_PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleJumpInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleOnCrouching);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleUnCrouching);
+		                                   this, &ATPS_PlayerController::HandleOnCrouchingInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Roll"))), ETriggerEvent::Completed,
 		                                   this, &ATPS_PlayerController::HandleRollInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Attack"))), ETriggerEvent::Completed,
@@ -82,14 +80,9 @@ void ATPS_PlayerController::HandleJumpInput(const FInputActionValue& Value)
 	OnJumpInput.Broadcast();
 }
 
-void ATPS_PlayerController::HandleOnCrouching(const FInputActionValue& Value)
+void ATPS_PlayerController::HandleOnCrouchingInput(const FInputActionValue& Value)
 {
-	OnCrouching.Broadcast();
-}
-
-void ATPS_PlayerController::HandleUnCrouching(const FInputActionValue& Value)
-{
-	UnCrouching.Broadcast();
+	OnCrouchingInput.Broadcast(Value.Get<bool>());
 }
 
 void ATPS_PlayerController::HandleRollInput(const FInputActionValue& Value)

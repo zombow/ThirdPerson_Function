@@ -65,9 +65,7 @@ protected:
 	void DoJump();
 	void EndJump();
 	UFUNCTION()
-	void Crouching();
-	UFUNCTION()
-	void UnCrouching();
+	void Crouching(bool bCrouch);
 	UFUNCTION()
 	void DoRoll();
 	UFUNCTION()
