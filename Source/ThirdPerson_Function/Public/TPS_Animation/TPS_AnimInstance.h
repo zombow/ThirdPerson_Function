@@ -30,12 +30,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void Rotation(FVector2D  Value);
 	virtual void Rotation_Implementation(FVector2D Value);
-
-	UFUNCTION()
-	void RotationRelease(FVector2D Value);
-	UFUNCTION(BlueprintNativeEvent)
-	void RotationEnd(FVector2D  Value);
-	virtual void RotationEnd_Implementation(FVector2D Value);
+	
 	
 	UFUNCTION()
 	void MoveOn(FInputActionInstance Value);

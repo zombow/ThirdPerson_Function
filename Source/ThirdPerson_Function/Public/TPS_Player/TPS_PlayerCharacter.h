@@ -49,7 +49,9 @@ protected:
 	TObjectPtr<UBoxComponent> TargetInteractionBox;
 
 	// direction
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Movement")
 	FVector TPSLastInput;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Movement")
 	FVector DesiredDirection;
 
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);

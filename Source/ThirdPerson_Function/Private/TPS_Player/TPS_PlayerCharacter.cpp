@@ -196,6 +196,11 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 
 void ATPS_PlayerCharacter::Rotation(FVector2D Value)
 {
+	if (Value == FVector2D::ZeroVector)
+	{
+		DesiredDirection = FVector::ZeroVector;
+		return;
+	}
 	FVector2D InputDirection = Value;
 	RotationAndMove(InputDirection);
 }
