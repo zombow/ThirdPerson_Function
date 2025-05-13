@@ -4,6 +4,7 @@
 #include "TPS_Animation/TPS_AnimInstance.h"
 
 #include "Abilities/GameplayAbilityTypes.h"
+#include "Animation/AnimInstanceProxy.h"
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 void UTPS_AnimInstance::NativeBeginPlay()
@@ -18,6 +19,13 @@ void UTPS_AnimInstance::NativeBeginPlay()
 	}
 }
 
+void UTPS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
+}
+
+
 void UTPS_AnimInstance::RotationInput(FVector2D Value)
 {
 	this->Rotation(Value);
@@ -26,6 +34,7 @@ void UTPS_AnimInstance::RotationInput(FVector2D Value)
 
 void UTPS_AnimInstance::Rotation_Implementation(FVector2D Value)
 {
+	GetProxyOnAnyThread<FAnimInstanceProxy>();
 }
 
 void UTPS_AnimInstance::MoveOn(FInputActionInstance Value)

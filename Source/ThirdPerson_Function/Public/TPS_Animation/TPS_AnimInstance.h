@@ -24,7 +24,7 @@ public:
 	bool bisPlayingMontage; // 상하체 블랜딩을 원할경우 활성화
 
 	virtual void NativeBeginPlay() override;
-	
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	UFUNCTION()
 	void RotationInput(FVector2D Value);
 	UFUNCTION(BlueprintNativeEvent)
