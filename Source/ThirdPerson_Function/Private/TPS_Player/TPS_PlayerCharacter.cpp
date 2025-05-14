@@ -60,7 +60,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	CameraBoom->CameraRotationLagSpeed = 50;
 	CameraBoom->CameraLagMaxDistance = 10;
 	CameraBoom->bDoCollisionTest = true;
-	CameraBoom->bUsePawnControlRotation = false;
+	CameraBoom->bUsePawnControlRotation = true; // 카메라 리그로 캐릭터 회전
 
 	// 카메라 설정
 	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
@@ -69,7 +69,7 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 
 	// 무브먼트 설정
 	TPSCharacterMoveComp = FindComponentByClass<UTPS_CharacterMovementComponent>();
-	TPSCharacterMoveComp->bUseControllerDesiredRotation = true; // 컨트롤 회전값으로 캐릭터회전 활성화
+	TPSCharacterMoveComp->bUseControllerDesiredRotation = false; // 자유회전 사용
 	TPSCharacterMoveComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
 	TPSCharacterMoveComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
 	TPSCharacterMoveComp->bCanWalkOffLedgesWhenCrouching = true;
@@ -104,6 +104,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 	{
 		// Controller의 인풋바인딩
 		TPSController->OnRotationInput.AddDynamic(this, &ATPS_PlayerCharacter::Rotation);
+		TPSController->OnMouseMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Look);
 		TPSController->OnMoveOngoing.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
@@ -194,6 +195,12 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 	}
 }
 
+void ATPS_PlayerCharacter::Look(FVector2D Value)
+{
+	AddControllerYawInput(Value.X);
+	AddControllerPitchInput(-Value.Y);
+}
+
 void ATPS_PlayerCharacter::Rotation(FVector2D Value)
 {
 	if (Value == FVector2D::ZeroVector)
@@ -209,7 +216,6 @@ void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
 	RotationAndMove(InputDirection);
-	AddMovementInput(DesiredDirection);
 }
 
 void ATPS_PlayerCharacter::DoJump()
@@ -284,14 +290,21 @@ void ATPS_PlayerCharacter::Interaction()
 
 void ATPS_PlayerCharacter::RotationAndMove(FVector2D InputValue2D)
 {
-	FRotator CameraRotation = CameraBoom->GetComponentRotation();
-	FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
-	CameraForward.Z = 0;
-	FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
-	CameraRight.Z = 0;
+	// FRotator CameraRotation = CameraBoom->GetComponentRotation();
+	// FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
+	// CameraForward.Z = 0;
+	// FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
+	// CameraRight.Z = 0;
+	//
+	// DesiredDirection = (CameraForward * InputValue2D.X) + (CameraRight * InputValue2D.Y);
+	// DesiredDirection.Normalize();
 
-	DesiredDirection = (CameraForward * InputValue2D.X) + (CameraRight * InputValue2D.Y);
-	DesiredDirection.Normalize();
+	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
+	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
+	DesiredDirection = FVector(InputValue2D.Y, InputValue2D.X, 0);
+
+	AddMovementInput(InputX, InputValue2D.Y);
+	AddMovementInput(InputY, InputValue2D.X);
 
 	if (InputValue2D != FVector2D::ZeroVector)
 	{

@@ -16,16 +16,4 @@ class THIRDPERSON_FUNCTION_API ATPS_PlayerCameraManager : public APlayerCameraMa
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Player")
-	TObjectPtr<ATPS_PlayerCharacter> PlayerCharacter;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Camera")
-	TObjectPtr<UCameraComponent> Camera;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Camera")
-	TObjectPtr<USpringArmComponent> CameraBoom;
-
-protected:
-	virtual void BeginPlay() override;
-
-	UFUNCTION()
-	void HandleLookInput(FVector2D Value);
 };

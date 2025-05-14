@@ -60,6 +60,8 @@ protected:
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
+	void Look(FVector2D Value);
+	UFUNCTION()
 	void Rotation(FVector2D Value);
 	UFUNCTION()
 	void MoveOnGoing(FInputActionInstance Value);
