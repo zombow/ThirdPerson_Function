@@ -13,7 +13,6 @@ void UTPS_AnimInstance::NativeBeginPlay()
 	TPSPlayerController = Cast<ATPS_PlayerController>(TryGetPawnOwner()->GetController());
 	if (TPSPlayerController)
 	{
-		TPSPlayerController->OnRotationInput.AddDynamic(this, &UTPS_AnimInstance::RotationInput);
 		TPSPlayerController->OnMoveOngoing.AddDynamic(this, &UTPS_AnimInstance::MoveOn);
 		TPSPlayerController->OnMoveEnd.AddDynamic(this, &UTPS_AnimInstance::MoveEnded);
 	}
@@ -23,18 +22,6 @@ void UTPS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-}
-
-
-void UTPS_AnimInstance::RotationInput(FVector2D Value)
-{
-	this->Rotation(Value);
-}
-
-
-void UTPS_AnimInstance::Rotation_Implementation(FVector2D Value)
-{
-	GetProxyOnAnyThread<FAnimInstanceProxy>();
 }
 
 void UTPS_AnimInstance::MoveOn(FInputActionInstance Value)

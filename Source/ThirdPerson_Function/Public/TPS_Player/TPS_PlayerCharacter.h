@@ -50,8 +50,6 @@ protected:
 
 	// direction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Movement")
-	FVector TPSLastInput;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Movement")
 	FVector DesiredDirection;
 
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
@@ -62,9 +60,9 @@ protected:
 	UFUNCTION()
 	void Look(FVector2D Value);
 	UFUNCTION()
-	void Rotation(FVector2D Value);
-	UFUNCTION()
 	void MoveOnGoing(FInputActionInstance Value);
+	UFUNCTION()
+	void MoveEnd(FInputActionInstance Value);
 	UFUNCTION()
 	void DoJump();
 	void EndJump();
@@ -83,7 +81,7 @@ protected:
 	FRotator CurrentActorRotation;
 	bool bTurning;
 
-	void RotationAndMove(FVector2D InputValue2D);
+	void Move(FVector2D InputValue2D);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;

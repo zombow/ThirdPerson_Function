@@ -25,12 +25,6 @@ public:
 
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-	UFUNCTION()
-	void RotationInput(FVector2D Value);
-	UFUNCTION(BlueprintNativeEvent)
-	void Rotation(FVector2D  Value);
-	virtual void Rotation_Implementation(FVector2D Value);
-	
 	
 	UFUNCTION()
 	void MoveOn(FInputActionInstance Value);

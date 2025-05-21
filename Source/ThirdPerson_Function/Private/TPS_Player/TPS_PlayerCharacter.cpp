@@ -103,9 +103,9 @@ void ATPS_PlayerCharacter::BeginPlay()
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		// Controller의 인풋바인딩
-		TPSController->OnRotationInput.AddDynamic(this, &ATPS_PlayerCharacter::Rotation);
 		TPSController->OnMouseMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Look);
 		TPSController->OnMoveOngoing.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
+		TPSController->OnMoveEnd.AddDynamic(this, &ATPS_PlayerCharacter::MoveEnd);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
@@ -198,24 +198,18 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 void ATPS_PlayerCharacter::Look(FVector2D Value)
 {
 	AddControllerYawInput(Value.X);
-	AddControllerPitchInput(-Value.Y);
-}
-
-void ATPS_PlayerCharacter::Rotation(FVector2D Value)
-{
-	if (Value == FVector2D::ZeroVector)
-	{
-		DesiredDirection = FVector::ZeroVector;
-		return;
-	}
-	FVector2D InputDirection = Value;
-	RotationAndMove(InputDirection);
+	AddControllerPitchInput(Value.Y);
 }
 
 void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
-	RotationAndMove(InputDirection);
+	Move(InputDirection);
+}
+
+void ATPS_PlayerCharacter::MoveEnd(FInputActionInstance Value)
+{
+	DesiredDirection = FVector::ZeroVector;
 }
 
 void ATPS_PlayerCharacter::DoJump()
@@ -288,28 +282,13 @@ void ATPS_PlayerCharacter::Interaction()
 	}
 }
 
-void ATPS_PlayerCharacter::RotationAndMove(FVector2D InputValue2D)
+void ATPS_PlayerCharacter::Move(FVector2D InputValue2D)
 {
-	// FRotator CameraRotation = CameraBoom->GetComponentRotation();
-	// FVector CameraForward = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::X);
-	// CameraForward.Z = 0;
-	// FVector CameraRight = FRotationMatrix(CameraRotation).GetUnitAxis(EAxis::Y);
-	// CameraRight.Z = 0;
-	//
-	// DesiredDirection = (CameraForward * InputValue2D.X) + (CameraRight * InputValue2D.Y);
-	// DesiredDirection.Normalize();
-
 	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
 	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
 	DesiredDirection = FVector(InputValue2D.Y, InputValue2D.X, 0);
-
-	AddMovementInput(InputX, InputValue2D.Y);
-	AddMovementInput(InputY, InputValue2D.X);
-
-	if (InputValue2D != FVector2D::ZeroVector)
-	{
-		TPSLastInput = DesiredDirection;
-	}
+	AddMovementInput(InputX, InputValue2D.X);
+	AddMovementInput(InputY, InputValue2D.Y);
 }
 
 void ATPS_PlayerCharacter::StaminaRegen(bool bActive)

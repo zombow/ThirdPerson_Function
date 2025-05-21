@@ -25,8 +25,6 @@ void ATPS_PlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleMouseMoveInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Rotation"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleRotationInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleMoveOngoing);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
@@ -51,11 +49,6 @@ void ATPS_PlayerController::SetupInputComponent()
 void ATPS_PlayerController::HandleMouseMoveInput(const FInputActionValue& Value)
 {
 	OnMouseMoveInput.Broadcast(Value.Get<FVector2D>());
-}
-
-void ATPS_PlayerController::HandleRotationInput(const FInputActionValue& Value)
-{
-	OnRotationInput.Broadcast(Value.Get<FVector2D>());
 }
 
 void ATPS_PlayerController::HandleMoveOngoing(const FInputActionInstance& Value)
