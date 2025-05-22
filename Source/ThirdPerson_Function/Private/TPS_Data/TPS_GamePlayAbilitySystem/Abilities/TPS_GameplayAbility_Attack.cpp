@@ -78,7 +78,7 @@ void UTPS_GameplayAbility_Attack::Attack()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ComboAttack!"));
 		// 순간회전 -> 0.1초라도 회전시간추가
-		auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
+		auto InputVectorNormal = Player->GetActorForwardVector().GetSafeNormal();
 		auto rotation = InputVectorNormal.Rotation();
 		Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
 		
@@ -90,7 +90,7 @@ void UTPS_GameplayAbility_Attack::Attack()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attack!"));
 		// 순간회전 -> 0.1초라도 회전시간추가
-		auto InputVectorNormal = Player->GetTPSLastInput().GetSafeNormal();
+		auto InputVectorNormal = Player->GetActorForwardVector().GetSafeNormal();
 		auto rotation = InputVectorNormal.Rotation();
 		Player->SetActorRotation(FRotator(0, rotation.Yaw, 0));
 		

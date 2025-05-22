@@ -155,11 +155,6 @@ UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 	return TPSAbilitySystemComp;
 }
 
-FVector ATPS_PlayerCharacter::GetTPSLastInput()
-{
-	return TPSLastInput;
-}
-
 FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
 {
 	if (AbilitySpecs.Find(AbilityTag))

@@ -22,11 +22,7 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 		{
 			Player->StaminaRegen(false);
-			auto  CurrentRootMotionMode = Player->GetMesh()->GetAnimInstance()->RootMotionMode;
-			Player->GetMesh()->GetAnimInstance()->RootMotionMode = ERootMotionMode::Type::IgnoreRootMotion;
-			Player->SetActorRotation(Player->GetTPSLastInput().Rotation()); // SetActorRotation을 안정적으로 회전시키기위해 Rootmotion을 일시적으로 변경
-			Player->GetCharacterMovement()->FlushServerMoves();
-			Player->GetMesh()->GetAnimInstance()->RootMotionMode = CurrentRootMotionMode;
+			Player->SetActorRotation(Player->GetActorForwardVector().Rotation()); // SetActorRotation을 안정적으로 회전시키기위해 Rootmotion을 일시적으로 변경
 
 			PlayMontage();
 		}
