@@ -281,7 +281,9 @@ void ATPS_PlayerCharacter::Move(FVector2D InputValue2D)
 {
 	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
 	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
+	
 	DesiredDirection = FVector(InputValue2D.Y, InputValue2D.X, 0);
+	
 	AddMovementInput(InputX, InputValue2D.X);
 	AddMovementInput(InputY, InputValue2D.Y);
 }
