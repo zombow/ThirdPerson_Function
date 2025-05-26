@@ -73,9 +73,9 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	TPSCharacterMoveComp->bOrientRotationToMovement = true; // 이동방향으로 캐릭터회전 활성화
 	TPSCharacterMoveComp->NavAgentProps.bCanCrouch = true; // 앉기기능 활성화
 	TPSCharacterMoveComp->bCanWalkOffLedgesWhenCrouching = true;
-	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, 460.0f, 0.0f);
-	TPSCharacterMoveComp->MaxWalkSpeed = 300.0f;
-	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 250.0f;
+	TPSCharacterMoveComp->RotationRate = FRotator(0.0f, -1.0f, 0.0f);
+	TPSCharacterMoveComp->MaxWalkSpeed = 200.0f;
+	TPSCharacterMoveComp->MaxWalkSpeedCrouched = 180.0f;
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 무기수납 위치 설정
@@ -204,7 +204,7 @@ void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
 
 void ATPS_PlayerCharacter::MoveEnd(FInputActionInstance Value)
 {
-	DesiredDirection = FVector::ZeroVector;
+
 }
 
 void ATPS_PlayerCharacter::DoJump()
