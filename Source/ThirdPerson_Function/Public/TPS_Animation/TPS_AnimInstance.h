@@ -26,16 +26,4 @@ public:
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
-	UFUNCTION()
-	void MoveOn(FInputActionInstance Value);
-	UFUNCTION(BlueprintNativeEvent)
-	void MoveOngoing(FInputActionInstance Value);
-	virtual void MoveOngoing_Implementation(FInputActionInstance Value);
-
-	UFUNCTION()
-	void MoveEnd(FInputActionInstance Value);
-	UFUNCTION(BlueprintNativeEvent)
-	void MoveEnded(FInputActionInstance Value);
-	virtual void MoveEnded_Implementation(FInputActionInstance Value);
-
 };

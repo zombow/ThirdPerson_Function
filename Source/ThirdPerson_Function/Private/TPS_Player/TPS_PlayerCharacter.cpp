@@ -32,19 +32,6 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 		ACharacter::CharacterMovementComponentName))
 {
 	bUseControllerRotationYaw = false;
-	// 플레이어 스켈레톤 설정
-	PlayerSkeletalMeshComp = FindComponentByClass<USkeletalMeshComponent>();
-	if (LoadObject<USkeletalMesh>(
-		nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")))
-	{
-		PlayerSkeletalMeshComp->SetSkeletalMesh(LoadObject<USkeletalMesh>(
-			nullptr,TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny'")));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Find SkeletalMesh..."));
-	}
-	// TODO:load좌표를 다른곳에서 관리
 
 	// 카메라붐 설정
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
@@ -103,9 +90,8 @@ void ATPS_PlayerCharacter::BeginPlay()
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		// Controller의 인풋바인딩
-		TPSController->OnMouseMoveInput.AddDynamic(this, &ATPS_PlayerCharacter::Look);
-		TPSController->OnMoveOngoing.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
-		TPSController->OnMoveEnd.AddDynamic(this, &ATPS_PlayerCharacter::MoveEnd);
+		TPSController->OnControllerInput.AddDynamic(this, &ATPS_PlayerCharacter::Look);
+		TPSController->OnMove.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
 		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
@@ -177,16 +163,21 @@ void ATPS_PlayerCharacter::AbilityBind(TSubclassOf<UGameplayAbility>& AbilityCla
 	TPSAbilitySystemComp->GiveAbility(AbilitySpecs[AbilityTag]);
 }
 
+void ATPS_PlayerCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
+	EndJump();
+
+	// LandVelocity 저장
+	// LandVelocity를 기반으로 Landed 애니메이션을 재생할 수 있음
+}
+
 void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode)
 {
 	if (CurrentMovementMode == MOVE_Falling)
 	{
 		TPSAbilitySystemComp->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
-	}
-	else if ((PreviousMovementMode == MOVE_Falling) && (CurrentMovementMode != MOVE_Falling))
-	{
-		TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
-		EndJump();
 	}
 }
 
@@ -200,11 +191,6 @@ void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
 	Move(InputDirection);
-}
-
-void ATPS_PlayerCharacter::MoveEnd(FInputActionInstance Value)
-{
-
 }
 
 void ATPS_PlayerCharacter::DoJump()

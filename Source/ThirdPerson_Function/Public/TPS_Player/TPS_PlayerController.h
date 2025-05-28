@@ -21,16 +21,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TObjectPtr<UTPS_InputConfig> InputConfig;
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMouseMoveInput, FVector2D, MouseMoveInput);
-	FOnMouseMoveInput OnMouseMoveInput;
-	void HandleMouseMoveInput(const FInputActionValue& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnControllerInput, FVector2D, MouseMoveInput);
+	FOnControllerInput OnControllerInput;
+	void HandleControllerInput(const FInputActionValue& Value);
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveOngoing, FInputActionInstance, Instance);
-	FOnMoveOngoing OnMoveOngoing;;
-	void HandleMoveOngoing(const FInputActionInstance& Value);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMoveEnd, FInputActionInstance, Instance);
-	FOnMoveEnd OnMoveEnd;;
-	void HandleMoveEnd(const FInputActionInstance& Value);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FInputActionInstance, Instance);
+	FOnMove OnMove;;
+	void HandleMove(const FInputActionInstance& Value);
 	
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJumpInput);
 	FOnJumpInput OnJumpInput;

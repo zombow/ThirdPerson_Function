@@ -24,11 +24,9 @@ void ATPS_PlayerController::SetupInputComponent()
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleMouseMoveInput);
+		                                   this, &ATPS_PlayerController::HandleControllerInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleMoveOngoing);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleMoveEnd);
+		                                   this, &ATPS_PlayerController::HandleMove);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered,
 		                                   this, &ATPS_PlayerController::HandleJumpInput);
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Triggered,
@@ -46,19 +44,14 @@ void ATPS_PlayerController::SetupInputComponent()
 	}
 }
 
-void ATPS_PlayerController::HandleMouseMoveInput(const FInputActionValue& Value)
+void ATPS_PlayerController::HandleControllerInput(const FInputActionValue& Value)
 {
-	OnMouseMoveInput.Broadcast(Value.Get<FVector2D>());
+	OnControllerInput.Broadcast(Value.Get<FVector2D>());
 }
 
-void ATPS_PlayerController::HandleMoveOngoing(const FInputActionInstance& Value)
+void ATPS_PlayerController::HandleMove(const FInputActionInstance& Value)
 {
-	OnMoveOngoing.Broadcast(Value);
-}
-
-void ATPS_PlayerController::HandleMoveEnd(const FInputActionInstance& Value)
-{
-	OnMoveEnd.Broadcast(Value);
+	OnMove.Broadcast(Value);
 }
 
 void ATPS_PlayerController::HandleJumpInput(const FInputActionValue& Value)

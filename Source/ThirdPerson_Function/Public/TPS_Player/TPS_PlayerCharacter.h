@@ -49,20 +49,21 @@ protected:
 	TObjectPtr<UBoxComponent> TargetInteractionBox;
 
 	// direction
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MovementVelue")
 	FVector DesiredDirection;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MovementVelue")
+	FVector LandVelocity;
+	
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
 
+	virtual void Landed(const FHitResult& Hit) override;
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
 	void Look(FVector2D Value);
 	UFUNCTION()
 	void MoveOnGoing(FInputActionInstance Value);
-	UFUNCTION()
-	void MoveEnd(FInputActionInstance Value);
 	UFUNCTION()
 	void DoJump();
 	void EndJump();
