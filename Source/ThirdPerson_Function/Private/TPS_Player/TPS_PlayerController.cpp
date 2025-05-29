@@ -41,6 +41,8 @@ void ATPS_PlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Interaction"))),
 		                                   ETriggerEvent::Started,
 		                                   this, &ATPS_PlayerController::HandleInteractionInput);
+
+		
 	}
 }
 

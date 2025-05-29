@@ -8,4 +8,12 @@
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 
+void UTPS_AnimInstance::NativeBeginPlay()
+{
+	Super::NativeBeginPlay();
+}
 
+void UTPS_AnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+}

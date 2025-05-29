@@ -102,6 +102,8 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
+	InputDelegates[static_cast<uint8>(EInputActionType::Jump)].BindUObject(this, &ATPS_PlayerCharacter::MoveOnGoing);
+
 
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
@@ -187,7 +189,7 @@ void ATPS_PlayerCharacter::Look(FVector2D Value)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
+void ATPS_PlayerCharacter::MoveOnGoing(const FInputActionInstance& Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
 	Move(InputDirection);

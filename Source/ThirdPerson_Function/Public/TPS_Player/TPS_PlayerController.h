@@ -5,13 +5,16 @@
 #include "CoreMinimal.h"
 #include "TPS_InputConfig.h"
 #include "GameFramework/PlayerController.h"
+#include "TPS_Interface/ControllerInput.h"
 #include "TPS_PlayerController.generated.h"
 
 /**
  * 
  */
+
 UCLASS()
-class THIRDPERSON_FUNCTION_API ATPS_PlayerController : public APlayerController
+
+class THIRDPERSON_FUNCTION_API ATPS_PlayerController : public APlayerController, public IControllerInput
 {
 	GENERATED_BODY()
 	virtual void BeginPlay() override;
@@ -24,7 +27,9 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnControllerInput, FVector2D, MouseMoveInput);
 	FOnControllerInput OnControllerInput;
 	void HandleControllerInput(const FInputActionValue& Value);
-	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTest, FInputActionInstance, Instance ,EInputActionType, Value);
+	FTest OnTest;
+	void HandleTest(const FInputActionInstance& Instance, EInputActionType Value);
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMove, FInputActionInstance, Instance);
 	FOnMove OnMove;;
 	void HandleMove(const FInputActionInstance& Value);

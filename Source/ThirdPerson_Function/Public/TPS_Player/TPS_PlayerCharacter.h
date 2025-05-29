@@ -14,11 +14,12 @@
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.h"
+#include "TPS_Interface/ControllerInput.h"
 #include "TPS_Props/TPS_InteractableActor.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
-class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
+class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface, public IControllerInput
 {
 	GENERATED_BODY()
 
@@ -63,7 +64,7 @@ protected:
 	UFUNCTION()
 	void Look(FVector2D Value);
 	UFUNCTION()
-	void MoveOnGoing(FInputActionInstance Value);
+	void MoveOnGoing(const FInputActionInstance& Value);
 	UFUNCTION()
 	void DoJump();
 	void EndJump();
