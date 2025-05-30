@@ -41,6 +41,6 @@ class THIRDPERSON_FUNCTION_API IControllerInput
 	
 
 public:
-	TDelegate<void(const FInputActionInstance&)> InputDelegates[static_cast<uint8>(EInputActionType::Max)];
-	void HandleInput(EInputActionType type, const FInputActionInstance& Value);
+	TDelegate<void(const FInputActionInstance&)> InputDelegates[static_cast<uint8>(EInputActionType::Max)]; // binding 해줄 델리게이트
+	void HandleInput(EInputActionType type, const FInputActionInstance& Value); // enum을 이용해 분기
 };

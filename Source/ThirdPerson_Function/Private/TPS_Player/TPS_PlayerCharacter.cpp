@@ -102,7 +102,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 
 		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
-	InputDelegates[static_cast<uint8>(EInputActionType::Jump)].BindUObject(this, &ATPS_PlayerCharacter::MoveOnGoing);
+	InputDelegates[static_cast<uint8>(EInputActionType::Jump)].BindUObject(this, &ATPS_PlayerCharacter::MoveOnGoing); // 해당 enum으로 들어온 값과 함수 바인딩
 
 
 	// 시작시 적용되는 Ability
