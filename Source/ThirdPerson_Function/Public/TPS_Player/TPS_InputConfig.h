@@ -18,11 +18,11 @@ class THIRDPERSON_FUNCTION_API UTPS_InputConfig : public UDataAsset
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
-	TObjectPtr<UInputMappingContext> InputMappingContext;
+	UInputMappingContext* InputMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Input")
 	TMap<FGameplayTag, TObjectPtr<UInputAction>> InputActionTagMap;
 
 public:
-	TObjectPtr<UInputAction> GetAction(FGameplayTag Tag);
-	TObjectPtr<UInputMappingContext> GetImc();
+	UInputMappingContext* GetImc() { return InputMappingContext; }
+	TMap<FGameplayTag, TObjectPtr<UInputAction>>* GetInputActionTagMap() { return &InputActionTagMap; }
 };

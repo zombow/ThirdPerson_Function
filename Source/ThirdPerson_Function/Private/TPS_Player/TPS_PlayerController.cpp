@@ -21,72 +21,25 @@ void ATPS_PlayerController::BeginPlay()
 void ATPS_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	BindInputDataSet(InputConfig->GetInputActionTagMap());
+}
+
+void ATPS_PlayerController::HandleInputs(const FInputActionInstance& Instance, FGameplayTag Tag)
+{
+	OnInputs.Broadcast(Instance, Tag);
+}
+
+void ATPS_PlayerController::BindInputDataSet(TMap<FGameplayTag, TObjectPtr<UInputAction>>* InputActionTagMap)
+{
 	if (TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Look"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleControllerInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Move"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleMove);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Jump"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleJumpInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Crouch"))), ETriggerEvent::Triggered,
-		                                   this, &ATPS_PlayerController::HandleOnCrouchingInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Roll"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleRollInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Attack"))), ETriggerEvent::Completed,
-		                                   this, &ATPS_PlayerController::HandleAttackInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.DrawWeapon"))),
-		                                   ETriggerEvent::Started,
-		                                   this, &ATPS_PlayerController::HandleDrawWeaponInput);
-		EnhancedInputComponent->BindAction(InputConfig->GetAction(FGameplayTag::RequestGameplayTag(FName("Input.Interaction"))),
-		                                   ETriggerEvent::Started,
-		                                   this, &ATPS_PlayerController::HandleInteractionInput);
+		for (const TPair<FGameplayTag, TObjectPtr<UInputAction>>& Pair : *InputActionTagMap)
+		{
+			EnhancedInputComponent->BindAction(Pair.Value, ETriggerEvent::Triggered, this,
+			                                   &ATPS_PlayerController::HandleInputs, Pair.Key);
+		}
 
-		
 	}
 }
 
-void ATPS_PlayerController::HandleControllerInput(const FInputActionValue& Value)
-{
-	OnControllerInput.Broadcast(Value.Get<FVector2D>());
-}
-
-void ATPS_PlayerController::HandleMove(const FInputActionInstance& Value)
-{
-	OnMove.Broadcast(Value);
-}
-
-void ATPS_PlayerController::HandleJumpInput(const FInputActionValue& Value)
-{
-	OnJumpInput.Broadcast();
-}
-
-void ATPS_PlayerController::HandleOnCrouchingInput(const FInputActionValue& Value)
-{
-	OnCrouchingInput.Broadcast(Value.Get<bool>());
-}
-
-void ATPS_PlayerController::HandleRollInput(const FInputActionValue& Value)
-{
-	OnRollInput.Broadcast();
-}
-
-void ATPS_PlayerController::HandleAttackInput(const FInputActionValue& Value)
-{
-	OnAttackInput.Broadcast();
-}
-
-void ATPS_PlayerController::HandleDrawWeaponInput(const FInputActionValue& Value)
-{
-	OnDrawWeapon.Broadcast();
-}
-
-void ATPS_PlayerController::HandleInteractionInput(const FInputActionValue& Value)
-{
-	OnInteraction.Broadcast();
-}
-
-void ATPS_PlayerController::HandleInteractionHold(const FInputActionValue& Value)
-{
-	OnInteraction.Broadcast();
-}

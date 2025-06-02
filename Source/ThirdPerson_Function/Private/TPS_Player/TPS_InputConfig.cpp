@@ -2,14 +2,3 @@
 
 
 #include "TPS_Player/TPS_InputConfig.h"
-
-TObjectPtr<UInputAction> UTPS_InputConfig::GetAction(FGameplayTag Tag)
-{
-	auto temp = InputActionTagMap.FindChecked(Tag);
-	return temp;
-}
-
-TObjectPtr<UInputMappingContext> UTPS_InputConfig::GetImc()
-{
-	return InputMappingContext;
-}

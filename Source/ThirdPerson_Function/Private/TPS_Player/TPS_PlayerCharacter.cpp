@@ -90,7 +90,7 @@ void ATPS_PlayerCharacter::BeginPlay()
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		// Controller의 인풋바인딩
-		TPSController->OnControllerInput.AddDynamic(this, &ATPS_PlayerCharacter::Look);
+		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::Look);
 		TPSController->OnMove.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
 		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
 		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
@@ -99,11 +99,8 @@ void ATPS_PlayerCharacter::BeginPlay()
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
 		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::SheathWeapon);
 		TPSController->OnInteraction.AddDynamic(this, &ATPS_PlayerCharacter::Interaction);
-
-		TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 	}
-	InputDelegates[static_cast<uint8>(EInputActionType::Jump)].BindUObject(this, &ATPS_PlayerCharacter::MoveOnGoing); // 해당 enum으로 들어온 값과 함수 바인딩
-
+	TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
@@ -189,7 +186,7 @@ void ATPS_PlayerCharacter::Look(FVector2D Value)
 	AddControllerPitchInput(Value.Y);
 }
 
-void ATPS_PlayerCharacter::MoveOnGoing(const FInputActionInstance& Value)
+void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
 	Move(InputDirection);
@@ -269,9 +266,9 @@ void ATPS_PlayerCharacter::Move(FVector2D InputValue2D)
 {
 	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
 	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
-	
+
 	DesiredDirection = FVector(InputValue2D.Y, InputValue2D.X, 0);
-	
+
 	AddMovementInput(InputX, InputValue2D.X);
 	AddMovementInput(InputY, InputValue2D.Y);
 }

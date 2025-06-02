@@ -14,12 +14,11 @@
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.h"
-#include "TPS_Interface/ControllerInput.h"
 #include "TPS_Props/TPS_InteractableActor.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
-class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface, public IControllerInput
+class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -57,14 +56,16 @@ protected:
 	
 	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
-
+	
+	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputActionDelegateMap;
+	void BindAction()
 	virtual void Landed(const FHitResult& Hit) override;
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
-	void Look(FVector2D Value);
+	void Look(const FInputActionInstance& Value);
 	UFUNCTION()
-	void MoveOnGoing(const FInputActionInstance& Value);
+	void MoveOnGoing(FInputActionInstance Value);
 	UFUNCTION()
 	void DoJump();
 	void EndJump();
@@ -80,7 +81,7 @@ protected:
 	void SheathWeapon();
 	UFUNCTION()
 	void Interaction();
-	FRotator CurrentActorRotation;
+
 	bool bTurning;
 
 	void Move(FVector2D InputValue2D);
@@ -91,7 +92,6 @@ public:
 	TObjectPtr<ATPS_InteractableActor> FocusdInteractableActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Jump")
 	bool bPressedJumpKey;
-
 
 	UFUNCTION(BlueprintCallable)
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
