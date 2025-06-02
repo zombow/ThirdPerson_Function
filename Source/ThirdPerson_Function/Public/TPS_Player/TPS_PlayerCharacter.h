@@ -54,37 +54,38 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MovementVelue")
 	FVector LandVelocity;
 	
-	void AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level);
+	void AbilityBind(FGameplayTag AbilityTag, int Level);
 	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
+
+	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputDelegates;
 	
-	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputActionDelegateMap;
-	void BindAction()
+	UFUNCTION()
+	void HandleInputs(FInputActionInstance Instance, FGameplayTag Tag);
+	
 	virtual void Landed(const FHitResult& Hit) override;
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
 	void Look(const FInputActionInstance& Value);
 	UFUNCTION()
-	void MoveOnGoing(FInputActionInstance Value);
+	void Move(const FInputActionInstance& Value);
 	UFUNCTION()
-	void DoJump();
-	void EndJump();
+	void DoJump(const FInputActionInstance& Value);
+	void EndJump(const FInputActionInstance& Value);
 	UFUNCTION()
-	void Crouching(bool bCrouch);
+	void Crouching(const FInputActionInstance& Value);
 	UFUNCTION()
-	void DoRoll();
+	void DoRoll(const FInputActionInstance& Value);
 	UFUNCTION()
-	void Attack();
+	void Attack(const FInputActionInstance& Value);
 	UFUNCTION()
-	void DrawWeapon();
+	void DrawWeapon(const FInputActionInstance& Value);
 	UFUNCTION()
-	void SheathWeapon();
+	void SheathWeapon(const FInputActionInstance& Value);
 	UFUNCTION()
-	void Interaction();
+	void Interaction(const FInputActionInstance& Value);
 
 	bool bTurning;
-
-	void Move(FVector2D InputValue2D);
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;

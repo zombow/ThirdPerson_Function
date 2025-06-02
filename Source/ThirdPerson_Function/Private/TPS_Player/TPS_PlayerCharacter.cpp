@@ -90,15 +90,20 @@ void ATPS_PlayerCharacter::BeginPlay()
 	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
 	{
 		// Controller의 인풋바인딩
-		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::Look);
-		TPSController->OnMove.AddDynamic(this, &ATPS_PlayerCharacter::MoveOnGoing);
-		TPSController->OnJumpInput.AddDynamic(this, &ATPS_PlayerCharacter::DoJump);
-		TPSController->OnCrouchingInput.AddDynamic(this, &ATPS_PlayerCharacter::Crouching);
-		TPSController->OnRollInput.AddDynamic(this, &ATPS_PlayerCharacter::DoRoll);
-		TPSController->OnAttackInput.AddDynamic(this, &ATPS_PlayerCharacter::Attack);
-		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::DrawWeapon);
-		TPSController->OnDrawWeapon.AddDynamic(this, &ATPS_PlayerCharacter::SheathWeapon);
-		TPSController->OnInteraction.AddDynamic(this, &ATPS_PlayerCharacter::Interaction);
+		for (auto Pair : *TPSController->InputConfig->GetInputActionTagMap())
+		{
+			InputDelegates.Add(Pair.Key);
+		}
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Look"))->BindUObject(this, &ATPS_PlayerCharacter::Look);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Move"))->BindUObject(this, &ATPS_PlayerCharacter::Move);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Jump"))->BindUObject(this, &ATPS_PlayerCharacter::DoJump);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Crouch"))->BindUObject(this, &ATPS_PlayerCharacter::Crouching);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Roll"))->BindUObject(this, &ATPS_PlayerCharacter::DoRoll);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Attack"))->BindUObject(this, &ATPS_PlayerCharacter::Attack);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.DrawWeapon"))->BindUObject(this, &ATPS_PlayerCharacter::DrawWeapon);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.DrawWeapon"))->BindUObject(this, &ATPS_PlayerCharacter::SheathWeapon);
+		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Interaction"))->BindUObject(this, &ATPS_PlayerCharacter::Interaction);
+		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::HandleInputs);
 	}
 	TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 
@@ -115,23 +120,16 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 	{
 		TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
 		TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
-		auto TPSAbilitySet = TPSAbilities->GetTPSAbilities();
 
 		// Ability 바인딩
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")), 1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")), 1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")),
-		            1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack"))], FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")),
-		            1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon"))],
-		            FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon"))],
-		            FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))],
-		            FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
-		AbilityBind(TPSAbilitySet[FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction"))],
-		            FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
+		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")), 1);
 	}
 }
 
@@ -155,18 +153,29 @@ TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacte
 }
 
 
-void ATPS_PlayerCharacter::AbilityBind(TSubclassOf<UGameplayAbility>& AbilityClass, FGameplayTag AbilityTag, int Level)
+void ATPS_PlayerCharacter::AbilityBind(FGameplayTag AbilityTag, int Level)
 {
+	auto TPSAbilitySet = TPSAbilities->GetTPSAbilities();
+	TSubclassOf<UGameplayAbility>& AbilityClass = TPSAbilitySet[AbilityTag];
 	FGameplayAbilitySpec Temp(AbilityClass, Level);
 	AbilitySpecs.Add(AbilityTag, Temp);
 	TPSAbilitySystemComp->GiveAbility(AbilitySpecs[AbilityTag]);
+}
+
+
+void ATPS_PlayerCharacter::HandleInputs(FInputActionInstance Instance, FGameplayTag Tag)
+{
+	if (auto Delegates = InputDelegates.Find(Tag))
+	{
+		Delegates->Execute(Instance);
+	}
 }
 
 void ATPS_PlayerCharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	TPSAbilitySystemComp->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.InAir")));
-	EndJump();
+	EndJump(nullptr);
 
 	// LandVelocity 저장
 	// LandVelocity를 기반으로 Landed 애니메이션을 재생할 수 있음
@@ -180,19 +189,26 @@ void ATPS_PlayerCharacter::MovementModeChanged(EMovementMode PreviousMovementMod
 	}
 }
 
-void ATPS_PlayerCharacter::Look(FVector2D Value)
+void ATPS_PlayerCharacter::Look(const FInputActionInstance& Value)
 {
-	AddControllerYawInput(Value.X);
-	AddControllerPitchInput(Value.Y);
+	AddControllerYawInput(Value.GetValue().Get<FVector2D>().X);
+	AddControllerPitchInput(Value.GetValue().Get<FVector2D>().Y);
 }
 
-void ATPS_PlayerCharacter::MoveOnGoing(FInputActionInstance Value)
+void ATPS_PlayerCharacter::Move(const FInputActionInstance& Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
-	Move(InputDirection);
+	
+	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
+	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
+
+	DesiredDirection = FVector(InputDirection.Y, InputDirection.X, 0);
+
+	AddMovementInput(InputX, InputDirection.X);
+	AddMovementInput(InputY, InputDirection.Y);
 }
 
-void ATPS_PlayerCharacter::DoJump()
+void ATPS_PlayerCharacter::DoJump(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")))))
 	{
@@ -200,15 +216,15 @@ void ATPS_PlayerCharacter::DoJump()
 	}
 }
 
-void ATPS_PlayerCharacter::EndJump()
+void ATPS_PlayerCharacter::EndJump(const FInputActionInstance& Value)
 {
 	FGameplayTagContainer JumpTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")));
 	TPSAbilitySystemComp->CancelAbilities(&JumpTagContainer);
 }
 
-void ATPS_PlayerCharacter::Crouching(bool bCrouch)
+void ATPS_PlayerCharacter::Crouching(const FInputActionInstance& Value)
 {
-	if (bCrouch)
+	if (Value.GetValue().Get<bool>())
 	{
 		if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
 		{
@@ -222,7 +238,7 @@ void ATPS_PlayerCharacter::Crouching(bool bCrouch)
 	}
 }
 
-void ATPS_PlayerCharacter::DoRoll()
+void ATPS_PlayerCharacter::DoRoll(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")))))
 	{
@@ -230,7 +246,7 @@ void ATPS_PlayerCharacter::DoRoll()
 	}
 }
 
-void ATPS_PlayerCharacter::Attack()
+void ATPS_PlayerCharacter::Attack(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")))))
 	{
@@ -238,7 +254,7 @@ void ATPS_PlayerCharacter::Attack()
 	}
 }
 
-void ATPS_PlayerCharacter::DrawWeapon()
+void ATPS_PlayerCharacter::DrawWeapon(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")))))
 	{
@@ -246,7 +262,7 @@ void ATPS_PlayerCharacter::DrawWeapon()
 	}
 }
 
-void ATPS_PlayerCharacter::SheathWeapon()
+void ATPS_PlayerCharacter::SheathWeapon(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
 	{
@@ -254,23 +270,12 @@ void ATPS_PlayerCharacter::SheathWeapon()
 	}
 }
 
-void ATPS_PlayerCharacter::Interaction()
+void ATPS_PlayerCharacter::Interaction(const FInputActionInstance& Value)
 {
 	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't Interaction"));
 	}
-}
-
-void ATPS_PlayerCharacter::Move(FVector2D InputValue2D)
-{
-	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
-	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
-
-	DesiredDirection = FVector(InputValue2D.Y, InputValue2D.X, 0);
-
-	AddMovementInput(InputX, InputValue2D.X);
-	AddMovementInput(InputY, InputValue2D.Y);
 }
 
 void ATPS_PlayerCharacter::StaminaRegen(bool bActive)
