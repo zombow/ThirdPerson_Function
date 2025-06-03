@@ -31,4 +31,4 @@ GAS를 이용하여 스킬을 부여하고 GamePlayTag를 이용해 State를 관
 
 // 플로우차트
 1. Controller Input플로우 차트
-![Image](https://github.com/user-attachments/assets/d9c735dd-2bed-41dc-899a-449477f3da19.png)
+![Image](https://github.com/user-attachments/assets/8ce11b4c-6569-4f14-aa16-aa412339a99a)
