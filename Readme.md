@@ -1,4 +1,4 @@
-TPS_Function_Project
+## TPS_Function_Project
 
 1. 기획 (간략)
 
@@ -28,3 +28,7 @@ GAS를 이용하여 스킬을 부여하고 GamePlayTag를 이용해 State를 관
 
 1-3. 보스 / 몬스터
 비헤이비어 트리를 이용한 AI활용 
+
+플로우차트
+1. Controller Input플로우 차트
+ ![Image](https://github.com/user-attachments/assets/8ce11b4c-6569-4f14-aa16-aa412339a99a)
