@@ -28,3 +28,7 @@ GAS를 이용하여 스킬을 부여하고 GamePlayTag를 이용해 State를 관
 
 1-3. 보스 / 몬스터
 비헤이비어 트리를 이용한 AI활용 
+
+// 플로우차트
+1. Controller Input플로우 차트
+![Image](https://github.com/user-attachments/assets/d9c735dd-2bed-41dc-899a-449477f3da19)
