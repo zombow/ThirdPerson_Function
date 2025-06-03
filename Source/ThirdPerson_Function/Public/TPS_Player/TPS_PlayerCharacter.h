@@ -8,12 +8,10 @@
 #include "TPS_InteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
-#include "Components/TimelineComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
-#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySet.h"
 #include "TPS_Props/TPS_InteractableActor.h"
 #include "TPS_PlayerCharacter.generated.h"
 
@@ -41,8 +39,6 @@ protected:
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
-	TObjectPtr<UTPS_AbilitySet> TPSAbilities;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TObjectPtr<UTPS_InteractionComponent> TPSInteractionComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")
@@ -54,11 +50,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "MovementVelue")
 	FVector LandVelocity;
 	
-	void AbilityBind(FGameplayTag AbilityTag, int Level);
-	TMap<FGameplayTag, FGameplayAbilitySpec> AbilitySpecs;
-
-	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputDelegates;
 	
+	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputDelegates;
 	UFUNCTION()
 	void HandleInputs(FInputActionInstance Instance, FGameplayTag Tag);
 	
@@ -98,7 +91,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	void StaminaRegen(bool bActive);
-	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
 	void AddLooseGameplayTag(FGameplayTag TagName);
 	void RemoveLooseGameplayTag(FGameplayTag TagName);
 	TObjectPtr<UTPS_CharacterMovementComponent> GetTPSCharacterMovementComp() const;

@@ -32,7 +32,8 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 		// 납도상태에서 공격을 시도했다면 Draw부터 실행
 		if (!Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
 		{
-			FGameplayAbilitySpec* Target = Player->GetAbilitySpec(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
+			FGameplayAbilitySpec* Target = Cast<UTPS_AbilitySystemComponent>(Player->GetAbilitySystemComponent())->GetAbilitySpec
+			(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
 			if (Cast<UTPS_GameplayAbility_DrawWeapon>(Target->Ability))
 			{
 				Player->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));

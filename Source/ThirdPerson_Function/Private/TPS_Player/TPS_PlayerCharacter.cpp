@@ -4,27 +4,9 @@
 #include "TPS_Player/TPS_PlayerCharacter.h"
 
 #include "NativeGameplayTags.h"
-#include "Components/CapsuleComponent.h"
-#include "Kismet/BlueprintTypeConversions.h"
 #include "TPS_Player/TPS_PlayerController.h"
 #include "TPS_Player/TPS_PlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
-
-void ATPS_PlayerCharacter::AddLooseGameplayTag(FGameplayTag TagName)
-{
-	if (TPSAbilitySystemComp)
-	{
-		TPSAbilitySystemComp->AddLooseGameplayTag(TagName);
-	}
-}
-
-void ATPS_PlayerCharacter::RemoveLooseGameplayTag(FGameplayTag TagName)
-{
-	if (TPSAbilitySystemComp)
-	{
-		TPSAbilitySystemComp->RemoveLooseGameplayTag(TagName);
-	}
-}
 
 // Sets default values
 ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -87,50 +69,44 @@ void ATPS_PlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
-	{
-		// Controller의 인풋바인딩
-		for (auto Pair : *TPSController->InputConfig->GetInputActionTagMap())
-		{
-			InputDelegates.Add(Pair.Key);
-		}
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Look"))->BindUObject(this, &ATPS_PlayerCharacter::Look);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Move"))->BindUObject(this, &ATPS_PlayerCharacter::Move);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Jump"))->BindUObject(this, &ATPS_PlayerCharacter::DoJump);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Crouch"))->BindUObject(this, &ATPS_PlayerCharacter::Crouching);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Roll"))->BindUObject(this, &ATPS_PlayerCharacter::DoRoll);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Attack"))->BindUObject(this, &ATPS_PlayerCharacter::Attack);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.DrawWeapon"))->BindUObject(this, &ATPS_PlayerCharacter::DrawWeapon);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.DrawWeapon"))->BindUObject(this, &ATPS_PlayerCharacter::SheathWeapon);
-		InputDelegates.Find(FGameplayTag::RequestGameplayTag("Input.Interaction"))->BindUObject(this, &ATPS_PlayerCharacter::Interaction);
-		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::HandleInputs);
-	}
-	TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
-
 	// 시작시 적용되는 Ability
 	StaminaRegen(true);
 }
+
+#define DEFINE_INPUT_BINDING(Tag, FunctionName) \
+InputDelegates.Find(FGameplayTag::RequestGameplayTag(Tag))->BindUObject(this, &ATPS_PlayerCharacter::FunctionName);
 
 void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	// Controller의 인풋바인딩
+	if (TObjectPtr<ATPS_PlayerController> TPSController = Cast<ATPS_PlayerController>(Controller))
+	{
+		for (auto Pair : *TPSController->InputConfig->GetInputActionTagMap())
+		{
+			InputDelegates.Add(Pair.Key);
+		}
+		DEFINE_INPUT_BINDING("Input.Look", Look);
+		DEFINE_INPUT_BINDING("Input.Move", Move);
+		DEFINE_INPUT_BINDING("Input.Jump", DoJump);
+		DEFINE_INPUT_BINDING("Input.Crouch", Crouching);
+		DEFINE_INPUT_BINDING("Input.Roll", DoRoll);
+		DEFINE_INPUT_BINDING("Input.Attack", Attack);
+		DEFINE_INPUT_BINDING("Input.DrawWeapon", DrawWeapon);
+		DEFINE_INPUT_BINDING("Input.DrawWeapon", SheathWeapon);
+		DEFINE_INPUT_BINDING("Input.Interaction", Interaction);
+
+		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::HandleInputs);
+	}
+
 	// ASC할당
 	if (!TPSAbilitySystemComp)
 	{
 		TPSAbilitySystemComp = GetPlayerState<ATPS_PlayerState>()->GetAbilitySystemComponent();
-		TPSAbilitySystemComp->InitAbilityActorInfo(GetPlayerState<ATPS_PlayerState>(), this);
-
-		// Ability 바인딩
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")), 1);
-		AbilityBind(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")), 1);
 	}
+
+	TPSCharacterMoveComp->MovementModeChange.AddDynamic(this, &ATPS_PlayerCharacter::MovementModeChanged);
 }
 
 UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
@@ -138,14 +114,6 @@ UAbilitySystemComponent* ATPS_PlayerCharacter::GetAbilitySystemComponent() const
 	return TPSAbilitySystemComp;
 }
 
-FGameplayAbilitySpec* ATPS_PlayerCharacter::GetAbilitySpec(FGameplayTag AbilityTag)
-{
-	if (AbilitySpecs.Find(AbilityTag))
-	{
-		return &AbilitySpecs[AbilityTag];
-	}
-	return nullptr;
-}
 
 TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacterMovementComp() const
 {
@@ -153,20 +121,11 @@ TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacte
 }
 
 
-void ATPS_PlayerCharacter::AbilityBind(FGameplayTag AbilityTag, int Level)
-{
-	auto TPSAbilitySet = TPSAbilities->GetTPSAbilities();
-	TSubclassOf<UGameplayAbility>& AbilityClass = TPSAbilitySet[AbilityTag];
-	FGameplayAbilitySpec Temp(AbilityClass, Level);
-	AbilitySpecs.Add(AbilityTag, Temp);
-	TPSAbilitySystemComp->GiveAbility(AbilitySpecs[AbilityTag]);
-}
-
-
 void ATPS_PlayerCharacter::HandleInputs(FInputActionInstance Instance, FGameplayTag Tag)
 {
 	if (auto Delegates = InputDelegates.Find(Tag))
 	{
+		// Tag에따라 Bind된 함수 실행
 		Delegates->Execute(Instance);
 	}
 }
@@ -198,7 +157,7 @@ void ATPS_PlayerCharacter::Look(const FInputActionInstance& Value)
 void ATPS_PlayerCharacter::Move(const FInputActionInstance& Value)
 {
 	FVector2D InputDirection = Value.GetValue().Get<FVector2D>();
-	
+
 	FVector InputX = UKismetMathLibrary::GetRightVector(FRotator(0, GetControlRotation().Yaw, 0));
 	FVector InputY = UKismetMathLibrary::GetForwardVector(FRotator(0, GetControlRotation().Yaw, 0));
 
@@ -286,6 +245,23 @@ void ATPS_PlayerCharacter::StaminaRegen(bool bActive)
 	}
 	else
 	{
-		TPSAbilitySystemComp->CancelAbility(AbilitySpecs.Find(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))->Ability);
+		TPSAbilitySystemComp->CancelAbility(
+			TPSAbilitySystemComp->GetAbilitySpec(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))->Ability);
+	}
+}
+
+void ATPS_PlayerCharacter::AddLooseGameplayTag(FGameplayTag TagName)
+{
+	if (TPSAbilitySystemComp)
+	{
+		TPSAbilitySystemComp->AddLooseGameplayTag(TagName);
+	}
+}
+
+void ATPS_PlayerCharacter::RemoveLooseGameplayTag(FGameplayTag TagName)
+{
+	if (TPSAbilitySystemComp)
+	{
+		TPSAbilitySystemComp->RemoveLooseGameplayTag(TagName);
 	}
 }

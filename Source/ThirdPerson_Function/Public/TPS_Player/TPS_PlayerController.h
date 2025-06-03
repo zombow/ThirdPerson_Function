@@ -24,7 +24,7 @@ public:
 	TObjectPtr<UTPS_InputConfig> InputConfig;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInputs, FInputActionInstance, Instance, FGameplayTag, Value);
-	FInputs OnInputs;
+	FInputs OnInputs; // InputInstance와 FGameplayTag를 전달하는 델리게이트
 	void HandleInputs(const FInputActionInstance& Instance, FGameplayTag Tag);
 
 	void BindInputDataSet(TMap<FGameplayTag, TObjectPtr<UInputAction>>* InputActionTagMap);

@@ -4,8 +4,25 @@
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AttributeSet.h"
 
-void UTPS_AbilitySystemComponent::BeginPlay()
+
+FGameplayAbilitySpec* UTPS_AbilitySystemComponent::GetAbilitySpec(FGameplayTag AbilityTag)
 {
-	Super::BeginPlay();
-	
+	if (auto AbilitySpec = TPSAbilitySpecs.Find(AbilityTag))
+	{
+		return AbilitySpec;
+	}
+	return nullptr;
 }
+
+void UTPS_AbilitySystemComponent::InitializeFromAbilitySet(UTPS_AbilitySet* AbilitySet)
+{
+	if (!AbilitySet) return;
+
+	for (auto& Pair : AbilitySet->GetTPSAbilities())
+	{
+		FGameplayAbilitySpec Spec(Pair.Value, 1);
+		GiveAbility(Spec);
+		TPSAbilitySpecs.Add(Pair.Key, Spec);
+	}
+}
+
