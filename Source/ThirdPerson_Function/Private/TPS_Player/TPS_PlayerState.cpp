@@ -20,7 +20,6 @@ void ATPS_PlayerState::BeginPlay()
 	AbilityBind();
 }
 
-
 TObjectPtr<UTPS_AbilitySystemComponent> ATPS_PlayerState::GetAbilitySystemComponent() const
 {
 	return TPSAbilitySystemComp;

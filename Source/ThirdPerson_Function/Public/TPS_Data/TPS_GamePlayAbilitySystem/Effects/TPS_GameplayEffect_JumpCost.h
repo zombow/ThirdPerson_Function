@@ -13,6 +13,6 @@ UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_GameplayEffect_JumpCost : public UGameplayEffect
 {
 	GENERATED_BODY()
-
+	
 	UTPS_GameplayEffect_JumpCost();
 };

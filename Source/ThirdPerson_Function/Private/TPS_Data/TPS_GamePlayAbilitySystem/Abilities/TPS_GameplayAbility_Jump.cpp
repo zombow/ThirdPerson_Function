@@ -10,7 +10,6 @@ UTPS_GameplayAbility_Jump::UTPS_GameplayAbility_Jump()
 {
 	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Jump")));
 	CostGameplayEffectClass = UTPS_GameplayEffect_JumpCost::StaticClass();
-	
 }
 
 void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -23,7 +22,6 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 	{
 		Player->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo);
 		Player->bPressedJumpKey = true;
-
 	}
 	else
 	{
@@ -32,8 +30,9 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 }
 
 void UTPS_GameplayAbility_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+                                           const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	Player->bPressedJumpKey = false;
+
 }

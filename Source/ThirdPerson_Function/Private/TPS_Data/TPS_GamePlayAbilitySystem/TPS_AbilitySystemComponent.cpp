@@ -5,7 +5,7 @@
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AttributeSet.h"
 
 
-FGameplayAbilitySpec* UTPS_AbilitySystemComponent::GetAbilitySpec(FGameplayTag AbilityTag)
+FGameplayAbilitySpec* UTPS_AbilitySystemComponent::GetAbilitySpecFromTag(FGameplayTag AbilityTag)
 {
 	if (auto AbilitySpec = TPSAbilitySpecs.Find(AbilityTag))
 	{
@@ -25,4 +25,3 @@ void UTPS_AbilitySystemComponent::InitializeFromAbilitySet(UTPS_AbilitySet* Abil
 		TPSAbilitySpecs.Add(Pair.Key, Spec);
 	}
 }
-

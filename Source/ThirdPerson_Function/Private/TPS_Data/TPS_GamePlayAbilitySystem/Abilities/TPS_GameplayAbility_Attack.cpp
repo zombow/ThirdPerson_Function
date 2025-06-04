@@ -20,6 +20,7 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
 	if (Player)
 	{
+		
 		Player->StaminaRegen(false);
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
 		// 콤보공격을 활성화시킬 Event
@@ -32,7 +33,7 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 		// 납도상태에서 공격을 시도했다면 Draw부터 실행
 		if (!Player->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
 		{
-			FGameplayAbilitySpec* Target = Cast<UTPS_AbilitySystemComponent>(Player->GetAbilitySystemComponent())->GetAbilitySpec
+			FGameplayAbilitySpec* Target = Cast<UTPS_AbilitySystemComponent>(Player->GetAbilitySystemComponent())->GetAbilitySpecFromTag
 			(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
 			if (Cast<UTPS_GameplayAbility_DrawWeapon>(Target->Ability))
 			{

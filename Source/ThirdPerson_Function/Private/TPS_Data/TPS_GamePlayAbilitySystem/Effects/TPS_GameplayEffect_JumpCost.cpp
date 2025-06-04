@@ -12,6 +12,6 @@ UTPS_GameplayEffect_JumpCost::UTPS_GameplayEffect_JumpCost()
 	ModifierInfo.Attribute = UTPS_AttributeSet::GetCurrentStaminaAttribute();
 	ModifierInfo.ModifierOp = EGameplayModOp::Additive;
 	ModifierInfo.ModifierMagnitude = FScalableFloat(-10.0f);
-
+	
 	Modifiers.Add(ModifierInfo);
 }

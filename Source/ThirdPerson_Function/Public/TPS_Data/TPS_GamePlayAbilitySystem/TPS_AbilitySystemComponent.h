@@ -19,6 +19,7 @@ class THIRDPERSON_FUNCTION_API UTPS_AbilitySystemComponent : public UAbilitySyst
 	TMap<FGameplayTag, FGameplayAbilitySpec>TPSAbilitySpecs;
 	
 public:
-	FGameplayAbilitySpec* GetAbilitySpec(FGameplayTag AbilityTag);
+	FGameplayAbilitySpec* GetAbilitySpecFromTag(FGameplayTag AbilityTag);
 	void InitializeFromAbilitySet(UTPS_AbilitySet* AbilitySet);
+
 };

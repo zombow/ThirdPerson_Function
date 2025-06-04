@@ -246,7 +246,7 @@ void ATPS_PlayerCharacter::StaminaRegen(bool bActive)
 	else
 	{
 		TPSAbilitySystemComp->CancelAbility(
-			TPSAbilitySystemComp->GetAbilitySpec(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))->Ability);
+			TPSAbilitySystemComp->GetAbilitySpecFromTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")))->Ability);
 	}
 }
 
