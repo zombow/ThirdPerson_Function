@@ -2,7 +2,6 @@
 
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Jump.h"
-
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_JumpCost.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -17,11 +16,10 @@ void UTPS_GameplayAbility_Jump::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
-	if (Player)
+	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
+	if (Target)
 	{
-		Player->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo);
-		Player->bPressedJumpKey = true;
+		Target->GetCharacterMovement()->DoJump(true) && CommitAbility(Handle, ActorInfo, ActivationInfo);
 	}
 	else
 	{
@@ -33,6 +31,4 @@ void UTPS_GameplayAbility_Jump::EndAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	Player->bPressedJumpKey = false;
-
 }

@@ -94,10 +94,12 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		DEFINE_INPUT_BINDING("Input.Roll", DoRoll);
 		DEFINE_INPUT_BINDING("Input.Attack", Attack);
 		DEFINE_INPUT_BINDING("Input.DrawWeapon", DrawWeapon);
-		DEFINE_INPUT_BINDING("Input.DrawWeapon", SheathWeapon);
+		DEFINE_INPUT_BINDING("Input.DrawWeapon", SheathWeapon); // 중복허용을 안해 수정필요
 		DEFINE_INPUT_BINDING("Input.Interaction", Interaction);
-
-		TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::HandleInputs);
+		if (!TPSController->OnInputs.IsAlreadyBound(this, &ATPS_PlayerCharacter::HandleInputs))
+		{
+			TPSController->OnInputs.AddDynamic(this, &ATPS_PlayerCharacter::HandleInputs);
+		}
 	}
 
 	// ASC할당
