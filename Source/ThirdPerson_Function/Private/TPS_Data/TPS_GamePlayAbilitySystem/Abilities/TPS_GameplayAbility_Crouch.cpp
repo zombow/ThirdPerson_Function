@@ -3,6 +3,8 @@
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Crouch.h"
 
+#include "GameFramework/PawnMovementComponent.h"
+
 
 UTPS_GameplayAbility_Crouch::UTPS_GameplayAbility_Crouch()
 {
@@ -13,12 +15,12 @@ void UTPS_GameplayAbility_Crouch::ActivateAbility(const FGameplayAbilitySpecHand
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
-	if (Player)
+	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
+	if (Target)
 	{
-		if (Player->GetCharacterMovement()->IsMovingOnGround())
+		if (Target->GetMovementComponent()->IsMovingOnGround())
 		{
-			Player->Crouch();
+			Target->Crouch();
 		}
 	}
 }
@@ -27,8 +29,8 @@ void UTPS_GameplayAbility_Crouch::EndAbility(const FGameplayAbilitySpecHandle Ha
                                              const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (Player)
+	if (Target)
 	{
-		Player->UnCrouch();
+		Target->UnCrouch();
 	}
 }

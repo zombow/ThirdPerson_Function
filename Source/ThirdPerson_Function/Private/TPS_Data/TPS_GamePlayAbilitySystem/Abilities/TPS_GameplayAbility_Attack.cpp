@@ -20,7 +20,6 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
 	if (Player)
 	{
-		
 		Player->StaminaRegen(false);
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
 		// 콤보공격을 활성화시킬 Event

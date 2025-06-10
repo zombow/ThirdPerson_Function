@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_Roll.generated.h"
 
 /**
@@ -16,9 +16,6 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Roll : public UGameplayAbili
 {
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Roll();
-	
-	UPROPERTY()
-	TObjectPtr<ATPS_PlayerCharacter> Player;
 	
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                        const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
@@ -31,6 +28,8 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Roll : public UGameplayAbili
 	void OnMontageInterrupted();
 	UFUNCTION()
 	void OnMontageCancelled();
+	UFUNCTION()
+	void CallIfResoureceInterface(AActor* Target, bool bStart);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")

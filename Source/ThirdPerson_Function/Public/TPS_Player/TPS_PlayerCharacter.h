@@ -12,11 +12,12 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TPS_Player/TPS_CharacterMovementComponent.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
+#include "TPS_Interface/AbilityResourceInterface.h"
 #include "TPS_Props/TPS_InteractableActor.h"
 #include "TPS_PlayerCharacter.generated.h"
 
 UCLASS()
-class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface
+class ATPS_PlayerCharacter : public ACharacter, public IAbilitySystemInterface, public IAbilityResourceInterface
 {
 	GENERATED_BODY()
 
@@ -53,18 +54,21 @@ protected:
 	
 	TMap<FGameplayTag, TDelegate<void(const FInputActionInstance&)>> InputDelegates;
 	UFUNCTION()
-	void HandleInputs(FInputActionInstance Instance, FGameplayTag Tag);
-	
-	virtual void Landed(const FHitResult& Hit) override;
+	void HandleInputs(FInputActionInstance Instance, FGameplayTag Tag); // receive from PlayerController
 	UFUNCTION()
 	void MovementModeChanged(EMovementMode PreviousMovementMode, EMovementMode CurrentMovementMode, uint8 PreviousCustomMode);
 	UFUNCTION()
 	void Look(const FInputActionInstance& Value);
 	UFUNCTION()
 	void Move(const FInputActionInstance& Value);
+
+	// Ability Implementation
+	UFUNCTION()
+	void TryActivateAbilityByTag(FGameplayTag Tag); // helper function for activating abilities by tag
 	UFUNCTION()
 	void DoJump(const FInputActionInstance& Value);
 	void EndJump(const FInputActionInstance& Value);
+	virtual void Landed(const FHitResult& Hit) override;
 	UFUNCTION()
 	void Crouching(const FInputActionInstance& Value);
 	UFUNCTION()
@@ -78,7 +82,10 @@ protected:
 	UFUNCTION()
 	void Interaction(const FInputActionInstance& Value);
 
-	bool bTurning;
+	// Interface
+	void StartAbilityResource_Implementation() override;
+	void StopAbilityResource_Implementation() override;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TSet<TObjectPtr<ATPS_InteractableActor>> InteractableActorArray;

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
+#include "GameFramework/Character.h"
 #include "TPS_GameplayAbility_Crouch.generated.h"
 
 /**
@@ -17,7 +17,7 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Crouch : public UGameplayAbi
 	UTPS_GameplayAbility_Crouch();
 	
 	UPROPERTY()
-	TObjectPtr<ATPS_PlayerCharacter> Player;
+	TObjectPtr<ACharacter> Target;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;

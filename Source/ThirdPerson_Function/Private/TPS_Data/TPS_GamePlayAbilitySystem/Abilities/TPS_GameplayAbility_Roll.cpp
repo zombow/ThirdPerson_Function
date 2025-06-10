@@ -4,6 +4,7 @@
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_Roll.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Effects/TPS_GameplayEffect_RollCost.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "TPS_Interface/AbilityResourceInterface.h"
 
 UTPS_GameplayAbility_Roll::UTPS_GameplayAbility_Roll()
 {
@@ -16,20 +17,10 @@ void UTPS_GameplayAbility_Roll::ActivateAbility(const FGameplayAbilitySpecHandle
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
-	if (Player)
+	if (CommitAbility(Handle, ActorInfo, ActivationInfo))
 	{
-		if (CommitAbility(Handle, ActorInfo, ActivationInfo))
-		{
-			Player->StaminaRegen(false);
-			Player->SetActorRotation(Player->GetActorForwardVector().Rotation()); // SetActorRotation을 안정적으로 회전시키기위해 Rootmotion을 일시적으로 변경
-
-			PlayMontage();
-		}
-	}
-	else
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		PlayMontage();
+		CallIfResoureceInterface(ActorInfo->AvatarActor.Get(), true);
 	}
 }
 
@@ -68,8 +59,21 @@ void UTPS_GameplayAbility_Roll::EndAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (Player)
+	CallIfResoureceInterface(ActorInfo->AvatarActor.Get(), false);
+}
+
+void UTPS_GameplayAbility_Roll::CallIfResoureceInterface(AActor* Target, bool bStart)
+{
+	if (!Target) return;
+	if (Target->GetClass()->ImplementsInterface(UAbilityResourceInterface::StaticClass()))
 	{
-		Player->StaminaRegen(true);
+		if (bStart)
+		{
+			IAbilityResourceInterface::Execute_StartAbilityResource(Target);
+		}
+		else
+		{
+			IAbilityResourceInterface::Execute_StopAbilityResource(Target);
+		}
 	}
 }

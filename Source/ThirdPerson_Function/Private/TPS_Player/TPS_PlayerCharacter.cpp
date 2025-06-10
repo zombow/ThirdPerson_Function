@@ -94,7 +94,6 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		DEFINE_INPUT_BINDING("Input.Roll", DoRoll);
 		DEFINE_INPUT_BINDING("Input.Attack", Attack);
 		DEFINE_INPUT_BINDING("Input.DrawWeapon", DrawWeapon);
-		DEFINE_INPUT_BINDING("Input.DrawWeapon", SheathWeapon); // 중복허용을 안해 수정필요
 		DEFINE_INPUT_BINDING("Input.Interaction", Interaction);
 		if (!TPSController->OnInputs.IsAlreadyBound(this, &ATPS_PlayerCharacter::HandleInputs))
 		{
@@ -121,7 +120,6 @@ TObjectPtr<UTPS_CharacterMovementComponent> ATPS_PlayerCharacter::GetTPSCharacte
 {
 	return TPSCharacterMoveComp;
 }
-
 
 void ATPS_PlayerCharacter::HandleInputs(FInputActionInstance Instance, FGameplayTag Tag)
 {
@@ -169,12 +167,17 @@ void ATPS_PlayerCharacter::Move(const FInputActionInstance& Value)
 	AddMovementInput(InputY, InputDirection.Y);
 }
 
+void ATPS_PlayerCharacter::TryActivateAbilityByTag(FGameplayTag Tag)
+{
+	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(Tag)))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't Activate Ability : %s"), *Tag.ToString());
+	}
+}
+
 void ATPS_PlayerCharacter::DoJump(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Jump"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Jump")));
 }
 
 void ATPS_PlayerCharacter::EndJump(const FInputActionInstance& Value)
@@ -187,10 +190,7 @@ void ATPS_PlayerCharacter::Crouching(const FInputActionInstance& Value)
 {
 	if (Value.GetValue().Get<bool>())
 	{
-		if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")))))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Can't Crouch"));
-		}
+		TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Crouch")));
 	}
 	else
 	{
@@ -201,49 +201,45 @@ void ATPS_PlayerCharacter::Crouching(const FInputActionInstance& Value)
 
 void ATPS_PlayerCharacter::DoRoll(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Roll"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Roll")));
 }
 
 void ATPS_PlayerCharacter::Attack(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Attack"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")));
 }
 
 void ATPS_PlayerCharacter::DrawWeapon(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't DrawWeapon"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
 }
 
 void ATPS_PlayerCharacter::SheathWeapon(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't SheathWeapon"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")));
 }
 
 void ATPS_PlayerCharacter::Interaction(const FInputActionInstance& Value)
 {
-	if (!TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Can't Interaction"));
-	}
+	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Interaction")));
 }
+
+void ATPS_PlayerCharacter::StartAbilityResource_Implementation()
+{
+	StaminaRegen(true);
+}
+
+void ATPS_PlayerCharacter::StopAbilityResource_Implementation()
+{
+	StaminaRegen(false);
+}
+
 
 void ATPS_PlayerCharacter::StaminaRegen(bool bActive)
 {
 	if (bActive)
 	{
-		TPSAbilitySystemComp->TryActivateAbilitiesByTag(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen"))));
+		TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.StaminaRegen")));
 	}
 	else
 	{
