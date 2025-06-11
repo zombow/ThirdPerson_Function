@@ -4,7 +4,7 @@
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_DrawWeapon.h"
 
 #include "AbilitySystemComponent.h"
-#include "AbilitySystemInterface.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UTPS_GameplayAbility_DrawWeapon::UTPS_GameplayAbility_DrawWeapon()
@@ -22,10 +22,9 @@ void UTPS_GameplayAbility_DrawWeapon::ActivateAbility(const FGameplayAbilitySpec
 	if (Target)
 	{
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
-		if (Target->GetClass()->ImplementsInterface(UAbilitySystemInterface::StaticClass()))
+		if (ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target))
 		{
-			auto GAS = Cast<IAbilitySystemInterface>(Target);
-			if (GAS->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
+			if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
 			{
 				CachedMontage = SheathMontage;
 			}
@@ -61,22 +60,20 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
 	Task->ReadyForActivation();
-	UE_LOG(LogTemp, Warning, TEXT("Play Montage : %s"), *CachedMontage->GetName());
 }
 
 void UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage()
 {
-	auto GAS = Cast<IAbilitySystemInterface>(Target);
 	if (CachedMontage == DrawMontage)
 	{
-		GAS->GetAbilitySystemComponent()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
 	}
 	else
 	{
-		GAS->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
 	}
 
-	if (GAS->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
+	if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack")))
 		OnMontageBlendOut();
 	else
 	{
@@ -118,11 +115,10 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	if (Target)
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
-		/** 잠시 보류
+		
 		FGameplayEventData EventData; // Draw종료 Event생성
 		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
 		EventData.Instigator = Target;
-		Target->GetAbilitySystemComponent()->HandleGameplayEvent(EventData.EventTag, &EventData);
-		**/
+		ASC->HandleGameplayEvent(EventData.EventTag, &EventData); 
 	}
 }

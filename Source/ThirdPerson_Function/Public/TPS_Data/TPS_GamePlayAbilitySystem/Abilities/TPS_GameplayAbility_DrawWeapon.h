@@ -20,6 +20,8 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_DrawWeapon : public UGamepla
 	TObjectPtr<ACharacter> Target;
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> ASC;
 	
 	UTPS_GameplayAbility_DrawWeapon();
 	

@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "BlueprintEditor.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_Attack.generated.h"
 
 /**
@@ -19,9 +20,11 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	UTPS_GameplayAbility_Attack();
 
 	UPROPERTY()
-	TObjectPtr<ATPS_PlayerCharacter> Player;
+	TObjectPtr<ACharacter> Target;
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> ASC;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -35,17 +38,21 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	UFUNCTION()
 	void OnMontageCancelled();
 
+	template <typename T>
+	void AbilityEventMake(FGameplayTag EventTag, void (T::*Func)(const FGameplayTag, const FGameplayEventData*), FDelegateHandle&
+	                      OutHandle);
 	void Attack();
 
 	void BeginNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
 	void EndNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
 
-
 	void DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload = nullptr);
-
+	
+	TMap<FGameplayTag, FDelegateHandle> GameplayEventHandles;
 	FDelegateHandle DrawEventHandle;
 	FDelegateHandle AttackEventHandle;
 	FDelegateHandle EndAttackEventHandle;
+
 	FGameplayTag NextSectionTag;
 	bool bNextAttack = false;
 

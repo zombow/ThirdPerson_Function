@@ -69,11 +69,11 @@ void UTPS_GameplayAbility_Roll::CallIfResoureceInterface(AActor* Target, bool bS
 	{
 		if (bStart)
 		{
-			IAbilityResourceInterface::Execute_StartAbilityResource(Target);
+			IAbilityResourceInterface::Execute_StopAbilityResource(Target);
 		}
 		else
 		{
-			IAbilityResourceInterface::Execute_StopAbilityResource(Target);
+			IAbilityResourceInterface::Execute_StartAbilityResource(Target);
 		}
 	}
 }

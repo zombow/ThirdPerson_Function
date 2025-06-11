@@ -20,5 +20,4 @@ class THIRDPERSON_FUNCTION_API UTPS_ComboAttackAnimNotifyState : public UAnimNot
 
 public:
 	FGameplayTag NextSectionTag;
-	bool bCanComboAttack;
 };
