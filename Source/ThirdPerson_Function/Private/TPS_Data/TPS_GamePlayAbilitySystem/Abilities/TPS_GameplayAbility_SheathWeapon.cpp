@@ -2,11 +2,13 @@
 
 
 #include "TPS_Data/TPS_GamePlayAbilitySystem/Abilities/TPS_GameplayAbility_SheathWeapon.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 UTPS_GameplayAbility_SheathWeapon::UTPS_GameplayAbility_SheathWeapon()
 {
-	AbilityTags = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Ability.SheathWeapon"));
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag("Ability.SheathWeapon"));
 }
 
 
@@ -15,14 +17,18 @@ void UTPS_GameplayAbility_SheathWeapon::ActivateAbility(const FGameplayAbilitySp
                                                         const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	Player = Cast<ATPS_PlayerCharacter>(ActorInfo->AvatarActor);
-	if (Player)
+	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
+	if (Target)
 	{
-		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Player->GetMesh()->GetAnimInstance());
+		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
+		if (ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target))
+		{
+			PlayMontage();
+		}
 	}
-	if (Player)
+	else
 	{
-		PlayMontage();
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
 	}
 }
 
@@ -30,25 +36,25 @@ void UTPS_GameplayAbility_SheathWeapon::EndAbility(const FGameplayAbilitySpecHan
                                                    const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	if (Player)
+	if (Target)
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
-		
 	}
 }
 
 void UTPS_GameplayAbility_SheathWeapon::PlayMontage()
 {
-	if (Player)
+	if (Target)
 	{
 		PlayerAnimInstance->bisPlayingMontage = true;
 	}
+
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
 		SheathMontage,
 		1.0f,
-		"Sheath1",
+		SheathMontage->CompositeSections[0].SectionName,
 		true
 	);
 	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_SheathWeapon::KeepPlayMontage);
@@ -59,19 +65,17 @@ void UTPS_GameplayAbility_SheathWeapon::PlayMontage()
 
 void UTPS_GameplayAbility_SheathWeapon::KeepPlayMontage()
 {
-	PlayerAnimInstance->bisPlayingMontage = true;
-	if (Player)
-	{
-		Player->GetAbilitySystemComponent()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-	}
+	ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+	
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
 		SheathMontage,
 		1.0f,
-		"Sheath2",
-		false
+		SheathMontage->CompositeSections[1].SectionName,
+		true
 	);
+
 	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_SheathWeapon::OnMontageBlendOut);
 	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_SheathWeapon::OnMontageInterrupted);
 	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_SheathWeapon::OnMontageCancelled);

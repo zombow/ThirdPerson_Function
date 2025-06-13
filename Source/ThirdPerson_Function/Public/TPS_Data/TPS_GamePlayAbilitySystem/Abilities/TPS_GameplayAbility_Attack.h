@@ -41,17 +41,20 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 	template <typename T>
 	void AbilityEventMake(FGameplayTag EventTag, void (T::*Func)(const FGameplayTag, const FGameplayEventData*), FDelegateHandle&
 	                      OutHandle);
-	void Attack();
+	void Attack(FGameplayTag AttackSection);
 
 	void BeginNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
-	void EndNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload);
-
+	
 	void DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload = nullptr);
 	
 	TMap<FGameplayTag, FDelegateHandle> GameplayEventHandles;
 	FDelegateHandle DrawEventHandle;
 	FDelegateHandle AttackEventHandle;
 	FDelegateHandle EndAttackEventHandle;
+	
+	FDelegateHandle ComboAttackHandle;
+	void ComboAttack(const FGameplayTag EventTag, const FGameplayEventData* Payload);
+
 
 	FGameplayTag NextSectionTag;
 	bool bNextAttack = false;

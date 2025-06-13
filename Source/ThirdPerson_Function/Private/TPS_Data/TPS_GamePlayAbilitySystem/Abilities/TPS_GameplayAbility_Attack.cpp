@@ -8,7 +8,7 @@ class UAbilityTask_PlayMontageAndWait;
 
 UTPS_GameplayAbility_Attack::UTPS_GameplayAbility_Attack()
 {
-	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Ability.Attack")));
+	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")));
 	CostGameplayEffectClass = UTPS_GameplayEffect_AttackCost::StaticClass();
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
@@ -17,38 +17,46 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
                                                   const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	// Handles 일괄삭제
+	for (const TPair<FGameplayTagContainer, FDelegateHandle> TargetHandle : GameplayEventHandles)
+	{
+		ASC->RemoveGameplayEventTagContainerDelegate(TargetHandle.Key, TargetHandle.Value);
+	}
+	GameplayEventHandles.Empty();
+	bNextAttack = false;
 	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
 	if (Target)
 	{
 		ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
 
-		// 콤보공격을 활성화시킬 Event
+		// 콤보어택을 위한 이벤트 등록
 		AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")), &UTPS_GameplayAbility_Attack::BeginNextAttackState,
 		                 AttackEventHandle);
-		AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.EndAttack")), &UTPS_GameplayAbility_Attack::EndNextAttackState,
-		                 EndAttackEventHandle);
+		AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("Input.Attack")), &UTPS_GameplayAbility_Attack::ComboAttack, ComboAttackHandle);
 
 		// 납도상태에서 공격을 시도했다면 Draw부터 실행
-		if (!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Drawn")))
+		if (!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
 		{
-			FGameplayTagContainer DrawTagContainer = FGameplayTagContainer(FGameplayTag::RequestGameplayTag("Ability.DrawWeapon"));
+			FGameplayTagContainer DrawTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
 			TArray<FGameplayAbilitySpec*> TargetAbilities;
 			ASC->GetActivatableGameplayAbilitySpecsByAllMatchingTags(DrawTagContainer, TargetAbilities);
 
-			if (IsValid(TargetAbilities[0]->Ability))
+			if (!TargetAbilities.IsEmpty() || ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawing"))))
 			{
-				ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
-				// Draw가 끝나면 공격을하는 Event
+				ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
 				AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")), &UTPS_GameplayAbility_Attack::DrawEndHandle,
 				                 DrawEventHandle);
-				ASC->TryActivateAbility(TargetAbilities[0]->Handle); // 여기서 Draw를 실행
+				if (!TargetAbilities.IsEmpty())
+				{
+					ASC->TryActivateAbility(TargetAbilities[0]->Handle); // 여기서 Draw를 실행
+				}
 			}
 		}
 		else
 		{
 			// 발도상태라면 최초 공격시작
-			Attack();
+			Attack(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack.Combo1")));
 		}
 	}
 	else
@@ -64,32 +72,21 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 
 	if (Target)
 	{
+		bNextAttack = false;
 		IAbilityResourceInterface::Execute_StartAbilityResource(Target);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
-		
-		// Handles 일괄삭제
-		for (TPair<FGameplayTag, FDelegateHandle> TargetHandle : GameplayEventHandles)
-		{
-			//ASC->RemoveGameplayEventTagContainerDelegate(FGameplayTagContainer(TargetHandle.Key), TargetHandle.Value);
-		}
+		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
+		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")));
 	}
 }
 
 
-void UTPS_GameplayAbility_Attack::Attack()
+void UTPS_GameplayAbility_Attack::Attack(FGameplayTag AttackSection)
 {
-	if (bNextAttack && CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
+	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
-		PlayMontage(NextSectionTag);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
-		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
-	}
-	else if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
-	{
-		PlayMontage(FGameplayTag::RequestGameplayTag("State.Character.Attack.Combo1"));
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.DrawAttack"));
-		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("State.Character.Attack"));
+		PlayMontage(AttackSection);
+		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
+		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")));
 	}
 }
 
@@ -97,16 +94,16 @@ void UTPS_GameplayAbility_Attack::BeginNextAttackState(const FGameplayTag EventT
 {
 	bNextAttack = true;
 	NextSectionTag = EventTag;
-	ASC->RemoveGameplayEventTagContainerDelegate(
-		FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Attack"))), AttackEventHandle);
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UTPS_GameplayAbility_Attack::EndNextAttackState(const FGameplayTag EventTag, const FGameplayEventData* Payload)
+
+void UTPS_GameplayAbility_Attack::ComboAttack(const FGameplayTag EventTag, const FGameplayEventData* Payload)
 {
-	bNextAttack = false;
-	ASC->RemoveGameplayEventTagContainerDelegate(
-		FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.EndAttack"))), EndAttackEventHandle);
+	if (bNextAttack && CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
+	{
+		PlayerAnimInstance->Montage_JumpToSection(NextSectionTag.GetTagName(), PlayerAnimInstance->GetCurrentActiveMontage());
+		bNextAttack = false;
+	}
 }
 
 void UTPS_GameplayAbility_Attack::PlayMontage(const FGameplayTag SectionName)
@@ -145,8 +142,9 @@ void UTPS_GameplayAbility_Attack::AbilityEventMake(FGameplayTag EventTag, void (
                                                                                           const FGameplayEventData*),
                                                    FDelegateHandle& OutHandle)
 {
+	FGameplayTagContainer TagContainer(EventTag);
 	OutHandle = ASC->AddGameplayEventTagContainerDelegate(
-		FGameplayTagContainer(EventTag),
+		TagContainer,
 		FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, Func));
 
 	GameplayEventHandles.Add(FGameplayTag(EventTag), OutHandle);
@@ -155,7 +153,7 @@ void UTPS_GameplayAbility_Attack::AbilityEventMake(FGameplayTag EventTag, void (
 
 void UTPS_GameplayAbility_Attack::DrawEndHandle(const FGameplayTag EventTag, const FGameplayEventData* Payload)
 {
-	Attack();
-	ASC->RemoveGameplayEventTagContainerDelegate(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(FName("State.Character.Drawn"))),
+	Attack(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack.Combo1")));
+	ASC->RemoveGameplayEventTagContainerDelegate(FGameplayTagContainer(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))),
 	                                             DrawEventHandle);
 }

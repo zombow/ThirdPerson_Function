@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
+#include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
-#include "TPS_Player/TPS_PlayerCharacter.h"
 #include "TPS_GameplayAbility_SheathWeapon.generated.h"
 
 /**
@@ -14,12 +15,14 @@
 UCLASS()
 class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_SheathWeapon : public UGameplayAbility
 {
+	
 	GENERATED_BODY()
-
 	UPROPERTY()
-	TObjectPtr<ATPS_PlayerCharacter> Player;
+	TObjectPtr<ACharacter> Target;
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> ASC;
 
 	UTPS_GameplayAbility_SheathWeapon();
 

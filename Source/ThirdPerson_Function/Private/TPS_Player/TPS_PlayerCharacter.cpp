@@ -93,7 +93,7 @@ void ATPS_PlayerCharacter::PossessedBy(AController* NewController)
 		DEFINE_INPUT_BINDING("Input.Crouch", Crouching);
 		DEFINE_INPUT_BINDING("Input.Roll", DoRoll);
 		DEFINE_INPUT_BINDING("Input.Attack", Attack);
-		DEFINE_INPUT_BINDING("Input.DrawWeapon", DrawWeapon);
+		DEFINE_INPUT_BINDING("Input.DrawWeapon", DrawAndSheathWeapon);
 		DEFINE_INPUT_BINDING("Input.Interaction", Interaction);
 		if (!TPSController->OnInputs.IsAlreadyBound(this, &ATPS_PlayerCharacter::HandleInputs))
 		{
@@ -206,18 +206,24 @@ void ATPS_PlayerCharacter::DoRoll(const FInputActionInstance& Value)
 
 void ATPS_PlayerCharacter::Attack(const FInputActionInstance& Value)
 {
+	TPSAbilitySystemComp->HandleGameplayEvent(FGameplayTag::RequestGameplayTag("Input.Attack"), nullptr);
 	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.Attack")));
 }
 
-void ATPS_PlayerCharacter::DrawWeapon(const FInputActionInstance& Value)
+void ATPS_PlayerCharacter::DrawAndSheathWeapon(const FInputActionInstance& Value)
 {
-	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
+	if(TPSAbilitySystemComp->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
+	{
+		// 무기집어넣기
+		TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")));
+	}
+	else
+	{
+		// 무기빼기
+		TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
+	}
 }
 
-void ATPS_PlayerCharacter::SheathWeapon(const FInputActionInstance& Value)
-{
-	TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")));
-}
 
 void ATPS_PlayerCharacter::Interaction(const FInputActionInstance& Value)
 {

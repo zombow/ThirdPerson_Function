@@ -76,9 +76,7 @@ protected:
 	UFUNCTION()
 	void Attack(const FInputActionInstance& Value);
 	UFUNCTION()
-	void DrawWeapon(const FInputActionInstance& Value);
-	UFUNCTION()
-	void SheathWeapon(const FInputActionInstance& Value);
+	void DrawAndSheathWeapon(const FInputActionInstance& Value);
 	UFUNCTION()
 	void Interaction(const FInputActionInstance& Value);
 

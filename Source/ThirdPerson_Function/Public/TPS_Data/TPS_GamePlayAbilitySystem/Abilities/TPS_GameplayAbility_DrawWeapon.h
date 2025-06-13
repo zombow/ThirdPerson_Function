@@ -6,6 +6,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_GameplayAbility_DrawWeapon.generated.h"
 
 /**
@@ -43,8 +44,5 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_DrawWeapon : public UGamepla
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
 	TObjectPtr<UAnimMontage> DrawMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "AnimMontage")
-	TObjectPtr<UAnimMontage> SheathMontage;
-	UPROPERTY()
-	TObjectPtr<UAnimMontage> CachedMontage;
+
 };
