@@ -19,13 +19,19 @@ void UTPS_GameplayAbility_DrawWeapon::ActivateAbility(const FGameplayAbilitySpec
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
+
 	if (Target)
 	{
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
-		if (ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target))
+
+		if (ASC = Cast<UTPS_AbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target)))
 		{
 			PlayMontage();
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawing")));
+
+			if (CharacterStateComponent = ASC->GetCharacterStateComponent())
+			{
+				CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawing);
+			}
 		}
 	}
 	else
@@ -58,9 +64,17 @@ void UTPS_GameplayAbility_DrawWeapon::PlayMontage()
 void UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage()
 {
 	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
-	if (ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack"))))
+	if (CharacterStateComponent)
 	{
-		OnMontageBlendOut();
+		if (CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::DrawAttack)
+		{
+			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn);
+			OnMontageBlendOut();
+		}
+		else
+		{
+			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn);
+		}
 	}
 	else
 	{
@@ -103,11 +117,16 @@ void UTPS_GameplayAbility_DrawWeapon::EndAbility(const FGameplayAbilitySpecHandl
 	{
 		PlayerAnimInstance->bisPlayingMontage = false;
 
-		FGameplayEventData EventData; // Draw종료 Event생성
-		EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
-		EventData.Instigator = Target;
-		ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
-
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawing")));
+		if (!bWasCancelled)
+		{
+			FGameplayEventData EventData; // Draw종료 Event생성
+			EventData.EventTag = FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"));
+			EventData.Instigator = Target;
+			ASC->HandleGameplayEvent(EventData.EventTag, &EventData);
+		}
+		else if (CharacterStateComponent && CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::DrawAttack)
+		{
+			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Sheathed);
+		}
 	}
 }

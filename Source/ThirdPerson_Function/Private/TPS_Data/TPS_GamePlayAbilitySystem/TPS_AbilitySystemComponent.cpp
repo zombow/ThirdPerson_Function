@@ -25,3 +25,8 @@ void UTPS_AbilitySystemComponent::InitializeFromAbilitySet(UTPS_AbilitySet* Abil
 		TPSAbilitySpecs.Add(Pair.Key, Spec);
 	}
 }
+
+void UTPS_AbilitySystemComponent::InitCharacterStateComponent(UTPS_CharacterStateComponent* InCharacterStateComponent)
+{
+	CharacterStateComponent = InCharacterStateComponent;
+}

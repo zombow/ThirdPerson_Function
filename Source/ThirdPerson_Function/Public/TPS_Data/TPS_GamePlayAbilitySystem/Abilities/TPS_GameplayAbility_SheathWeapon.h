@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
 #include "TPS_GameplayAbility_SheathWeapon.generated.h"
 
 /**
@@ -22,7 +22,9 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_SheathWeapon : public UGamep
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> ASC;
+	TObjectPtr<UTPS_AbilitySystemComponent> ASC;
+	UPROPERTY()
+	TObjectPtr<UTPS_CharacterStateComponent> CharacterStateComponent;
 
 	UTPS_GameplayAbility_SheathWeapon();
 

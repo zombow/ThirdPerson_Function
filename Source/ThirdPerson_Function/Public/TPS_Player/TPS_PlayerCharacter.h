@@ -40,6 +40,8 @@ protected:
 	TObjectPtr<UTPS_CharacterMovementComponent> TPSCharacterMoveComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "GAS")
 	TObjectPtr<UTPS_AbilitySystemComponent> TPSAbilitySystemComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "StateComp")
+	TObjectPtr<UTPS_CharacterStateComponent> TPSCharacterStateComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")
 	TObjectPtr<UTPS_InteractionComponent> TPSInteractionComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = true), Category = "Interaction")

@@ -8,6 +8,8 @@
 #include "Abilities/GameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
+#include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
+#include "TPS_Player/TPS_CharacterStateComponent.h"
 #include "TPS_GameplayAbility_Attack.generated.h"
 
 /**
@@ -18,13 +20,16 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_Attack : public UGameplayAbi
 {
 	GENERATED_BODY()
 	UTPS_GameplayAbility_Attack();
-
+	
 	UPROPERTY()
 	TObjectPtr<ACharacter> Target;
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> ASC;
+	TObjectPtr<UTPS_AbilitySystemComponent> ASC;
+	UPROPERTY()
+	TObjectPtr<UTPS_CharacterStateComponent> CharacterStateComponent;
+	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	                             const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

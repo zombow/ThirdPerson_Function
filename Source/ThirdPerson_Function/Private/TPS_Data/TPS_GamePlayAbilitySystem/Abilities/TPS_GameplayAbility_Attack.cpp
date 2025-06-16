@@ -27,24 +27,24 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 	Target = Cast<ACharacter>(ActorInfo->AvatarActor);
 	if (Target)
 	{
-		ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
+		ASC = Cast<UTPS_AbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target));
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
+
 
 		// 콤보어택을 위한 이벤트 등록
 		AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")), &UTPS_GameplayAbility_Attack::BeginNextAttackState,
 		                 AttackEventHandle);
 		AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("Input.Attack")), &UTPS_GameplayAbility_Attack::ComboAttack, ComboAttackHandle);
-
 		// 납도상태에서 공격을 시도했다면 Draw부터 실행
 		if (!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
 		{
 			FGameplayTagContainer DrawTagContainer(FGameplayTag::RequestGameplayTag(TEXT("Ability.DrawWeapon")));
 			TArray<FGameplayAbilitySpec*> TargetAbilities;
 			ASC->GetActivatableGameplayAbilitySpecsByAllMatchingTags(DrawTagContainer, TargetAbilities);
-
-			if (!TargetAbilities.IsEmpty() || ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawing"))))
+			CharacterStateComponent = ASC->GetCharacterStateComponent();
+			if (!TargetAbilities.IsEmpty() || CharacterStateComponent || CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::Drawing)
 			{
-				ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
+				CharacterStateComponent->SetWeaponState(ECharacterWeaponState::DrawAttack);
 				AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")), &UTPS_GameplayAbility_Attack::DrawEndHandle,
 				                 DrawEventHandle);
 				if (!TargetAbilities.IsEmpty())
@@ -74,7 +74,6 @@ void UTPS_GameplayAbility_Attack::EndAbility(const FGameplayAbilitySpecHandle Ha
 	{
 		bNextAttack = false;
 		IAbilityResourceInterface::Execute_StartAbilityResource(Target);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
 		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")));
 	}
 }
@@ -85,7 +84,6 @@ void UTPS_GameplayAbility_Attack::Attack(FGameplayTag AttackSection)
 	if (CommitAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo))
 	{
 		PlayMontage(AttackSection);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.DrawAttack")));
 		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Attack")));
 	}
 }

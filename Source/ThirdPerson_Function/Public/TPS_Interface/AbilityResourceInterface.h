@@ -26,8 +26,4 @@ public:
 	void StartAbilityResource();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Resource")
 	void StopAbilityResource();
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void StartAbility();
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Ability")
-	void StopAbility();
 };

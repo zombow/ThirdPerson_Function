@@ -31,6 +31,9 @@ ATPS_PlayerCharacter::ATPS_PlayerCharacter(const FObjectInitializer& ObjectIniti
 	CameraBoom->bDoCollisionTest = true;
 	CameraBoom->bUsePawnControlRotation = true; // 카메라 리그로 캐릭터 회전
 
+	// 캐릭터 EnumStateComp 생성
+	TPSCharacterStateComp = CreateDefaultSubobject<UTPS_CharacterStateComponent>("CharacterStateComp");
+
 	// 카메라 설정
 	PlayerCameraComp = CreateDefaultSubobject<UCameraComponent>("PlayerCamera");
 	PlayerCameraComp->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
@@ -212,7 +215,7 @@ void ATPS_PlayerCharacter::Attack(const FInputActionInstance& Value)
 
 void ATPS_PlayerCharacter::DrawAndSheathWeapon(const FInputActionInstance& Value)
 {
-	if(TPSAbilitySystemComp->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
+	if (TPSAbilitySystemComp->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn"))))
 	{
 		// 무기집어넣기
 		TryActivateAbilityByTag(FGameplayTag::RequestGameplayTag(TEXT("Ability.SheathWeapon")));

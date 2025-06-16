@@ -21,9 +21,13 @@ void UTPS_GameplayAbility_SheathWeapon::ActivateAbility(const FGameplayAbilitySp
 	if (Target)
 	{
 		PlayerAnimInstance = Cast<UTPS_AnimInstance>(Target->GetMesh()->GetAnimInstance());
-		if (ASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target))
+		if (ASC = Cast<UTPS_AbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target)))
 		{
 			PlayMontage();
+			if(CharacterStateComponent = ASC->GetCharacterStateComponent())
+			{
+				CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Sheathing);
+			}
 		}
 	}
 	else
@@ -66,6 +70,10 @@ void UTPS_GameplayAbility_SheathWeapon::PlayMontage()
 void UTPS_GameplayAbility_SheathWeapon::KeepPlayMontage()
 {
 	ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")));
+	if(CharacterStateComponent)
+	{
+		CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Sheathed);
+	}
 	
 	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,

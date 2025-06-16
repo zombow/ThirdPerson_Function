@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "TPS_Animation/TPS_AnimInstance.h"
 #include "TPS_Data/TPS_GamePlayAbilitySystem/TPS_AbilitySystemComponent.h"
+#include "TPS_Player/TPS_CharacterStateComponent.h"
 #include "TPS_GameplayAbility_DrawWeapon.generated.h"
 
 /**
@@ -22,8 +23,9 @@ class THIRDPERSON_FUNCTION_API UTPS_GameplayAbility_DrawWeapon : public UGamepla
 	UPROPERTY()
 	TObjectPtr<UTPS_AnimInstance> PlayerAnimInstance;
 	UPROPERTY()
-	TObjectPtr<UAbilitySystemComponent> ASC;
-	
+	TObjectPtr<UTPS_AbilitySystemComponent> ASC;
+	UPROPERTY()
+	TObjectPtr<UTPS_CharacterStateComponent> CharacterStateComponent;
 	UTPS_GameplayAbility_DrawWeapon();
 	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

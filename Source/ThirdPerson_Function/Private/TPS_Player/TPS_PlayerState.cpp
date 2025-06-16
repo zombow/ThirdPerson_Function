@@ -18,6 +18,10 @@ void ATPS_PlayerState::BeginPlay()
 
 	InitAbilitySystem();
 	AbilityBind();
+	if (auto StateComp = GetPawn()->FindComponentByClass<UTPS_CharacterStateComponent>())
+	{
+		TPSAbilitySystemComp->InitCharacterStateComponent(StateComp);
+	}
 }
 
 TObjectPtr<UTPS_AbilitySystemComponent> ATPS_PlayerState::GetAbilitySystemComponent() const
