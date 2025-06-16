@@ -28,7 +28,7 @@ void UTPS_GameplayAbility_DrawWeapon::ActivateAbility(const FGameplayAbilitySpec
 		{
 			PlayMontage();
 
-			if (CharacterStateComponent = ASC->GetCharacterStateComponent())
+			if ((CharacterStateComponent = ASC->GetCharacterStateComponent()))
 			{
 				CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawing);
 			}
@@ -68,30 +68,26 @@ void UTPS_GameplayAbility_DrawWeapon::KeepPlayMontage()
 	{
 		if (CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::DrawAttack)
 		{
-			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn);
+			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn, true);
 			OnMontageBlendOut();
+			return;
 		}
-		else
-		{
-			CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn);
-		}
+		CharacterStateComponent->SetWeaponState(ECharacterWeaponState::Drawn);
 	}
-	else
-	{
-		TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-			this,
-			NAME_None,
-			DrawMontage,
-			1.0f,
-			DrawMontage->CompositeSections[1].SectionName,
-			true
-		);
 
-		Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
-		Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
-		Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
-		Task->ReadyForActivation();
-	}
+	TObjectPtr<UAbilityTask_PlayMontageAndWait> Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this,
+		NAME_None,
+		DrawMontage,
+		1.0f,
+		DrawMontage->CompositeSections[1].SectionName,
+		true
+	);
+
+	Task->OnBlendOut.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut);
+	Task->OnInterrupted.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageInterrupted);
+	Task->OnCancelled.AddDynamic(this, &UTPS_GameplayAbility_DrawWeapon::OnMontageCancelled);
+	Task->ReadyForActivation();
 }
 
 void UTPS_GameplayAbility_DrawWeapon::OnMontageBlendOut()

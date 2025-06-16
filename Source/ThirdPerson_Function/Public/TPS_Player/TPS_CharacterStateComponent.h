@@ -36,6 +36,6 @@ protected:
 	FOnWeaponStateChanged OnWeaponStateChanged;
 
 public:
-	void SetWeaponState(ECharacterWeaponState NewState);
+	void SetWeaponState(ECharacterWeaponState NewState, bool bforceChange = false);
 	ECharacterWeaponState GetWeaponState() const { return WeaponState; }
 };

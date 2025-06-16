@@ -42,7 +42,7 @@ void UTPS_GameplayAbility_Attack::ActivateAbility(const FGameplayAbilitySpecHand
 			TArray<FGameplayAbilitySpec*> TargetAbilities;
 			ASC->GetActivatableGameplayAbilitySpecsByAllMatchingTags(DrawTagContainer, TargetAbilities);
 			CharacterStateComponent = ASC->GetCharacterStateComponent();
-			if (!TargetAbilities.IsEmpty() || CharacterStateComponent || CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::Drawing)
+			if (!TargetAbilities.IsEmpty() || (CharacterStateComponent && CharacterStateComponent->GetWeaponState() == ECharacterWeaponState::Drawing))
 			{
 				CharacterStateComponent->SetWeaponState(ECharacterWeaponState::DrawAttack);
 				AbilityEventMake(FGameplayTag::RequestGameplayTag(TEXT("State.Character.Drawn")), &UTPS_GameplayAbility_Attack::DrawEndHandle,

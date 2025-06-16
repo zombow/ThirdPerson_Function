@@ -22,10 +22,17 @@ void UTPS_CharacterStateComponent::BeginPlay()
 	// ...
 }
 
-void UTPS_CharacterStateComponent::SetWeaponState(ECharacterWeaponState NewState)
+void UTPS_CharacterStateComponent::SetWeaponState(ECharacterWeaponState NewState, bool bforceChange)
 {
 	if (WeaponState != NewState)
 	{
+		if (!bforceChange)
+		{
+			if (WeaponState == ECharacterWeaponState::DrawAttack && NewState == ECharacterWeaponState::Drawing)
+			{
+				return; // DrawAttack도중에는 자동으로 Draw로 변경할수없음
+			}
+		}
 		WeaponState = NewState;
 		OnWeaponStateChanged.Broadcast(WeaponState);
 	}
